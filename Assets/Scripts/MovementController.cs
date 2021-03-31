@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-///             V 2.0
+///             V 3.0
 ///             Made by Carl in Carl branch lmao
 ///             2021-03-31
 /// </summary>
@@ -11,6 +11,7 @@ public class MovementController : MonoBehaviour
 {
     //Maybe add running, crouching, jumping?
     [Header("Movement: ")]
+    [SerializeField] private bool alwaysRun = false;
     [SerializeField] private float defaultSpeed = 0f;
     [SerializeField] private float runSpeed = 0f;
     [SerializeField] private float jumpForce = 0f;
@@ -22,6 +23,7 @@ public class MovementController : MonoBehaviour
 
     [Header("Dash: ")]
     [SerializeField] private float dashLength = 5f;
+    [SerializeField] private float dashRate = 2f;
 
     private CharacterController cc = null;
 
@@ -29,16 +31,17 @@ public class MovementController : MonoBehaviour
     private float mouseX = 0f;
     private float mouseY = 0f;
     private float verticalVelocity = 0f;
-    private float lastPress = 0;
+    private float lastPress = 0f;
+    private float nextDash = 0f;
 
     //TEST
-    private Vector3 dashMovement = Vector3.zero;
-    private Vector3 desiredDashPos = Vector3.zero;
+    private List<Vector3> positioningList = new List<Vector3>();
+    private Vector3 dir = Vector3.zero;
 
     private void Start ()
     {
         cc = GetComponent<CharacterController>();
-        speed = defaultSpeed;
+        speed = runSpeed;
     }
 
     private void Update ()
@@ -53,32 +56,63 @@ public class MovementController : MonoBehaviour
     /// This means that we cant just set he player position to something.
     /// Maybe a sign to use vectors instead
     /// </summary>
-    #region Dash-Testing
     private void Dash ()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        //test dashing with raycasting
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, dir.normalized);
+
+        Debug.DrawRay(ray.origin, ray.direction * dashLength, Color.green);
+
+        #region C-Dash
+        //dash with C
+        /*if (Input.GetKeyDown(KeyCode.C))
         {
-            float timeLastPress = Time.time - lastPress;
-
-            if (timeLastPress <= 0.5f)
+            //nothing in the way of the dash
+            if (!Physics.Raycast(forwardRay, out hit, dashLength))
             {
-                //test dashing with raycasting
-                RaycastHit hit;
-                Ray forwardRay = new Ray(transform.position, transform.forward);
-
-                Debug.DrawRay(transform.position, transform.forward * dashLength, Color.red);
-
-                if (!Physics.Raycast(forwardRay, out hit, dashLength))
-                {
-                    //this doesn't work as the position is entierly controlled by the charactercontroller
-                    transform.position += transform.forward * dashLength;
-                }
+                positioningList.Add(transform.position + (Camera.main.transform.forward * dashLength));
             }
+            else
+            {
+                positioningList.Add(new Vector3(hit.point.x - cc.radius, hit.point.y + cc.height, hit.point.z - cc.radius));
+            }
+        }*/
+        #endregion
 
-            lastPress = Time.time;
+        //dash with dubblepress of SHIFT
+        if (Time.time > nextDash)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                float timeLastPress = Time.time - lastPress;
+
+                if (timeLastPress <= 0.5f)
+                {
+                    nextDash = Time.time + dashRate;
+
+                    if (!Physics.Raycast(ray, out hit, dashLength))
+                    {
+                        positioningList.Add(transform.position + (ray.direction * dashLength));
+                    }
+                    else
+                    {
+                        //TODO: we can always fix the instant dash by using smoothmovement instead
+                        //TODO: here we have to check the rotation of the raycast whether we are looking up or down
+                        positioningList.Add(new Vector3(hit.point.x - cc.radius, transform.position.y, hit.point.z - cc.radius));
+                    }
+                }
+                
+                lastPress = Time.time;
+            }
         }
     }
-    #endregion
+
+    private void AdditionalPositioning (Vector3 pos)
+    {
+        transform.position = pos;
+        positioningList.Remove(positioningList[0]);
+    }
 
     //main camera movement function
     private void CameraRotation ()
@@ -98,7 +132,7 @@ public class MovementController : MonoBehaviour
     private void Movement ()
     {
         //set speed
-        speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : defaultSpeed;
+        speed = alwaysRun ? runSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : defaultSpeed;
 
         //read movement direction from axis
         var horizontal = Input.GetAxis("Horizontal") * speed;
@@ -123,12 +157,25 @@ public class MovementController : MonoBehaviour
 
         upMovement.y -= 9.81f; //gravity lol
 
-        //dash clamp and reduction
-        dashMovement.x = Mathf.Clamp(dashMovement.x, 0, 50);
-        dashMovement.y = Mathf.Clamp(dashMovement.y, 0, 50);
+        //in addition to cc.Move, we add additional transformation after it, good for teleportation
+        if (positioningList.Count != 0)
+        {
+            if (positioningList.Count > 1)
+            {
+                Debug.LogError("Something is wrong, there should not be more than one");
+            }
+
+            cc.enabled = false;
+            AdditionalPositioning(positioningList[0]);
+            cc.enabled = true;
+        }
 
         //apply movement on character controller
-        Vector3 dir = forwardMovement  + sideMovement + upMovement + dashMovement;
-        cc.Move(dir * Time.deltaTime);
+        dir = forwardMovement + sideMovement + upMovement;
+
+        if (cc.enabled)
+        {
+            cc.Move(dir * Time.deltaTime);
+        }
     }
 }
