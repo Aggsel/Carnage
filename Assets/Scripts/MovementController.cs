@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-///             V 3.0
+///             V 4.0
 ///             Made by Carl in Carl branch lmao
 ///             2021-03-31
 /// </summary>
 public class MovementController : MonoBehaviour
 {
-    //Maybe add running, crouching, jumping?
+    //Added tooltips for designers lol
     [Header("Movement: ")]
+    [Tooltip("Should the player always run or run with the run key")]
     [SerializeField] private bool alwaysRun = false;
+    [Tooltip("If always run is off, the default walk speed of the player")]
     [SerializeField] private float defaultSpeed = 0f;
+    [Tooltip("If always run is off, the run speed of the player")]
     [SerializeField] private float runSpeed = 0f;
+    [Tooltip("The jumpheight of the player")]
     [SerializeField] private float jumpForce = 0f;
 
     [Header("Camera: ")]
@@ -22,7 +26,9 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 5f;
 
     [Header("Dash: ")]
+    [Tooltip("Dude, the length of the dash..")]
     [SerializeField] private float dashLength = 5f;
+    [Tooltip("Cooldown of the dash, higher number means a longer wait between dashes")]
     [SerializeField] private float dashRate = 2f;
 
     private CharacterController cc = null;
@@ -33,8 +39,6 @@ public class MovementController : MonoBehaviour
     private float verticalVelocity = 0f;
     private float lastPress = 0f;
     private float nextDash = 0f;
-
-    //TEST
     private List<Vector3> positioningList = new List<Vector3>();
     private Vector3 dir = Vector3.zero;
 
@@ -42,6 +46,10 @@ public class MovementController : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         speed = runSpeed;
+
+        //DEBUG lock mouse
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Update ()
@@ -51,37 +59,38 @@ public class MovementController : MonoBehaviour
         CameraRotation();
     }
 
-    /// <summary>
-    /// The problem with using character controller is that it overwrites any other transformation
-    /// This means that we cant just set he player position to something.
-    /// Maybe a sign to use vectors instead
-    /// </summary>
     private void Dash ()
     {
         //test dashing with raycasting
         RaycastHit hit;
-        Ray ray = new Ray(transform.position, dir.normalized);
+        Vector3 newDir = new Vector3(dir.x, 0, dir.z).normalized;
+        Ray ray = new Ray(transform.position, newDir);
 
-        Debug.DrawRay(ray.origin, ray.direction * dashLength, Color.green);
+        Debug.DrawRay(ray.origin, ray.direction * (dashLength / 2), Color.green);
 
-        #region C-Dash
-        //dash with C
-        /*if (Input.GetKeyDown(KeyCode.C))
+        #region RightClick-Dash (for testing only)
+        //dash with RightClick
+        if (Input.GetMouseButtonDown(1) && Time.time > nextDash)
         {
-            //nothing in the way of the dash
-            if (!Physics.Raycast(forwardRay, out hit, dashLength))
+            nextDash = Time.time + dashRate;
+
+            if (!Physics.Raycast(ray, out hit, (dashLength / 2)))
             {
-                positioningList.Add(transform.position + (Camera.main.transform.forward * dashLength));
+                positioningList.Add(transform.position + (ray.direction * (dashLength / 2)));
             }
             else
             {
-                positioningList.Add(new Vector3(hit.point.x - cc.radius, hit.point.y + cc.height, hit.point.z - cc.radius));
+                //if ray hit something, block dash. Also make sure no clipping occur using player radius
+                positioningList.Add(new Vector3(hit.point.x - newDir.x * cc.radius, transform.position.y, hit.point.z - newDir.z * cc.radius));
             }
-        }*/
+
+            lastPress = Time.time;
+        }
         #endregion
 
+        #region dubbleclickShift-Dash
         //dash with dubblepress of SHIFT
-        if (Time.time > nextDash)
+        /*if (Time.time > nextDash)
         {
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
@@ -105,17 +114,32 @@ public class MovementController : MonoBehaviour
                 
                 lastPress = Time.time;
             }
+        }*/
+        #endregion
+    }
+    
+    //in addition to normal movement i have an AdditionalPositioning function -
+    //for teleporting or doing other stuff than moving in the normal translating (Movement) function
+    private void AdditionalPositioning(Vector3 pos)
+    {
+        float step = dashLength * Time.deltaTime;
+        float dist = Vector3.Distance(transform.position, pos);
+
+        if (dist > 1f)
+        {
+            Debug.Log("move");
+            transform.position = Vector3.MoveTowards(transform.position, pos, step);
+        }
+        else
+        {
+            Debug.Log("stop");
+            positioningList.Remove(positioningList[0]);
+            cc.enabled = true;
         }
     }
 
-    private void AdditionalPositioning (Vector3 pos)
-    {
-        transform.position = pos;
-        positioningList.Remove(positioningList[0]);
-    }
-
     //main camera movement function
-    private void CameraRotation ()
+    private void CameraRotation()
     {
         //add input from mouseX and mouseY axis to variables
         mouseY += Input.GetAxis("Mouse X") * (mouseSensitivity * 0.1f);
@@ -132,7 +156,8 @@ public class MovementController : MonoBehaviour
     private void Movement ()
     {
         //set speed
-        speed = alwaysRun ? runSpeed : Input.GetKey(KeyCode.LeftShift) ? runSpeed : defaultSpeed;
+        //if alwaysRun == true, speed = runSpeed if not do whats right of the colon
+        speed = alwaysRun ? runSpeed : (Input.GetKey(KeyCode.LeftShift) ? runSpeed : defaultSpeed);
 
         //read movement direction from axis
         var horizontal = Input.GetAxis("Horizontal") * speed;
@@ -152,8 +177,25 @@ public class MovementController : MonoBehaviour
         //decrease verticalVel to fall down again
         if(verticalVelocity > 0)
         {
-            verticalVelocity -= 10 * Time.deltaTime;
+            verticalVelocity -= 25f * Time.deltaTime;
         }
+
+        /*
+        //accelerated movement when falling
+        float fallTime = 0f;
+        
+        if(verticalVelocity > 0)
+        {
+            fallTime += Time.deltaTime;
+            verticalVelocity -= (fallTime * fallTime * 9.81f) / 2; //accelerated movement v*t + (a*t^2) / 2
+            Debug.Log(verticalVelocity);
+            //verticalVelocity = Mathf.Clamp(verticalVelocity, -50, 50);
+        }
+        else
+        {
+            fallTime = 0;
+        }
+        */
 
         upMovement.y -= 9.81f; //gravity lol
 
@@ -167,7 +209,6 @@ public class MovementController : MonoBehaviour
 
             cc.enabled = false;
             AdditionalPositioning(positioningList[0]);
-            cc.enabled = true;
         }
 
         //apply movement on character controller
