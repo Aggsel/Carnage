@@ -97,7 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 96ba88479a0451f4bb8dd093bd373683,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -1089,15 +1090,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76b68effcdb42c849b138f4d0e316849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alwaysRun: 0
-  defaultSpeed: 4
-  runSpeed: 12
-  jumpForce: 18
-  minX: -90
-  maxX: 90
-  mouseSensitivity: 20
-  dashLength: 10
-  dashRate: 1
+  movementVar:
+    alwaysRun: 1
+    defaultSpeed: 0
+    runSpeed: 8
+    jumpForce: 8
+    fallAcceleration: 2
+  cameraVar:
+    minX: -90
+    maxX: 90
+    mouseSensitivity: 16
+  dashVar:
+    dashLength: 12
+    dashSpeed: 20
+    dashRate: 1
+  curveVar:
+    intervals: 0.183
+    incline: 25
+    reach: 50
+    rayStopDist: 0.36
 --- !u!143 &1237676678
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1203,7 +1214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1313181466}
   m_LocalRotation: {x: 0.2164396, y: 0, z: 0, w: 0.97629607}
-  m_LocalPosition: {x: -3.77, y: 1.374, z: -1.18}
+  m_LocalPosition: {x: -3.888, y: 1.374, z: -1.18}
   m_LocalScale: {x: 2, y: 0.4, z: 5}
   m_Children: []
   m_Father: {fileID: 1870660278}
@@ -1295,7 +1306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1562548545}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalPosition: {x: -1.104, y: 3.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 783736689}
