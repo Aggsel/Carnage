@@ -6,13 +6,12 @@ using System;
 /// <summary>
 ///             V 5.0
 ///             Made by Carl in Carl branch lmao
-///             2021-03-31
+///             2021-04-02
 /// </summary>
 public class MovementController : MonoBehaviour
 {
-    //Variable structs
+    //Variable structs good for organization in the editor
     #region Variable structs
-
     [Serializable]
     public struct MovementVariables
     {
@@ -31,8 +30,11 @@ public class MovementController : MonoBehaviour
     [Serializable]
     public struct CameraVariables
     {
+        [Tooltip("Max x value that the camera can rotate (looking up)")]
         public float minX;
+        [Tooltip("Min x value that the camera can rotate (looking down)")]
         public float maxX;
+        [Tooltip("The speed of which the camera is moved")]
         public float mouseSensitivity;
     }
 
@@ -45,17 +47,6 @@ public class MovementController : MonoBehaviour
         public float dashSpeed;
         [Tooltip("Cooldown of the dash, higher number means a longer wait between dashes")]
         public float dashRate;
-    }
-
-    [Serializable]
-    public struct CurveVariables
-    {
-        [Range(0.1f, 0.6f)]
-        public float intervals;
-        public float incline;
-        public float reach;
-        [Range(0.1f, 0.8f)]
-        public float rayStopDist;
     }
     #endregion
 
@@ -75,10 +66,6 @@ public class MovementController : MonoBehaviour
     private Vector3 dir = Vector3.zero;
     private float fallForce = 1.5f;
 
-    //TEST
-    private List<Vector3> generatedPoints = new List<Vector3>();
-    [SerializeField] private CurveVariables curveVar = new CurveVariables();
-
     private void Start ()
     {
         cc = GetComponent<CharacterController>();
@@ -94,65 +81,7 @@ public class MovementController : MonoBehaviour
         Dash();
         Movement();
         CameraRotation();
-        CurveSimulation();
     }
-
-    //Try to calculate a trajectory preditction curve
-    #region curveCalculation test
-    private void CurveSimulation ()
-    {
-        generatedPoints = PointGeneration();
-
-        for (int i = 0; i < generatedPoints.Count; i++)
-        {
-            if(i + 1 < generatedPoints.Count)
-            {
-                Debug.DrawLine(generatedPoints[i], generatedPoints[i + 1], Color.blue);
-            }
-        }
-    }
-
-    private bool CollisionCheck (Vector3 pos)
-    {
-        Collider[] col = Physics.OverlapSphere(pos, curveVar.rayStopDist);
-
-        if(col.Length > 0)
-        {
-            return true;
-        }
-        
-        return false;
-    }
-
-    private List<Vector3> PointGeneration ()
-    {
-        List<Vector3> points = new List<Vector3>();
-
-        float maxDuration = 5f;
-        float timeStepInterval = curveVar.intervals;
-        int maxSteps = (int)(maxDuration / timeStepInterval);
-        Vector3 directionVector = Camera.main.transform.forward;
-        Vector3 launchPosition = Camera.main.transform.position + Camera.main.transform.forward;
-
-        float vel = curveVar.incline * curveVar.reach * Time.fixedDeltaTime;
-
-        for (int i = 0; i < maxSteps; i++)
-        {
-            //f(y) = (x0 + x*t, y0 + y*t - 9.81t^2/2)
-            Vector3 calculatedPosition = launchPosition + directionVector * vel * i * timeStepInterval;
-            calculatedPosition.y += Physics.gravity.y / 2 * Mathf.Pow(i * timeStepInterval, 2);
-
-            points.Add(calculatedPosition);
-
-            if (CollisionCheck(calculatedPosition))
-            {
-                break;
-            }
-        }
-
-        return points;
-    }
-    #endregion
 
     private void Dash ()
     {
