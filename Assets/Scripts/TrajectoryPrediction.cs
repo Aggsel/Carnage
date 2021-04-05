@@ -7,6 +7,7 @@ using UnityEngine;
 ///             Made by Carl for testing purposes (grenades, bullet drop)
 ///             2021-04-02
 /// </summary>
+[RequireComponent(typeof(LineRenderer))]
 public class TrajectoryPrediction : MonoBehaviour
 {
     [Range(0.1f, 0.6f)]
@@ -17,6 +18,12 @@ public class TrajectoryPrediction : MonoBehaviour
     [SerializeField] private float rayStopDist = 0.1f;
 
     private List<Vector3> generatedPoints = new List<Vector3>();
+    private LineRenderer lineRenderer = new LineRenderer();
+
+    private void Start ()
+    {
+        lineRenderer = GetComponent<LineRenderer>();
+    }
 
     private void Update ()
     {
@@ -27,12 +34,14 @@ public class TrajectoryPrediction : MonoBehaviour
     private void CurveSimulation()
     {
         generatedPoints = PointGeneration();
+        lineRenderer.positionCount = generatedPoints.Count;
 
         for (int i = 0; i < generatedPoints.Count; i++)
         {
             if (i + 1 < generatedPoints.Count)
             {
-                Debug.DrawLine(generatedPoints[i], generatedPoints[i + 1], Color.blue);
+                lineRenderer.SetPosition(i, generatedPoints[i]);
+                //Debug.DrawLine(generatedPoints[i], generatedPoints[i + 1], Color.blue);
             }
         }
     }
