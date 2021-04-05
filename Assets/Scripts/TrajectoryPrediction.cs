@@ -4,17 +4,17 @@ using UnityEngine;
 
 /// <summary>
 ///             V 1.0
-///             Made by Carl
+///             Made by Carl for testing purposes (grenades, bullet drop)
 ///             2021-04-02
 /// </summary>
 public class TrajectoryPrediction : MonoBehaviour
 {
     [Range(0.1f, 0.6f)]
-    [SerializeField] private float intervals;
-    [SerializeField] private float incline;
-    [SerializeField] private float reach;
+    [SerializeField] private float intervals = 0.1f;
+    [SerializeField] private float incline = 12f;
+    [SerializeField] private float reach = 10f;
     [Range(0.1f, 0.8f)]
-    [SerializeField] private float rayStopDist;
+    [SerializeField] private float rayStopDist = 0.1f;
 
     private List<Vector3> generatedPoints = new List<Vector3>();
 

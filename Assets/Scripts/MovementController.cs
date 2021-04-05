@@ -54,7 +54,8 @@ public class MovementController : MonoBehaviour
     [SerializeField] private CameraVariables cameraVar = new CameraVariables();
     [SerializeField] private DashVariables dashVar = new DashVariables();
 
-    private CharacterController cc = null;
+    [HideInInspector]
+    public CharacterController cc = null;
 
     private float speed = 0f;
     private float mouseX = 0f;
