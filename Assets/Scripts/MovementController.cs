@@ -1,37 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /// <summary>
-///             V 4.0
+///             V 5.0
 ///             Made by Carl in Carl branch lmao
-///             2021-03-31
+///             2021-04-02
 /// </summary>
 public class MovementController : MonoBehaviour
 {
-    //Added tooltips for designers lol
-    [Header("Movement: ")]
-    [Tooltip("Should the player always run or run with the run key")]
-    [SerializeField] private bool alwaysRun = false;
-    [Tooltip("If always run is off, the default walk speed of the player")]
-    [SerializeField] private float defaultSpeed = 0f;
-    [Tooltip("If always run is off, the run speed of the player")]
-    [SerializeField] private float runSpeed = 0f;
-    [Tooltip("The jumpheight of the player")]
-    [SerializeField] private float jumpForce = 0f;
+    //Variable structs good for organization in the editor
+    #region Variable structs
+    [Serializable]
+    public struct MovementVariables
+    {
+        [Tooltip("Should the player always run or run with the run key")]
+        public bool alwaysRun;
+        [Tooltip("If always run is off, the default walk speed of the player")]
+        public float defaultSpeed;
+        [Tooltip("If always run is off, the run speed of the player")]
+        public float runSpeed;
+        [Tooltip("The jumpheight of the player")]
+        public float jumpForce;
+        [Tooltip("The acceleration of the players speed when falling")]
+        public float fallAcceleration;
+    }
 
-    [Header("Camera: ")]
-    [SerializeField] private float minX = -90f;
-    [SerializeField] private float maxX = 90f;
-    [SerializeField] private float mouseSensitivity = 5f;
+    [Serializable]
+    public struct CameraVariables
+    {
+        [Tooltip("Max x value that the camera can rotate (looking up)")]
+        public float minX;
+        [Tooltip("Min x value that the camera can rotate (looking down)")]
+        public float maxX;
+        [Tooltip("The speed of which the camera is moved")]
+        public float mouseSensitivity;
+    }
 
-    [Header("Dash: ")]
-    [Tooltip("Dude, the length of the dash..")]
-    [SerializeField] private float dashLength = 5f;
-    [Tooltip("Cooldown of the dash, higher number means a longer wait between dashes")]
-    [SerializeField] private float dashRate = 2f;
+    [Serializable]
+    public struct DashVariables
+    {
+        [Tooltip("Dude, the length of the dash..")]
+        public float dashLength;
+        [Tooltip("How fast the dash is")]
+        public float dashSpeed;
+        [Tooltip("Cooldown of the dash, higher number means a longer wait between dashes")]
+        public float dashRate;
+    }
+    #endregion
 
-    private CharacterController cc = null;
+    [SerializeField] private MovementVariables movementVar = new MovementVariables();
+    [SerializeField] private CameraVariables cameraVar = new CameraVariables();
+    [SerializeField] private DashVariables dashVar = new DashVariables();
+
+    [HideInInspector]
+    public CharacterController cc = null;
 
     private float speed = 0f;
     private float mouseX = 0f;
@@ -41,11 +65,12 @@ public class MovementController : MonoBehaviour
     private float nextDash = 0f;
     private List<Vector3> positioningList = new List<Vector3>();
     private Vector3 dir = Vector3.zero;
+    private float fallForce = 1.5f;
 
     private void Start ()
     {
         cc = GetComponent<CharacterController>();
-        speed = runSpeed;
+        speed = movementVar.runSpeed;
 
         //DEBUG lock mouse
         Cursor.lockState = CursorLockMode.Locked;
@@ -66,17 +91,17 @@ public class MovementController : MonoBehaviour
         Vector3 newDir = new Vector3(dir.x, 0, dir.z).normalized;
         Ray ray = new Ray(transform.position, newDir);
 
-        Debug.DrawRay(ray.origin, ray.direction * (dashLength / 2), Color.green);
+        Debug.DrawRay(ray.origin, ray.direction * (dashVar.dashLength / 2), Color.green);
 
         #region RightClick-Dash (for testing only)
         //dash with RightClick
         if (Input.GetMouseButtonDown(1) && Time.time > nextDash)
         {
-            nextDash = Time.time + dashRate;
+            nextDash = Time.time + dashVar.dashRate;
 
-            if (!Physics.Raycast(ray, out hit, (dashLength / 2)))
+            if (!Physics.Raycast(ray, out hit, (dashVar.dashLength / 2)))
             {
-                positioningList.Add(transform.position + (ray.direction * (dashLength / 2)));
+                positioningList.Add(transform.position + (ray.direction * (dashVar.dashLength / 2)));
             }
             else
             {
@@ -122,17 +147,15 @@ public class MovementController : MonoBehaviour
     //for teleporting or doing other stuff than moving in the normal translating (Movement) function
     private void AdditionalPositioning(Vector3 pos)
     {
-        float step = dashLength * Time.deltaTime;
+        float step = dashVar.dashSpeed * Time.deltaTime;
         float dist = Vector3.Distance(transform.position, pos);
 
         if (dist > 1f)
         {
-            Debug.Log("move");
             transform.position = Vector3.MoveTowards(transform.position, pos, step);
         }
         else
         {
-            Debug.Log("stop");
             positioningList.Remove(positioningList[0]);
             cc.enabled = true;
         }
@@ -142,12 +165,12 @@ public class MovementController : MonoBehaviour
     private void CameraRotation()
     {
         //add input from mouseX and mouseY axis to variables
-        mouseY += Input.GetAxis("Mouse X") * (mouseSensitivity * 0.1f);
-        mouseX += Input.GetAxis("Mouse Y") * (mouseSensitivity * 0.1f);
+        mouseY += Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
+        mouseX += Input.GetAxis("Mouse Y") * (cameraVar.mouseSensitivity * 0.1f);
 
         //Make sure to clamp ROTATION around mouseX to restrict looking up
         //apply rotation to camera AND player to move in the direction player is looking
-        mouseX = Mathf.Clamp(mouseX, minX, maxX);
+        mouseX = Mathf.Clamp(mouseX, cameraVar.minX, cameraVar.maxX);
         Camera.main.transform.eulerAngles = new Vector3(-mouseX, mouseY, 0);
         transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
     }
@@ -157,7 +180,7 @@ public class MovementController : MonoBehaviour
     {
         //set speed
         //if alwaysRun == true, speed = runSpeed if not do whats right of the colon
-        speed = alwaysRun ? runSpeed : (Input.GetKey(KeyCode.LeftShift) ? runSpeed : defaultSpeed);
+        speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
 
         //read movement direction from axis
         var horizontal = Input.GetAxis("Horizontal") * speed;
@@ -168,36 +191,31 @@ public class MovementController : MonoBehaviour
         Vector3 sideMovement = transform.right * horizontal;
         Vector3 upMovement = transform.up * verticalVelocity;
 
-        //jump
-        if(Input.GetKeyDown(KeyCode.Space) && cc.isGrounded)
+        #region jumping
+        //jump key
+        if (Input.GetKeyDown(KeyCode.Space) && cc.isGrounded)
         {
-            verticalVelocity = jumpForce;
+            verticalVelocity = movementVar.jumpForce;
         }
 
-        //decrease verticalVel to fall down again
-        if(verticalVelocity > 0)
+        //fall down again
+        if (verticalVelocity > 0)
         {
-            verticalVelocity -= 25f * Time.deltaTime;
+            verticalVelocity -= 25 * Time.deltaTime;
         }
 
-        /*
-        //accelerated movement when falling
-        float fallTime = 0f;
-        
-        if(verticalVelocity > 0)
+        if (fallForce > 0 && cc.isGrounded)
         {
-            fallTime += Time.deltaTime;
-            verticalVelocity -= (fallTime * fallTime * 9.81f) / 2; //accelerated movement v*t + (a*t^2) / 2
-            Debug.Log(verticalVelocity);
-            //verticalVelocity = Mathf.Clamp(verticalVelocity, -50, 50);
+            fallForce = 0.1f;
         }
-        else
-        {
-            fallTime = 0;
-        }
-        */
 
-        upMovement.y -= 9.81f; //gravity lol
+        if(verticalVelocity < 0)
+        {
+            fallForce += (Mathf.Pow(movementVar.fallAcceleration, 2f) * Time.deltaTime);
+        }
+
+        upMovement.y -= (fallForce * 9.81f);
+        #endregion
 
         //in addition to cc.Move, we add additional transformation after it, good for teleportation
         if (positioningList.Count != 0)
@@ -212,11 +230,21 @@ public class MovementController : MonoBehaviour
         }
 
         //apply movement on character controller
-        dir = forwardMovement + sideMovement + upMovement;
+        dir = forwardMovement + sideMovement;
 
         if (cc.enabled)
         {
+            dir = Vector3.ClampMagnitude(dir, speed);
+            dir += upMovement;
             cc.Move(dir * Time.deltaTime);
         }
+    }
+
+    //DEBUG velocity & FPS
+    private void OnGUI ()
+    {
+        //GUI.Label(new Rect(10, 30, 100, 50), fallForce.ToString());
+        GUI.Label(new Rect(10, 10, 100, 50), cc.velocity.magnitude.ToString());
+        GUI.Label(new Rect(Screen.width - 40, 10, 70, 50), (1.0f / Time.smoothDeltaTime).ToString("F2"));
     }
 }
