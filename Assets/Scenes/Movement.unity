@@ -1337,10 +1337,56 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 470309553}
-  - {fileID: 1957251763}
+  - {fileID: 990655818}
   m_Father: {fileID: 1237676679}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &990655817
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 990655818}
+  - component: {fileID: 990655819}
+  m_Layer: 0
+  m_Name: BobbingOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &990655818
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990655817}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1957251763}
+  m_Father: {fileID: 979786335}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &990655819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990655817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95788ffd4f29a164184161c8ea3db3f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bobStrength: 3
+  bobSpeed: 3.5
 --- !u!1 &1237676676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1379,7 +1425,7 @@ MonoBehaviour:
   movementVar:
     alwaysRun: 1
     defaultSpeed: 0
-    runSpeed: 13
+    runSpeed: 16
     jumpForce: 12
     fallAcceleration: 2.5
   cameraVar:
@@ -1387,9 +1433,11 @@ MonoBehaviour:
     maxX: 90
     mouseSensitivity: 16
   dashVar:
+    dashKey: 304
     dashLength: 10
     dashSpeed: 35
     dashRate: 1
+    dashRechargeRate: 3
   cc: {fileID: 0}
 --- !u!143 &1237676678
 CharacterController:
@@ -1405,7 +1453,7 @@ CharacterController:
   m_Height: 2.5
   m_Radius: 0.5
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
+  m_StepOffset: 0
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -2545,13 +2593,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1957251762}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.24399996, y: -0.283, z: 0.81500006}
+  m_LocalPosition: {x: 0.24399996, y: -0.28299993, z: 0.81500006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1887160539}
   - {fileID: 253316422}
-  m_Father: {fileID: 979786335}
-  m_RootOrder: 1
+  m_Father: {fileID: 990655818}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1957251764
 MonoBehaviour:

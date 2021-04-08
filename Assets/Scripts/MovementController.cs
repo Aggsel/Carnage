@@ -42,6 +42,8 @@ public class MovementController : MonoBehaviour
     [Serializable]
     public struct DashVariables
     {
+        [Tooltip("The key which is used to trigger the dash")]
+        public KeyCode dashKey;
         [Tooltip("Dude, the length of the dash..")]
         public float dashLength;
         [Tooltip("How fast the dash is")]
@@ -72,8 +74,6 @@ public class MovementController : MonoBehaviour
     private List<Vector3> positioningList = new List<Vector3>();
     private Vector3 dir = Vector3.zero;
     private float fallForce = 1.5f;
-
-    //TEST
     private float charge = 3.0f;
 
     private void Start ()
@@ -117,9 +117,9 @@ public class MovementController : MonoBehaviour
 
         Debug.DrawRay(ray.origin, ray.direction * (dashVar.dashLength / 2), Color.green);
 
-        #region RightClick-Dash (for testing only)
-        //dash with RightClick
-        if (Input.GetMouseButtonDown(1) && Time.time > nextDash && charge >= 1.0f)
+        #region Dash from input
+        //dash
+        if (Input.GetKeyDown(dashVar.dashKey) && Time.time > nextDash && charge >= 1.0f)
         {
             nextDash = Time.time + dashVar.dashRate;
 
@@ -136,35 +136,6 @@ public class MovementController : MonoBehaviour
             charge -= 1.0f;
             lastPress = Time.time;
         }
-        #endregion
-
-        #region dubbleclickShift-Dash
-        //dash with dubblepress of SHIFT
-        /*if (Time.time > nextDash)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                float timeLastPress = Time.time - lastPress;
-
-                if (timeLastPress <= 0.5f)
-                {
-                    nextDash = Time.time + dashRate;
-
-                    if (!Physics.Raycast(ray, out hit, dashLength))
-                    {
-                        positioningList.Add(transform.position + (ray.direction * dashLength));
-                    }
-                    else
-                    {
-                        //TODO: we can always fix the instant dash by using smoothmovement instead
-                        //TODO: here we have to check the rotation of the raycast whether we are looking up or down
-                        positioningList.Add(new Vector3(hit.point.x - cc.radius, transform.position.y, hit.point.z - cc.radius));
-                    }
-                }
-                
-                lastPress = Time.time;
-            }
-        }*/
         #endregion
     }
     
