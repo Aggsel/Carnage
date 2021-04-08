@@ -50,6 +50,9 @@ public class MovementController : MonoBehaviour
     }
     #endregion
 
+    [Tooltip("Dont touch")]
+    [SerializeField] private Transform cam = null;
+
     [SerializeField] private MovementVariables movementVar = new MovementVariables();
     [SerializeField] private CameraVariables cameraVar = new CameraVariables();
     [SerializeField] private DashVariables dashVar = new DashVariables();
@@ -171,8 +174,8 @@ public class MovementController : MonoBehaviour
         //Make sure to clamp ROTATION around mouseX to restrict looking up
         //apply rotation to camera AND player to move in the direction player is looking
         mouseX = Mathf.Clamp(mouseX, cameraVar.minX, cameraVar.maxX);
-        Camera.main.transform.eulerAngles = new Vector3(-mouseX, mouseY, 0);
-        transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+        cam.eulerAngles = new Vector3(-mouseX, mouseY, 0);
+        transform.eulerAngles = new Vector3(0, cam.eulerAngles.y, 0);
     }
 
     //main movement function
