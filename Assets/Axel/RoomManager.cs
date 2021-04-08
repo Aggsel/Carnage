@@ -5,7 +5,7 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     [HideInInspector] [SerializeField] public Bounds roomBounds; //Could be used as the room size. Is handled by level manager atm. 
-
+    [HideInInspector] public Vector2Int gridPosition; 
     //Uses the rooms colliders to generate a bounding box, encapsulating the entire room.
     //This is slow, only for use in editor. Bounding box is then stored in the prefab.
     [ContextMenu("Get Bounding Box")]
