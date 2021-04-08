@@ -43,6 +43,13 @@ public class Viewbob : MonoBehaviour
         time = Mathf.PingPong(Time.time * bobSpeed, 2.0f) -1.0f;
         dest = (vel * 2.0f) * new Vector3(0, -Mathf.Sin(time * time * (bobStrength * 0.001f)), Mathf.Sin(time * (bobStrength * 0.001f)));
 
+        //change to sync with footsteps
+        if(time < 0.0f)
+        {
+            //call footstep sounds here
+            //Debug.Log("NOW");
+        }
+
         transform.localPosition = origin + dest;
     }
 }
