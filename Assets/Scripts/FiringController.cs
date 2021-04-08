@@ -66,7 +66,7 @@ public class FiringController : MonoBehaviour
             {
                 target.TakeDamage(weaponAttributes.damage);
             }
-            GameObject impact = Instantiate(hitEffect, bulletHit.point, Quaternion.LookRotation(bulletHit.normal));
+            GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
             Destroy(impact, 2f);
         }
 

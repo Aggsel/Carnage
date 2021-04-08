@@ -13,9 +13,8 @@ public class OverheatScript : MonoBehaviour
     private bool recentlyHeated = false;
     private bool overheated = false;
     private float coolingInitializeRemaining = 0f;
-
-    public float incrementedCoolingInitialize = 0f;
-    public float incrementedCoolingRate = 0f;
+    private float incrementedCoolingInitialize = 0f;
+    private float incrementedCoolingRate = 0f;
 
     void Start()
     {
