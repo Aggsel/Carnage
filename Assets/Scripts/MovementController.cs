@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 /// <summary>
-///             V 5.0
-///             Made by Carl in Carl branch lmao
-///             2021-04-02
+///             V 6.0
+///             Made by Carl
+///             2021-04-08
 /// </summary>
 public class MovementController : MonoBehaviour
 {
@@ -47,6 +48,8 @@ public class MovementController : MonoBehaviour
         public float dashSpeed;
         [Tooltip("Cooldown of the dash, higher number means a longer wait between dashes")]
         public float dashRate;
+        [Tooltip("How fast the dash charges increases / recharges")]
+        public float dashRechargeRate;
     }
     #endregion
 
@@ -70,6 +73,9 @@ public class MovementController : MonoBehaviour
     private Vector3 dir = Vector3.zero;
     private float fallForce = 1.5f;
 
+    //TEST
+    private float charge = 3.0f;
+
     private void Start ()
     {
         cc = GetComponent<CharacterController>();
@@ -85,6 +91,21 @@ public class MovementController : MonoBehaviour
         Dash();
         Movement();
         CameraRotation();
+
+        //dash recharge
+        if (charge < 3.0f)
+        {
+            Recharge();
+        }
+    }
+
+    private void Recharge ()
+    {
+        //dashSlider.value = charge;
+        //put visual here
+
+        charge += (dashVar.dashRechargeRate * 0.1f) * Time.deltaTime;
+        charge = Mathf.Clamp(charge, 0.0f, 3.0f);
     }
 
     private void Dash ()
@@ -98,7 +119,7 @@ public class MovementController : MonoBehaviour
 
         #region RightClick-Dash (for testing only)
         //dash with RightClick
-        if (Input.GetMouseButtonDown(1) && Time.time > nextDash)
+        if (Input.GetMouseButtonDown(1) && Time.time > nextDash && charge >= 1.0f)
         {
             nextDash = Time.time + dashVar.dashRate;
 
@@ -112,6 +133,7 @@ public class MovementController : MonoBehaviour
                 positioningList.Add(new Vector3(hit.point.x - newDir.x * cc.radius, transform.position.y, hit.point.z - newDir.z * cc.radius));
             }
 
+            charge -= 1.0f;
             lastPress = Time.time;
         }
         #endregion
@@ -246,7 +268,7 @@ public class MovementController : MonoBehaviour
     //DEBUG velocity & FPS
     private void OnGUI ()
     {
-        //GUI.Label(new Rect(10, 30, 100, 50), fallForce.ToString());
+        GUI.Label(new Rect(10, 30, 100, 50), charge.ToString("F2"));
         GUI.Label(new Rect(10, 10, 100, 50), cc.velocity.magnitude.ToString());
         GUI.Label(new Rect(Screen.width - 40, 10, 70, 50), (1.0f / Time.smoothDeltaTime).ToString("F2"));
     }
