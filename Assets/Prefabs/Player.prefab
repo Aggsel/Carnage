@@ -780,7 +780,7 @@ MonoBehaviour:
   bulletCam: {fileID: 3027235086142218614}
   hitEffect: {fileID: 6817321594469807644, guid: 267d378f6915a1545b8a2b2ebb418bcf,
     type: 3}
-  overheatBar: {fileID: 0}
+  overheatBar: {fileID: 3027235087629037940}
   muzzleFlash: {fileID: 685327040004643853}
 --- !u!114 &3027235087010105667
 MonoBehaviour:
@@ -1013,6 +1013,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3027235087629037941}
   - component: {fileID: 3027235087629037938}
+  - component: {fileID: 3115236543131543689}
   m_Layer: 0
   m_Name: weaponSlot
   m_TagString: Untagged
@@ -1052,6 +1053,27 @@ MonoBehaviour:
   movementSpeed: 0.5
   rotationAmount: 25
   rotationSpeed: 5
+--- !u!114 &3115236543131543689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3027235087629037940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fea1dc9519fe042b2fa68e92ea9fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3027235087010105666}
+  weaponInstance:
+    damage: 0
+    fireRate: 0
+    heatGeneration: 0
+    heatMaximum: 0
+    coolingIntializeTime: 0
+    coolingRate: 0
+    accuracy: 0
 --- !u!1001 &1142714833565880525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1059,16 +1081,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5016899775209839051}
     m_Modifications:
-    - target: {fileID: 457529164563598528, guid: 55f3af48e8f52e34d90b395893845ed4,
-        type: 3}
-      propertyPath: m_InitialEventNameOverriden
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 457529164563598528, guid: 55f3af48e8f52e34d90b395893845ed4,
-        type: 3}
-      propertyPath: m_InitialEventName
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 457529164563598529, guid: 55f3af48e8f52e34d90b395893845ed4,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1138,21 +1150,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 457529164563598535, guid: 55f3af48e8f52e34d90b395893845ed4,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 457529164563598535, guid: 55f3af48e8f52e34d90b395893845ed4,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 457529164563598535, guid: 55f3af48e8f52e34d90b395893845ed4,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55f3af48e8f52e34d90b395893845ed4, type: 3}
