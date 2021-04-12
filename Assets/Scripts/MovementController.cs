@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.UI;
 
 /// <summary>
 ///             V 6.0
@@ -75,6 +74,7 @@ public class MovementController : MonoBehaviour
     private Vector3 dir = Vector3.zero;
     private float fallForce = 1.5f;
     private float charge = 3.0f;
+    private Vector3 upMovement = Vector3.zero;
 
     private void Start ()
     {
@@ -88,8 +88,8 @@ public class MovementController : MonoBehaviour
 
     private void Update ()
     {
-        Dash();
         Movement();
+        Dash();
         CameraRotation();
 
         //dash recharge
@@ -101,7 +101,6 @@ public class MovementController : MonoBehaviour
 
     private void Recharge ()
     {
-        //dashSlider.value = charge;
         //put visual here
 
         charge += (dashVar.dashRechargeRate * 0.1f) * Time.deltaTime;
@@ -119,7 +118,7 @@ public class MovementController : MonoBehaviour
 
         #region Dash from input
         //dash
-        if (Input.GetKeyDown(dashVar.dashKey) && Time.time > nextDash && charge >= 1.0f)
+        if (Input.GetKeyDown(dashVar.dashKey) && Time.time > nextDash && charge >= 1.0f && newDir.sqrMagnitude > 0.1f)
         {
             nextDash = Time.time + dashVar.dashRate;
 
@@ -144,9 +143,10 @@ public class MovementController : MonoBehaviour
     private void AdditionalPositioning(Vector3 pos)
     {
         float step = dashVar.dashSpeed * Time.deltaTime;
-        float dist = Vector3.Distance(transform.position, pos);
+        float dist = Vector3.SqrMagnitude(transform.position - pos); //optimized
+        //float dist = Vector3.Distance(transform.position, pos);
 
-        if (dist > 1f)
+        if (dist > 0.1f)
         {
             transform.position = Vector3.MoveTowards(transform.position, pos, step);
         }
@@ -174,6 +174,20 @@ public class MovementController : MonoBehaviour
     //main movement function
     private void Movement ()
     {
+        //in addition to cc.Move, we add additional transformation after it, good for teleportation
+        if (positioningList.Count != 0)
+        {
+            if (positioningList.Count > 1)
+            {
+                Debug.LogError("Something is wrong, there should not be more than one");
+            }
+
+            cc.enabled = false;
+            verticalVelocity = 0.0f; //reset upforce
+            AdditionalPositioning(positioningList[0]);
+            return;
+        }
+
         //set speed
         //if alwaysRun == true, speed = runSpeed if not do whats right of the colon
         speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
@@ -185,7 +199,7 @@ public class MovementController : MonoBehaviour
         //add axis movement to correct direction
         Vector3 forwardMovement = transform.forward * vertical;
         Vector3 sideMovement = transform.right * horizontal;
-        Vector3 upMovement = transform.up * verticalVelocity;
+        upMovement = transform.up * verticalVelocity;
 
         #region jumping
         //jump key
@@ -195,7 +209,7 @@ public class MovementController : MonoBehaviour
         }
 
         //fall down again
-        if (verticalVelocity > 0)
+        if (verticalVelocity >= 0)
         {
             verticalVelocity -= 25 * Time.deltaTime;
         }
@@ -212,18 +226,6 @@ public class MovementController : MonoBehaviour
 
         upMovement.y -= (fallForce * 9.81f);
         #endregion
-
-        //in addition to cc.Move, we add additional transformation after it, good for teleportation
-        if (positioningList.Count != 0)
-        {
-            if (positioningList.Count > 1)
-            {
-                Debug.LogError("Something is wrong, there should not be more than one");
-            }
-
-            cc.enabled = false;
-            AdditionalPositioning(positioningList[0]);
-        }
 
         //apply movement on character controller
         dir = forwardMovement + sideMovement;
