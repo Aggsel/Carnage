@@ -7,19 +7,26 @@ using UnityEditor;
 public class RoomAsset : ScriptableObject
 {
     [SerializeField] private GameObject roomPrefab = null;
-    [SerializeField] private int doorMask;  //What walls CAN be doors.
+    [HideInInspector] [SerializeField] private RoomManager roomManager = null;
+    [SerializeField] private int doorMask = 0;  //What walls CAN be doors.
 
     public GameObject GetRoom(){
         return roomPrefab;
     }
 
-    //Checks whether or not a mask works with this room configuration.
+    public int GetDoorMask(){
+        return this.doorMask;
+    }
+
+    void OnValidate(){
+        this.roomManager = roomPrefab.GetComponent<RoomManager>();
+        this.doorMask = roomManager.GetDoorMask();
+    }
+
+    //Checks whether or not a mask works with a room configuration.
     //A doormask of -1 means the mask is not taken into account, all masks are compatible.
     //This does not take into account possible rotational symmetry, might be worth implementing in the future.
-    public bool CompatibleDoorMask(int doorMask){
-        if(doorMask == -1)
-            return true;
-
-        return (this.doorMask | doorMask) == this.doorMask;
+    public static bool CompatibleDoorMask(int mask1, int roomConfiguration){
+        return (roomConfiguration | mask1) == roomConfiguration;
     }
 }

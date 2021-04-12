@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LevelManager : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Where in the grid the initial room should spawn.")]
     [SerializeField] private Vector2Int spawnRoomLocation = new Vector2Int(0, 0);
 
+    [Header("Callback")]
+    [Tooltip("Will invoke all of these functions when level generation is complete.")]
+    [SerializeField] UnityEvent OnFinishedGeneration = null;
+
     //Debug
     [Header("Debug Variables")]
     [SerializeField] float itterationOffset = 1.0f;
@@ -40,7 +45,9 @@ public class LevelManager : MonoBehaviour
         roomCounter = 0;
         this.maze = new MazeGenerator(desiredLevelGridSize, seed, maxDepth, spawnRoomLocation);
         this.grid = new RoomManager[desiredLevelGridSize.x, desiredLevelGridSize.y];
+
         PopulateLevel();
+        OnFinishedGeneration.Invoke();
     }
 
     [ContextMenu("Delete Level")]
@@ -51,7 +58,6 @@ public class LevelManager : MonoBehaviour
         }
         instantiatedRooms = new List<RoomManager>();
 
-        //Yikes?
         this.maze = null;
     }
 
@@ -65,7 +71,6 @@ public class LevelManager : MonoBehaviour
             for (int x = 0; x < this.maze.desiredGridSize.x; x++){
                 if(this.maze.grid[x,y].visited){
                     PlaceRoom(new Vector2Int(x,y), this.maze.grid[x,y].depth, this.maze.grid[x,y].doorMask);
-                    // this.grid[x,y].SetDoorMask(this.maze.grid[x,y].doorMask);
                 }  
             } 
         }
@@ -73,7 +78,7 @@ public class LevelManager : MonoBehaviour
 
     //Place room at a given position. doorMask dictates where the doors in the room should be.
     private void PlaceRoom(Vector2Int pos, int depth, int doorMask){
-        Vector3 offset = new Vector3(pos.x * roomSize.x, (float)roomCounter * itterationOffset, pos.y * roomSize.y);
+        Vector3 offset = new Vector3(pos.x * roomSize.x, this.maze.grid[pos.x, pos.y].roomCounter * itterationOffset, pos.y * roomSize.y);
         GameObject roomPrefab = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask);
         GameObject newRoomObject = Instantiate(roomPrefab, transform.position + offset, transform.rotation, transform);
         RoomManager newRoom = newRoomObject.GetComponent<RoomManager>();
@@ -94,6 +99,7 @@ public struct MazeCell{
     public int doorMask;
     public bool visited;
     public int depth;
+    public int roomCounter;
 }
 
 //Recursive backtracker for maze generation.
@@ -158,6 +164,7 @@ public class MazeGenerator{
         grid[pos.x, pos.y].visited = true;
         //Set cell-depth to depth unless already set previously.
         grid[pos.x, pos.y].depth = grid[pos.x, pos.y].depth == 0 ? depth : 0;
+        grid[pos.x, pos.y].roomCounter = grid[pos.x, pos.y].roomCounter == 0 ? roomCount : 0;
         maxDepthReached = maxDepthReached < depth ? depth : maxDepthReached;
 
         //Update actual grid size if we've reached further than before.

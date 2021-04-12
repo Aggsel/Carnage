@@ -761,7 +761,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.745283, g: 0.9534968, b: 1, a: 1}
-  m_Intensity: 1989.4368
+  m_Intensity: 11.936621
   m_Range: 8
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -830,7 +830,7 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 0
   m_AreaLightShape: 0
-  m_Intensity: 25000
+  m_Intensity: 150
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -1063,15 +1063,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f064d18ed4a76eb42b0bd79cea3d3c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomBounds:
-    m_Center: {x: 0, y: -0.25, z: 0}
-    m_Extent: {x: 5, y: 0.25, z: 5}
   gridPosition: {x: 0, y: 0}
   doors:
   - {fileID: 5152117762016537855}
   - {fileID: 6919781792520801040}
   - {fileID: 8919243837505506288}
   - {fileID: 5089350137222806483}
+  roomID: -1
+  depth: -1
 --- !u!1 &3445724331230105270
 GameObject:
   m_ObjectHideFlags: 0
@@ -2190,7 +2189,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4912676677969830756
 Transform:
   m_ObjectHideFlags: 0
