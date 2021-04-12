@@ -7,29 +7,40 @@ public class RoomManager : MonoBehaviour
     [HideInInspector] [SerializeField] public Bounds roomBounds; //Could be used as the room size. Is handled by level manager atm. 
     [HideInInspector] public Vector2Int gridPosition;
     [SerializeField] private Door[] doors;
+    public int roomID = -1; //Serial number for the room. In generation order. 
+    public int depth = -1; //How far from the initial room this room is.
+    [SerializeField] public int doorMask = 0; 
 
-    //Uses the rooms colliders to generate a bounding box, encapsulating the entire room.
-    //This is slow, only for use in editor. Bounding box is then stored in the prefab.
-    [ContextMenu("Get Bounding Box")]
-    private void GetBoundingBox(){
-        Collider[] colliders = GetComponentsInChildren<Collider>();
-        Bounds newBounds = new Bounds(new Vector3(0,0,0), new Vector3(0,0,0));
-        for(int i = 0; i < colliders.Length; i++){
-            newBounds.Encapsulate(colliders[i].bounds);
-        }
-        roomBounds = newBounds;
-    }
-
-    [ContextMenu("Get Doors")]
+    // [ContextMenu("Get Doors")]
     private void GetDoors(){
         this.doors = GetComponentsInChildren<Door>();
+
+        for (int i = 0; i < doors.Length; i++){
+            Vector3 doorRelativePos = (doors[i].transform.position - transform.position).normalized;
+            float angle = Mathf.Atan2(doorRelativePos.x, doorRelativePos.y);
+            Debug.Log(doorRelativePos);
+            Debug.Log(angle);
+        }
     }
 
-    public void SetDoor(int index, bool isDoor){
-        if(this.doors.Length == 0)
-            GetDoors();
-        
-        if(index >= 0 && index < doors.Length)
-            doors[index].SetDoor(isDoor);
+    [ContextMenu("Calculate Door Mask")]
+    private void CalculateDoorMask(){
+        GetDoors();
+    }
+
+    public void SetDoorMask(int mask){
+        int doormask = 0b1;
+        this.doorMask = mask;
+        for (int i = 0; i < this.doors.Length; i++){
+            if((doormask & mask) == doormask)
+                this.doors[i].SetDoor(true);
+            doormask = doormask << 1;
+        }
+    }
+
+    void OnDrawGizmos(){
+        if(this.depth == 0){
+            Gizmos.DrawSphere(transform.position, 1.0f);
+        }
     }
 }

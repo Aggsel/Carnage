@@ -6,17 +6,18 @@ using UnityEditor;
 [CreateAssetMenu(fileName = "New Level", menuName = "Room Generation/Level", order = 1)]
 public class LevelAsset : ScriptableObject
 {    
-    [SerializeField] private GameObject[] rooms = null;
+    [SerializeField] private RoomAsset[] rooms = null;
     [SerializeField] private float[] weights = null;
     private float sumOfWeights;
 
+    //This assumes that are rooms have 4 doors.
     public GameObject GetRandomRoom(){
         sumOfWeights = 0;
         for (int i = 0; i < weights.Length; i++){
             sumOfWeights += weights[i];
         }
         int randomIndex = Random.Range(0, rooms.Length);
-        return rooms[randomIndex];
+        return rooms[randomIndex].GetRoom();
     }
 }
 
