@@ -91,7 +91,10 @@ public class MeleeController : MonoBehaviour
             }
         }
 
-        Debug.Log("CLOSEST: " + hitObj + ", " + temp);
+        if(hitObj != null)
+        {
+            Debug.Log("CLOSEST: " + hitObj + ", " + temp);
+        }
 
         yield return new WaitForSeconds(meleeVar.rate);
         weaponModel.SetActive(true);

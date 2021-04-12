@@ -80,10 +80,6 @@ public class MovementController : MonoBehaviour
     {
         cc = GetComponent<CharacterController>();
         speed = movementVar.runSpeed;
-
-        //DEBUG lock mouse
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void Update ()
