@@ -55,31 +55,38 @@ public class LevelManager : MonoBehaviour
         this.maze = null;
     }
 
+    //Based on the maze, place rooms.
     private void PopulateLevel(){
+        if(this.maze == null)
+            return;
+
         //Should this really access the maze gridsize like this?
         for (int y = 0; y < this.maze.desiredGridSize.y; y++){
             for (int x = 0; x < this.maze.desiredGridSize.x; x++){
                 if(this.maze.grid[x,y].visited){
-                    PlaceRoom(new Vector2Int(x,y), this.maze.grid[x,y].depth, 0);
-                    this.grid[x,y].SetDoorMask(this.maze.grid[x,y].doorMask);
+                    PlaceRoom(new Vector2Int(x,y), this.maze.grid[x,y].depth, this.maze.grid[x,y].doorMask);
+                    // this.grid[x,y].SetDoorMask(this.maze.grid[x,y].doorMask);
                 }  
             } 
         }
     }
 
-    private void PlaceRoom(Vector2Int pos, int depth, int type){
+    //Place room at a given position. doorMask dictates where the doors in the room should be.
+    private void PlaceRoom(Vector2Int pos, int depth, int doorMask){
         Vector3 offset = new Vector3(pos.x * roomSize.x, (float)roomCounter * itterationOffset, pos.y * roomSize.y);
-        GameObject roomPrefab = level.GetRandomRoom();
+        GameObject roomPrefab = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask);
         GameObject newRoomObject = Instantiate(roomPrefab, transform.position + offset, transform.rotation, transform);
         RoomManager newRoom = newRoomObject.GetComponent<RoomManager>();
-        newRoom.gridPosition = new Vector2Int(pos.x, pos.y);
         this.grid[pos.x, pos.y] = newRoom;
 
+        newRoom.SetDoors(doorMask);
+        newRoom.gridPosition = new Vector2Int(pos.x, pos.y);
         newRoom.roomID = roomCounter;
         newRoom.depth = depth;
-        roomCounter++;
         
         instantiatedRooms.Add(newRoom);
+        
+        roomCounter++;
     }
 }
 
@@ -89,6 +96,7 @@ public struct MazeCell{
     public int depth;
 }
 
+//Recursive backtracker for maze generation.
 public class MazeGenerator{
     
     public MazeCell[,] grid;
@@ -120,7 +128,7 @@ public class MazeGenerator{
     private void MazeCrawl(Vector2Int pos, Vector2Int dir, int depth){
         List<Vector2Int> neighbors = GetUnvisitedNeighbors(pos);
         PlaceRoom(pos, depth);
-        DirToDoorMask(pos, dir);
+        AddDoorToMask(pos, dir);
 
         for (int i = 0; i < neighbors.Count; i++){
             int randomIndex = Random.Range(0, neighbors.Count);
@@ -139,8 +147,7 @@ public class MazeGenerator{
 
             Vector2Int newDir = (pos - selectedNeighbor);
             //Place new door as soon as we know in what direction.
-            DirToDoorMask(pos, newDir * -1);
-
+            AddDoorToMask(pos, newDir * -1);
             neighbors.RemoveAt(randomIndex);
             MazeCrawl(selectedNeighbor, newDir, depth + 1);
         }
@@ -158,8 +165,8 @@ public class MazeGenerator{
         actualGridSize.y = pos.y + 1 > actualGridSize.y ? pos.y + 1 : actualGridSize.y;
     }
 
-    private void DirToDoorMask(Vector2Int pos, Vector2Int dir){
-        //Use bit manipulation to additivly add directions to the mask.
+    //Use bit manipulation to additivly add directions to the mask.
+    private void AddDoorToMask(Vector2Int pos, Vector2Int dir){
         if(dir.y > 0)
             grid[pos.x, pos.y].doorMask |= 0b1;
         if(dir.x > 0)
@@ -170,6 +177,7 @@ public class MazeGenerator{
             grid[pos.x, pos.y].doorMask |= 0b1000;
     }
 
+    //Get list of positions of all neigboring cells that have not been visited yet.
     private List<Vector2Int> GetUnvisitedNeighbors(Vector2Int position){
         List<Vector2Int> unvisited = new List<Vector2Int>();
         Vector2Int[] offsets = {new Vector2Int(0,1), new Vector2Int(1,0), new Vector2Int(0,-1), new Vector2Int(-1,0)};

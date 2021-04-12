@@ -10,14 +10,14 @@ public class LevelAsset : ScriptableObject
     [SerializeField] private float[] weights = null;
     private float sumOfWeights;
 
-    //This assumes that are rooms have 4 doors.
-    public GameObject GetRandomRoom(){
-        sumOfWeights = 0;
-        for (int i = 0; i < weights.Length; i++){
-            sumOfWeights += weights[i];
+    //Will return first compatible room for now. No randomness.
+    public GameObject GetRandomRoom(int doorMask = -1){
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            if(rooms[i].CompatibleDoorMask(doorMask))
+                return rooms[i].GetRoom();
         }
-        int randomIndex = Random.Range(0, rooms.Length);
-        return rooms[randomIndex].GetRoom();
+        return rooms[0].GetRoom();
     }
 }
 
