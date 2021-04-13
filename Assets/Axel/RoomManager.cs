@@ -25,7 +25,6 @@ public class RoomManager : MonoBehaviour
         return this.doorMask;
     }
 
-    [ContextMenu("Calculate Door Mask")]
     private void CalculateDoorMask(){
         Door[] doors = GetComponentsInChildren<Door>();
 

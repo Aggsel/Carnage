@@ -151,12 +151,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b74ce8b920ac167449e337e20194335d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 656
+  seed: 517
   level: {fileID: 11400000, guid: 2864d894d87c79c4a8cac96c79922cff, type: 2}
   maxDepth: 100
   roomSize: {x: 10, y: 10}
   desiredLevelGridSize: {x: 8, y: 8}
-  spawnRoomLocation: {x: 0, y: 0}
+  spawnRoomLocation: {x: 3, y: 3}
+  OnFinishedGeneration:
+    m_PersistentCalls:
+      m_Calls: []
   itterationOffset: 0
   instantiatedRooms: []
 --- !u!4 &18552159

@@ -10,38 +10,16 @@ public class LevelAsset : ScriptableObject
     [SerializeField] private int[] weights = null;
     [SerializeField] private float[] normalizedWeights = null;
     [HideInInspector] [SerializeField] private int sumOfWeights;
-    private Dictionary<int, List<RoomAsset>> roomTable = new Dictionary<int, List<RoomAsset>>();    //This not being serialized could be a problem.
     [SerializeField] private List<string> keyList = new List<string>();
 
-    void OnEnable(){
-        BuildRoomTable();
-    }
-
     public GameObject GetRandomRoom(int doorMask = -1){
-        foreach(KeyValuePair<int, List<RoomAsset>> entry in roomTable){
-            if(RoomAsset.CompatibleDoorMask(doorMask, entry.Key)){  //Meaning every room in this dict entry is available.
-                int randomIndex = Random.Range(0, roomTable[entry.Key].Count);
-                return roomTable[entry.Key][randomIndex].GetRoom();
-            }
-        }
-        Debug.Log("Returning the default room...");
-        return rooms[rooms.Length-1].GetRoom();
-    }
-
-    private void BuildRoomTable(){
-        roomTable = new Dictionary<int, List<RoomAsset>>();
+        List<RoomAsset> compatibleRooms = new List<RoomAsset>();
         for (int i = 0; i < rooms.Length; i++){
-            List<RoomAsset> outArr = new List<RoomAsset>();
-            if(roomTable.TryGetValue(rooms[i].GetDoorMask(), out outArr)){
-                outArr.Add(rooms[i]);
-                roomTable[rooms[i].GetDoorMask()] = outArr;
-            }
-            else{
-                outArr = new List<RoomAsset>();
-                outArr.Add(rooms[i]);
-                roomTable.Add(rooms[i].GetDoorMask(), outArr);
-            }
+            if(RoomAsset.CompatibleDoorMask(doorMask, rooms[i].GetDoorMask()))
+                compatibleRooms.Add(rooms[i]);
         }
+        int randomIndex = Random.Range(0, compatibleRooms.Count);
+        return compatibleRooms[randomIndex].GetRoom();
     }
 
     private void OnValidate(){
