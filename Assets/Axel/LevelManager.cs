@@ -13,6 +13,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private LevelAsset level = null;
     [Tooltip("How far away from the start room any room is allowed, e.g. 4 Max Depth means no room is allowed further away than 4 rooms from the start room.")]
     [SerializeField] private int maxDepth = 5;
+    [Tooltip("How many iterations the random door placement should run. More iterations = more doors between branches.")]
+    [SerializeField] private int randomDoorIterations = 10;
 
     [Header("Grid Settings")]
     [Tooltip("Room size in world units.")]
@@ -43,7 +45,7 @@ public class LevelManager : MonoBehaviour
             DeleteLevel();
 
         roomCounter = 0;
-        this.maze = new MazeGenerator(desiredLevelGridSize, seed, maxDepth, spawnRoomLocation);
+        this.maze = new MazeGenerator(desiredLevelGridSize, seed, maxDepth, spawnRoomLocation, randomDoorIterations);
         this.grid = new RoomManager[desiredLevelGridSize.x, desiredLevelGridSize.y];
 
         PopulateLevel();
@@ -113,13 +115,15 @@ public class MazeGenerator{
     private int seed = 0;
     private int maxDepth = 0;
     private int roomCount = 0;
+    private int randomDoorIterations = 0;
 
-    public MazeGenerator(Vector2Int desiredGridSize, int seed, int maxDepth, Vector2Int initPosition){
+    public MazeGenerator(Vector2Int desiredGridSize, int seed, int maxDepth, Vector2Int initPosition, int randomDoorIterations){
         this.grid = new MazeCell[desiredGridSize.x, desiredGridSize.y];
         this.desiredGridSize = desiredGridSize;
         this.seed = seed;
         this.maxDepth = maxDepth;
         this.initPosition = initPosition;
+        this.randomDoorIterations = randomDoorIterations;
         GenerateMaze();
     }
 
@@ -127,6 +131,7 @@ public class MazeGenerator{
         Random.InitState(this.seed);
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
+        PlaceRandomDoors();
         //Maze generation is done
         Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
     }
@@ -156,6 +161,22 @@ public class MazeGenerator{
             AddDoorToMask(pos, newDir * -1);
             neighbors.RemoveAt(randomIndex);
             MazeCrawl(selectedNeighbor, newDir, depth + 1);
+        }
+    }
+
+    private void PlaceRandomDoors(){
+        for (int i = 0; i < randomDoorIterations; i++){
+            Vector2Int randomCoord = new Vector2Int(Random.Range(0, actualGridSize.x), Random.Range(0, actualGridSize.y));
+            if(!grid[randomCoord.x, randomCoord.y].visited)
+                continue;
+            
+            Vector2Int[] offsets = {new Vector2Int(0,1), new Vector2Int(1,0), new Vector2Int(0,-1), new Vector2Int(-1,0)};
+            Vector2Int newCoord = offsets[Random.Range(0, offsets.Length)] + randomCoord;
+            if(newCoord.x >= 0 && newCoord.x < this.desiredGridSize.x && newCoord.y >= 0 && newCoord.y < this.desiredGridSize.y){
+                if(grid[newCoord.x, newCoord.y].visited){
+                    Debug.Log("Adding random door.");
+                }
+            }
         }
     }
 

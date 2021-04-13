@@ -47,6 +47,7 @@ public class LevelAssetEditor : Editor
     SerializedProperty rooms = null;
     SerializedProperty weights = null;
     SerializedProperty normalizedWeights = null;
+    private bool defaultRoomExists = false;
 
     void OnEnable(){
         rooms = serializedObject.FindProperty("rooms");
@@ -77,6 +78,11 @@ public class LevelAssetEditor : Editor
 
         if(weights.arraySize == rooms.arraySize){
             for (int i = 0; i < weights.arraySize; i++){
+                
+                RoomAsset currentAsset = (RoomAsset)rooms.GetArrayElementAtIndex(i).objectReferenceValue; 
+                if(currentAsset.GetDoorMask() == 0b1111)
+                    defaultRoomExists = true;
+
                 EditorGUILayout.BeginHorizontal();
 
                 EditorGUILayout.ObjectField(rooms.GetArrayElementAtIndex(i), GUIContent.none);
@@ -97,6 +103,11 @@ public class LevelAssetEditor : Editor
                 }
                 EditorGUILayout.EndHorizontal();
             }
+        }
+        if(!defaultRoomExists){
+            GUIStyle textStyle = EditorStyles.label;
+            textStyle.wordWrap = true;
+            EditorGUILayout.LabelField("No room in this list can have doors on all sides.\nThis is not recommended! \nConsider adding at least one room that can have doors on all four sides.", textStyle);
         }
         serializedObject.ApplyModifiedProperties();
     }
