@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 /// <summary>
-///             V 5.0
-///             Made by Carl in Carl branch lmao
-///             2021-04-02
+///             V 6.0
+///             Made by Carl
+///             2021-04-08
 /// </summary>
 public class MovementController : MonoBehaviour
 {
@@ -41,14 +42,21 @@ public class MovementController : MonoBehaviour
     [Serializable]
     public struct DashVariables
     {
+        [Tooltip("The key which is used to trigger the dash")]
+        public KeyCode dashKey;
         [Tooltip("Dude, the length of the dash..")]
         public float dashLength;
         [Tooltip("How fast the dash is")]
         public float dashSpeed;
         [Tooltip("Cooldown of the dash, higher number means a longer wait between dashes")]
         public float dashRate;
+        [Tooltip("How fast the dash charges increases / recharges")]
+        public float dashRechargeRate;
     }
     #endregion
+
+    [Tooltip("Dont touch")]
+    [SerializeField] private Transform cam = null;
 
     [SerializeField] private MovementVariables movementVar = new MovementVariables();
     [SerializeField] private CameraVariables cameraVar = new CameraVariables();
@@ -66,6 +74,7 @@ public class MovementController : MonoBehaviour
     private List<Vector3> positioningList = new List<Vector3>();
     private Vector3 dir = Vector3.zero;
     private float fallForce = 1.5f;
+    private float charge = 3.0f;
 
     private void Start ()
     {
@@ -82,6 +91,21 @@ public class MovementController : MonoBehaviour
         Dash();
         Movement();
         CameraRotation();
+
+        //dash recharge
+        if (charge < 3.0f)
+        {
+            Recharge();
+        }
+    }
+
+    private void Recharge ()
+    {
+        //dashSlider.value = charge;
+        //put visual here
+
+        charge += (dashVar.dashRechargeRate * 0.1f) * Time.deltaTime;
+        charge = Mathf.Clamp(charge, 0.0f, 3.0f);
     }
 
     private void Dash ()
@@ -93,9 +117,9 @@ public class MovementController : MonoBehaviour
 
         Debug.DrawRay(ray.origin, ray.direction * (dashVar.dashLength / 2), Color.green);
 
-        #region RightClick-Dash (for testing only)
-        //dash with RightClick
-        if (Input.GetMouseButtonDown(1) && Time.time > nextDash)
+        #region Dash from input
+        //dash
+        if (Input.GetKeyDown(dashVar.dashKey) && Time.time > nextDash && charge >= 1.0f)
         {
             nextDash = Time.time + dashVar.dashRate;
 
@@ -109,37 +133,9 @@ public class MovementController : MonoBehaviour
                 positioningList.Add(new Vector3(hit.point.x - newDir.x * cc.radius, transform.position.y, hit.point.z - newDir.z * cc.radius));
             }
 
+            charge -= 1.0f;
             lastPress = Time.time;
         }
-        #endregion
-
-        #region dubbleclickShift-Dash
-        //dash with dubblepress of SHIFT
-        /*if (Time.time > nextDash)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                float timeLastPress = Time.time - lastPress;
-
-                if (timeLastPress <= 0.5f)
-                {
-                    nextDash = Time.time + dashRate;
-
-                    if (!Physics.Raycast(ray, out hit, dashLength))
-                    {
-                        positioningList.Add(transform.position + (ray.direction * dashLength));
-                    }
-                    else
-                    {
-                        //TODO: we can always fix the instant dash by using smoothmovement instead
-                        //TODO: here we have to check the rotation of the raycast whether we are looking up or down
-                        positioningList.Add(new Vector3(hit.point.x - cc.radius, transform.position.y, hit.point.z - cc.radius));
-                    }
-                }
-                
-                lastPress = Time.time;
-            }
-        }*/
         #endregion
     }
     
@@ -171,8 +167,8 @@ public class MovementController : MonoBehaviour
         //Make sure to clamp ROTATION around mouseX to restrict looking up
         //apply rotation to camera AND player to move in the direction player is looking
         mouseX = Mathf.Clamp(mouseX, cameraVar.minX, cameraVar.maxX);
-        Camera.main.transform.eulerAngles = new Vector3(-mouseX, mouseY, 0);
-        transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+        cam.eulerAngles = new Vector3(-mouseX, mouseY, 0);
+        transform.eulerAngles = new Vector3(0, cam.eulerAngles.y, 0);
     }
 
     //main movement function
@@ -243,7 +239,7 @@ public class MovementController : MonoBehaviour
     //DEBUG velocity & FPS
     private void OnGUI ()
     {
-        //GUI.Label(new Rect(10, 30, 100, 50), fallForce.ToString());
+        GUI.Label(new Rect(10, 30, 100, 50), charge.ToString("F2"));
         GUI.Label(new Rect(10, 10, 100, 50), cc.velocity.magnitude.ToString());
         GUI.Label(new Rect(Screen.width - 40, 10, 70, 50), (1.0f / Time.smoothDeltaTime).ToString("F2"));
     }
