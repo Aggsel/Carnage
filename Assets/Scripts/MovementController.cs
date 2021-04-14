@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-/// <summary>
-///             V 6.0
-///             Made by Carl
-///             2021-04-08
-/// </summary>
 public class MovementController : MonoBehaviour
 {
     //Variable structs good for organization in the editor
@@ -25,6 +20,8 @@ public class MovementController : MonoBehaviour
         public float jumpForce;
         [Tooltip("The acceleration of the players speed when falling")]
         public float fallAcceleration;
+        [Tooltip("Additional time or leeway the player has to jump after stepping of a platform")]
+        public float jumpLeeway;
     }
 
     [Serializable]
@@ -77,6 +74,7 @@ public class MovementController : MonoBehaviour
     private float charge = 3.0f;
     private Vector3 upMovement = Vector3.zero;
     private bool invertedControls = false;
+    private float groundedTimer = 0.0f;
 
     private void Start ()
     {
@@ -225,8 +223,19 @@ public class MovementController : MonoBehaviour
         upMovement = transform.up * verticalVelocity;
 
         #region jumping
+        //jump leeway
+        if(cc.isGrounded && groundedTimer < movementVar.jumpLeeway)
+        {
+            groundedTimer += Time.deltaTime;
+        }
+
+        if(!cc.isGrounded && groundedTimer > 0.0f)
+        {
+            groundedTimer -= Time.deltaTime;
+        }
+
         //jump key
-        if (Input.GetKeyDown(KeyCode.Space) && cc.isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && groundedTimer > 0.0f)
         {
             verticalVelocity = movementVar.jumpForce;
         }
