@@ -5,10 +5,10 @@ using UnityEngine.Events;
 
 public class RoomManager : MonoBehaviour
 {
-    [HideInInspector] public Vector2Int gridPosition;
-    [HideInInspector] public int roomID = -1; //Serial number for the room. In generation order. 
-    [HideInInspector] public int depth = -1; //How far from the initial room this room is.
-    [HideInInspector] public float normalizedDepth = 0.0f;
+    [HideInInspector] private Vector2Int gridPosition;
+    [HideInInspector] private int roomID = -1; //Serial number for the room. In generation order. 
+    [HideInInspector] private int depth = -1; //How far from the initial room this room is.
+    [HideInInspector] private float normalizedDepth = 0.0f;
     [HideInInspector] [SerializeField] private DoorPlacer[] doorPlacers = new DoorPlacer[4];
     [HideInInspector] [SerializeField] private List<Door> doors = new List<Door>();
     [HideInInspector] [SerializeField] private RoomAsset roomAsset;
@@ -29,7 +29,7 @@ public class RoomManager : MonoBehaviour
 
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoom(){
-        float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.difficultyRange, roomAsset.randomness);
+        float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
         this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
         int enemyCount = waveHandler.Start();
 
@@ -48,6 +48,13 @@ public class RoomManager : MonoBehaviour
             if(doors[i] != null)
                 doors[i].OpenDoor(open);
         }
+    }
+
+    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f){
+        this.gridPosition = gridPos;
+        this.roomID = roomID;
+        this.depth = depth;
+        this.normalizedDepth = normalizedDepth;
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
@@ -101,7 +108,7 @@ public class RoomManager : MonoBehaviour
     }
 
     //Will draw a sphere at the spawn/initial room.
-    void OnDrawGizmos(){
+    private void OnDrawGizmos(){
         if(this.depth == 0){
             Gizmos.DrawSphere(transform.position, 1.0f);
         }

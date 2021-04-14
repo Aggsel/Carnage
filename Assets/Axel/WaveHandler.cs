@@ -18,10 +18,10 @@ public class WaveHandler
         this.roomDifficulty = difficulty;
 
         for (int i = 0; i < spawnPoints.Count; i++){
-            spawnPoints[i].waveHandler = this;
+            spawnPoints[i].SetWaveHandler(this);
         }
     }
-
+    
     public void ReportDeath(EnemySpawnPoint point){
         activeSpawnPoints.Remove(point);
 
@@ -42,7 +42,7 @@ public class WaveHandler
 
         //First spawn all garanteed spawns.
         for (int i = 0; i < spawnPoints.Count; i++){
-            if(spawnPoints[i].guaranteedSpawn){
+            if(spawnPoints[i].IsGuaranteedSpawn()){
                 spawnPoints[i].SpawnRandomEnemy();
                 activeSpawnPoints.Add(spawnPoints[i]);
                 guaranteedEnemyCount++;
@@ -52,7 +52,7 @@ public class WaveHandler
         //Then randomize the rest.
         for (int i = 0; i < spawnPoints.Count; i++){
             //We've already spawned this one.
-            if(spawnPoints[i].guaranteedSpawn)
+            if(spawnPoints[i].IsGuaranteedSpawn())
                 continue;
 
             accumulatedDifficulty += spawnPoints[i].SpawnRandomEnemy();

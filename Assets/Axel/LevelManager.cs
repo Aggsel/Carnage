@@ -26,11 +26,11 @@ public class LevelManager : MonoBehaviour
 
     [Header("Callback")]
     [Tooltip("Will invoke all of these functions when level generation is complete.")]
-    [SerializeField] UnityEvent OnFinishedGeneration = null;
+    [SerializeField] private UnityEvent OnFinishedGeneration = null;
 
     //Debug
     [Header("Debug Variables")]
-    [SerializeField] float itterationOffset = 1.0f;
+    [SerializeField] private float itterationOffset = 1.0f;
 
     //Hidden variables
     [HideInInspector] [SerializeField] private List<RoomManager> instantiatedRooms = new List<RoomManager>();
@@ -93,32 +93,29 @@ public class LevelManager : MonoBehaviour
 
         newRoom.SetDoors(doorMask);
         newRoom.SetRoomAsset(roomAsset);
-        newRoom.gridPosition = new Vector2Int(pos.x, pos.y);
-        newRoom.roomID = roomCounter;
-        newRoom.depth = depth;
-        newRoom.normalizedDepth = depth / (float)this.maze.maxDepthReached;
-        
+        float normalizedDepth = depth / (float)this.maze.maxDepthReached;
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth);
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
     }
 }
 
-public struct MazeCell{
-    public int doorMask;
-    public bool visited;
-    public int depth;
-    public int roomCounter;
+internal struct MazeCell{
+    internal int doorMask;
+    internal bool visited;
+    internal int depth;
+    internal int roomCounter;
 }
 
 //Recursive backtracker for maze generation.
-public class MazeGenerator{
+internal class MazeGenerator{
     
-    public MazeCell[,] grid;
-    public Vector2Int desiredGridSize;  //How large of an area the algorithm is allowed to explore.
-    public Vector2Int actualGridSize;  //After generation, this will be how large the level actually is.
+    internal MazeCell[,] grid;
+    internal Vector2Int desiredGridSize;  //How large of an area the algorithm is allowed to explore.
+    internal Vector2Int actualGridSize;  //After generation, this will be how large the level actually is.
     private Vector2Int initPosition;
-    public int maxDepthReached = 0;
+    internal int maxDepthReached = 0;
     private int seed = 0;
     private int maxDepth = 0;
     private int roomCount = 0;

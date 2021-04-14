@@ -14,9 +14,16 @@ public class RoomAsset : ScriptableObject
     [Tooltip(@"How the difficulty changes depending on where in the level this room spawns. 
     First value is if the room is at the begining of the level, second if it is at the end. 
     Difficulty will linearly scale throughout the level.")]
-    [SerializeField] public Vector2 difficultyRange = new Vector2();
+    [SerializeField] private Vector2 difficultyRange = new Vector2();
     [Tooltip("How much the difficulty is allowed to differ from the linearly scaled value above.")]
-    [SerializeField] public float randomness = 0.0f;
+    [SerializeField] private float randomness = 0.0f;
+
+    void OnValidate(){
+        if(roomPrefab != null){
+            this.roomManager = roomPrefab.GetComponent<RoomManager>();
+            this.doorMask = roomManager.GetDoorMask();
+        }
+    }
 
     public GameObject GetRoom(){
         return roomPrefab;
@@ -26,11 +33,12 @@ public class RoomAsset : ScriptableObject
         return this.doorMask;
     }
 
-    void OnValidate(){
-        if(roomPrefab != null){
-            this.roomManager = roomPrefab.GetComponent<RoomManager>();
-            this.doorMask = roomManager.GetDoorMask();
-        }
+    public Vector2 GetDifficultyRange(){
+        return this.difficultyRange;
+    }
+
+    public float GetRandomness(){
+        return this.randomness;
     }
 
     //Checks whether or not a mask works with a room configuration.

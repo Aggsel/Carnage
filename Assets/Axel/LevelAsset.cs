@@ -41,7 +41,7 @@ public class LevelAsset : ScriptableObject
 #if (UNITY_EDITOR)
 [CustomEditor(typeof(LevelAsset))]
 [CanEditMultipleObjects]
-public class LevelAssetEditor : Editor 
+internal class LevelAssetEditor : Editor 
 {
     SerializedProperty rooms = null;
     SerializedProperty weights = null;

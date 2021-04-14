@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
+    [Tooltip("Enemy prefab")]
     [SerializeField] private List<GameObject> availableEnemies = new List<GameObject>();
     private List<EnemyBase> spawnedEnemies = new List<EnemyBase>();
-    public WaveHandler waveHandler;
+    private WaveHandler waveHandler;
 
     [Tooltip("Will guarantee that this enemy spawns upon entering the room. The difficulty that this enemy adds to the room will not be taken into account.")]
-    [SerializeField] public bool guaranteedSpawn;
+    [SerializeField] private bool guaranteedSpawn = false;
 
     //Spawn random enemy and return how much that enemy
     //contributed to the difficulty score of the room.
@@ -19,7 +20,7 @@ public class EnemySpawnPoint : MonoBehaviour
         randomEnemy = Instantiate(randomEnemy, transform);
 
         EnemyBase enemy = randomEnemy.GetComponent<EnemyBase>();
-        enemy.parentSpawn = this;
+        enemy.SetParentSpawn(this);
         spawnedEnemies.Add(enemy);
 
         //TODO: Return difficulty score.
@@ -32,6 +33,14 @@ public class EnemySpawnPoint : MonoBehaviour
             waveHandler.ReportDeath(this);
         }
 
+    }
+
+    public void SetWaveHandler(WaveHandler waveHandler){
+        this.waveHandler = waveHandler;
+    }
+
+    public bool IsGuaranteedSpawn(){
+        return this.guaranteedSpawn;
     }
 
     private bool AreAllEnemiesDead(){
