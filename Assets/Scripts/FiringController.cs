@@ -9,7 +9,7 @@ public class FiringController : MonoBehaviour
     
     [SerializeField] private Camera bulletCam = null;
     [SerializeField] private GameObject hitEffect = null;
-    [SerializeField] private GameObject overheatBar = null;
+    [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
     private int bitmask;
     private AttributeController attributeInstance;
@@ -42,15 +42,16 @@ public class FiringController : MonoBehaviour
 
     void FireWeapon()
     {
+        float accMultiplier = overheatObject.GetComponent<OverheatScript>().heatValue / attributeInstance.weaponAttributesResultant.heatMaximum;
         //accuracy applied
         Vector3 direction = bulletCam.transform.forward;
-        direction.x += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy, attributeInstance.weaponAttributesResultant.accuracy);
-        direction.y += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy, attributeInstance.weaponAttributesResultant.accuracy);
-        direction.z += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy, attributeInstance.weaponAttributesResultant.accuracy);
+        direction.x += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
+        direction.y += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
+        direction.z += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         RaycastHit bulletHit;
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
         {
-            //draw line      
+            //draw line
             Debug.DrawLine(bulletCam.transform.position, bulletHit.point, Color.green, 1.5f);
             TargetScript target = bulletHit.transform.GetComponent<TargetScript>();
             if(target != null)
@@ -61,7 +62,7 @@ public class FiringController : MonoBehaviour
             Destroy(impact, 2f);
         }
 
-        overheatBar.GetComponent<OverheatScript>().Heat(attributeInstance.weaponAttributesResultant.heatGeneration);
+        overheatObject.GetComponent<OverheatScript>().Heat(attributeInstance.weaponAttributesResultant.heatGeneration);
 
     }
 

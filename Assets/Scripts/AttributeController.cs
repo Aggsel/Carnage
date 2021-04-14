@@ -45,11 +45,20 @@ public class Buff
 {
     public string stat;
     public float increment;
+    public string statTwo;
+    public float incrementTwo;
 
     public Buff(string theStat, float value)
     {
         stat = theStat;
         increment = value;
+    }
+    public Buff(string firstStat, string secondStat, float firstValue, float secondValue)
+    {
+        stat = firstStat;
+        statTwo = secondStat;
+        increment = firstValue;
+        incrementTwo = secondValue;
     }
 }
 
@@ -74,6 +83,15 @@ public class AttributeController : MonoBehaviour
         return item;
     }
 
+    public Buff AddBuff(string stat, string secondStat, float increment, float secondIncrement)
+    {
+        Buff newBuff = new Buff(stat, secondStat, increment, secondIncrement);
+        buffList.Add(newBuff);
+        int number = buffList.Count;
+        Buff item = buffList[number - 1];
+        Recalculate();
+        return item;
+    }
 
     public void RemoveBuff(Buff objectRef)
     {
@@ -117,6 +135,42 @@ public class AttributeController : MonoBehaviour
                     weaponAttributesResultant.accuracy += accuracyDiff;
                     break;
 
+            }
+
+            if(item.statTwo != null)
+            {
+                switch (item.statTwo.Trim().ToLower())
+                {
+                    case "damage":
+                        float damageDiff = weaponAttributesBase.damage * item.incrementTwo - weaponAttributesBase.damage;
+                        weaponAttributesResultant.damage += damageDiff;
+                        break;
+                    case "firerate":
+                        float firerateDiff = weaponAttributesBase.fireRate * item.incrementTwo - weaponAttributesBase.fireRate;
+                        weaponAttributesResultant.fireRate += firerateDiff;
+                        break;
+                    case "heatgeneration":
+                        float heatgenerationDiff = weaponAttributesBase.heatGeneration * item.incrementTwo - weaponAttributesBase.heatGeneration;
+                        weaponAttributesResultant.heatGeneration += heatgenerationDiff;
+                        break;
+                    case "heatmaximum":
+                        float heatmaximumDiff = weaponAttributesBase.heatMaximum * item.incrementTwo - weaponAttributesBase.heatMaximum;
+                        weaponAttributesResultant.heatMaximum += heatmaximumDiff;
+                        break;
+                    case "coolinginitialize":
+                        float coolinginitializeDiff = weaponAttributesBase.coolingIntialize * item.incrementTwo - weaponAttributesBase.coolingIntialize;
+                        weaponAttributesResultant.coolingInitialize += coolinginitializeDiff;
+                        break;
+                    case "coolingrate":
+                        float coolingrateDiff = weaponAttributesBase.coolingRate * item.incrementTwo - weaponAttributesBase.coolingRate;
+                        weaponAttributesResultant.coolingRate += coolingrateDiff;
+                        break;
+                    case "accuracy":
+                        float accuracyDiff = weaponAttributesBase.accuracy * item.incrementTwo - weaponAttributesBase.accuracy;
+                        weaponAttributesResultant.accuracy += accuracyDiff;
+                        break;
+
+                }
             }
         }
     }

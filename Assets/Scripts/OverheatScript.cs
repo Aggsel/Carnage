@@ -7,13 +7,12 @@ public class OverheatScript : MonoBehaviour
 {
     [SerializeField] private GameObject player = null;
     [SerializeField] private AttributeController attributeInstance;
-    private float heatValue = 0f;
+    public float heatValue = 0f;
     private float heatMax = 0f;
     private bool recentlyHeated = false;
     private bool overheated = false;
     private float coolingInitializeRemaining = 0f;
     private Buff buffReferenceOne = null;
-    private Buff buffReferenceTwo = null;
 
 
     void Start()
@@ -43,7 +42,6 @@ public class OverheatScript : MonoBehaviour
                 player.GetComponent<FiringController>().Cooled();
                 overheated = false;
                 attributeInstance.RemoveBuff(buffReferenceOne);
-                attributeInstance.RemoveBuff(buffReferenceTwo);
             }
         }
 
@@ -54,8 +52,7 @@ public class OverheatScript : MonoBehaviour
         heatValue += heatGeneration;
         if(heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
         {
-            buffReferenceOne = attributeInstance.AddBuff("coolinginitialize", 1.75f);
-            buffReferenceTwo = attributeInstance.AddBuff("coolingrate", 1.5f);
+            buffReferenceOne = attributeInstance.AddBuff("coolinginitialize", "coolingrate", 1.75f, 1.5f);
             player.GetComponent<FiringController>().Overheated();
             overheated = true;
         }
