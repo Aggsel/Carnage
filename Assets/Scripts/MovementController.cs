@@ -56,6 +56,7 @@ public class MovementController : MonoBehaviour
 
     [Tooltip("Dont touch")]
     [SerializeField] private Transform cam = null;
+    [SerializeField] private LayerMask wallLayermask = 0;
 
     [SerializeField] private MovementVariables movementVar = new MovementVariables();
     [SerializeField] private CameraVariables cameraVar = new CameraVariables();
@@ -75,6 +76,7 @@ public class MovementController : MonoBehaviour
     private float fallForce = 1.5f;
     private float charge = 3.0f;
     private Vector3 upMovement = Vector3.zero;
+    private bool invertedControls = false;
 
     private void Start ()
     {
@@ -82,6 +84,23 @@ public class MovementController : MonoBehaviour
         speed = movementVar.runSpeed;
     }
 
+    //Options
+    public void SetSensitivity (float value)
+    {
+        cameraVar.mouseSensitivity = value;
+    }
+
+    public float GetSensitivity ()
+    {
+        return cameraVar.mouseSensitivity;
+    }
+
+    public void SetInvertedControls ()
+    {
+        invertedControls = !invertedControls;
+    }
+
+    //script
     private void Update ()
     {
         Movement();
@@ -110,7 +129,7 @@ public class MovementController : MonoBehaviour
         Vector3 newDir = new Vector3(dir.x, 0, dir.z).normalized;
         Ray ray = new Ray(transform.position, newDir);
 
-        Debug.DrawRay(ray.origin, ray.direction * (dashVar.dashLength / 2), Color.green);
+        //Debug.DrawRay(ray.origin, ray.direction * (dashVar.dashLength / 2), Color.green);
 
         #region Dash from input
         //dash
@@ -157,8 +176,16 @@ public class MovementController : MonoBehaviour
     private void CameraRotation()
     {
         //add input from mouseX and mouseY axis to variables
-        mouseY += Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
-        mouseX += Input.GetAxis("Mouse Y") * (cameraVar.mouseSensitivity * 0.1f);
+        if(!invertedControls)
+        {
+            mouseY += Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
+            mouseX += Input.GetAxis("Mouse Y") * (cameraVar.mouseSensitivity * 0.1f);
+        }
+        else
+        {
+            mouseY -= Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
+            mouseX -= Input.GetAxis("Mouse Y") * (cameraVar.mouseSensitivity * 0.1f);
+        }
 
         //Make sure to clamp ROTATION around mouseX to restrict looking up
         //apply rotation to camera AND player to move in the direction player is looking
@@ -230,6 +257,29 @@ public class MovementController : MonoBehaviour
         {
             dir = Vector3.ClampMagnitude(dir, speed);
             dir += upMovement;
+
+            //fix wallriding glitch
+            RaycastHit hit;
+            Vector3 newDir = new Vector3(dir.x, 0, dir.z).normalized;
+            Ray ray = new Ray(transform.position, newDir);
+
+            Debug.DrawRay(ray.origin, ray.direction * 1.0f, Color.green);
+
+            if (Physics.Raycast(ray, out hit, 1.0f, wallLayermask))
+            {
+                if(dir.z > 0.0f || dir.z < 0.0f)
+                {
+                    //Debug.Log("Stop wallgrinding bitch on z");
+                    dir = new Vector3(dir.x, dir.y, 0.0f);
+                }
+                
+                if(dir.x > 0.0f || dir.x < 0.0f)
+                {
+                    //Debug.Log("Stop wallgrinding bitch on x");
+                    dir = new Vector3(0.0f, dir.y, dir.z);
+                }
+            }
+
             cc.Move(dir * Time.deltaTime);
         }
     }

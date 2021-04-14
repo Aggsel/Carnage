@@ -52,13 +52,13 @@ public class WeaponSway : MonoBehaviour
     //weaponsway from camera rotation (changes rotation)
     private void CameraSway ()
     {
-        mouseY = Input.GetAxis("Mouse X") * (rotationAmount * 0.1f);
-        mouseX = Input.GetAxis("Mouse Y") * (rotationAmount * 0.1f);
+        mouseY = Input.GetAxis("Mouse X") * (0.05f * mc.GetSensitivity()) * (rotationAmount * 0.1f);
+        mouseX = Input.GetAxis("Mouse Y") * (0.05f * mc.GetSensitivity()) * (rotationAmount * 0.1f);
 
         desiredRot = new Vector3(mouseX, mouseY, right.x * -100f);
         Quaternion dest = Quaternion.Euler(startRot + desiredRot);
 
-        float step = rotationSpeed * Time.deltaTime;
+        float step = (0.05f * mc.GetSensitivity()) * rotationSpeed * Time.deltaTime;
         transform.localRotation = Quaternion.Slerp(transform.localRotation, dest, step);
     }
 
@@ -68,13 +68,13 @@ public class WeaponSway : MonoBehaviour
         var horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
 
-        right = horizontal * Vector3.right * (movementAmount * 0.1f);
-        forward = vertical * Vector3.forward * (movementAmount * 0.1f);
-        up = mc.cc.velocity.y * Vector3.up * (movementAmount * 0.02f);
+        right = horizontal * Vector3.right * (0.1f * mc.GetSensitivity()) * (movementAmount * 0.1f);
+        forward = vertical * Vector3.forward * (0.1f * mc.GetSensitivity()) * (movementAmount * 0.1f);
+        up = mc.cc.velocity.y * Vector3.up * (0.1f * mc.GetSensitivity()) * (movementAmount * 0.02f);
 
         desiredPos = right + forward + up;
 
-        float step = movementSpeed * Time.deltaTime;
+        float step = (0.1f * mc.GetSensitivity()) * movementSpeed * Time.deltaTime;
         transform.localPosition = Vector3.MoveTowards(transform.localPosition, desiredPos + startPos, step);
     }
 }

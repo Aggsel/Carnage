@@ -48,6 +48,29 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 8
     min: 2
+--- !u!114 &-5518458011200904744
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da5ab44aadfb1804db5fd470983ac1b8, type: 3}
+  m_Name: LiftGammaGain
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  lift:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  gamma:
+    m_OverrideState: 1
+    m_Value: {x: 0.9923907, y: 0.994323, z: 1, w: -0.25}
+  gain:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
 --- !u!114 &-2176426081244441620
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -172,6 +195,7 @@ MonoBehaviour:
   - {fileID: -7089757308646879465}
   - {fileID: -2176426081244441620}
   - {fileID: 6747971895265028430}
+  - {fileID: -5518458011200904744}
 --- !u!114 &448115243408767295
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -196,10 +220,10 @@ MonoBehaviour:
     m_Value: 0
   exposure:
     m_OverrideState: 1
-    m_Value: 12
-  multiplier:
-    m_OverrideState: 0
     m_Value: 1
+  multiplier:
+    m_OverrideState: 1
+    m_Value: 132.69
     min: 0
   upperHemisphereLuxValue:
     m_OverrideState: 0
@@ -209,7 +233,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: {x: 0.18750611, y: 0.29181966, z: 0.5}
   desiredLuxValue:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 20000
   updateMode:
     m_OverrideState: 1
@@ -296,7 +320,7 @@ MonoBehaviour:
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.215
+    m_Value: 0.409
     min: 0
     max: 1
   scatter:
@@ -365,7 +389,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   mode:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   meteringMode:
     m_OverrideState: 0
     m_Value: 2
@@ -373,8 +397,8 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 1
   fixedExposure:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 2
   compensation:
     m_OverrideState: 0
     m_Value: 0
