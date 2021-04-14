@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemySpawnPoint : MonoBehaviour
 {
     [SerializeField] private List<GameObject> availableEnemies = new List<GameObject>();
-    private List<AutoKill> spawnedEnemies = new List<AutoKill>();
+    private List<EnemyBase> spawnedEnemies = new List<EnemyBase>();
     public WaveHandler waveHandler;
 
     [Tooltip("Will guarantee that this enemy spawns upon entering the room. The difficulty that this enemy adds to the room will not be taken into account.")]
@@ -18,7 +18,7 @@ public class EnemySpawnPoint : MonoBehaviour
         GameObject randomEnemy = availableEnemies[randIndex];
         randomEnemy = Instantiate(randomEnemy, transform);
 
-        AutoKill enemy = randomEnemy.GetComponent<AutoKill>();
+        EnemyBase enemy = randomEnemy.GetComponent<EnemyBase>();
         enemy.parentSpawn = this;
         spawnedEnemies.Add(enemy);
 
@@ -26,12 +26,12 @@ public class EnemySpawnPoint : MonoBehaviour
         return 1.0f;
     }
 
-    public void ReportDeath(AutoKill enemy){
+    public void ReportDeath(EnemyBase enemy){
         spawnedEnemies.Remove(enemy);
         if(AreAllEnemiesDead()){
             waveHandler.ReportDeath(this);
         }
-            
+
     }
 
     private bool AreAllEnemiesDead(){
