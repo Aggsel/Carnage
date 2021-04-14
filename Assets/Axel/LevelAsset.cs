@@ -10,16 +10,15 @@ public class LevelAsset : ScriptableObject
     [SerializeField] private int[] weights = null;
     [SerializeField] private float[] normalizedWeights = null;
     [HideInInspector] [SerializeField] private int sumOfWeights;
-    [SerializeField] private List<string> keyList = new List<string>();
 
-    public GameObject GetRandomRoom(int doorMask = -1){
+    public RoomAsset GetRandomRoom(int doorMask = -1){
         List<RoomAsset> compatibleRooms = new List<RoomAsset>();
         for (int i = 0; i < rooms.Length; i++){
             if(RoomAsset.CompatibleDoorMask(doorMask, rooms[i].GetDoorMask()))
                 compatibleRooms.Add(rooms[i]);
         }
         int randomIndex = Random.Range(0, compatibleRooms.Count);
-        return compatibleRooms[randomIndex].GetRoom();
+        return compatibleRooms[randomIndex];
     }
 
     private void OnValidate(){

@@ -1,21 +1,73 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RoomManager : MonoBehaviour
 {
     [HideInInspector] public Vector2Int gridPosition;
-    [SerializeField] private Door[] doors = new Door[4];
-    public int roomID = -1; //Serial number for the room. In generation order. 
-    public int depth = -1; //How far from the initial room this room is.
+    [HideInInspector] public int roomID = -1; //Serial number for the room. In generation order. 
+    [HideInInspector] public int depth = -1; //How far from the initial room this room is.
+    [HideInInspector] public float normalizedDepth = 0.0f;
+    [HideInInspector] [SerializeField] private DoorPlacer[] doorPlacers = new DoorPlacer[4];
+    [HideInInspector] [SerializeField] private List<Door> doors = new List<Door>();
+    [HideInInspector] [SerializeField] private RoomAsset roomAsset;
+    private UnityEvent onCombatComplete = new UnityEvent();
     private int doorMask = 0;
+    
+    [Header("Enemy Spawning")]
+    [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
+    [SerializeField] WaveHandler waveHandler;
+
+    void OnEnable(){
+        onCombatComplete.AddListener(OnCombatComplete);
+    }
+
+    void OnDisable(){
+        onCombatComplete.RemoveListener(OnCombatComplete);
+    }
+
+    //Is called whenever a room is entered for the first time.
+    public void OnEnterRoom(){
+        float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.difficultyRange, roomAsset.randomness);
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
+        int enemyCount = waveHandler.Start();
+
+        //Close door if any enemies were spawned.
+        if(enemyCount > 0)
+            OpenDoors(false);
+    }
+
+    //Is called whenever wavehandler has finished the last wave.
+    private void OnCombatComplete(){
+        OpenDoors(true);
+    }
+
+    private void OpenDoors(bool open){
+        for (int i = 0; i < doors.Count; i++){
+            if(doors[i] != null)
+                doors[i].OpenDoor(open);
+        }
+    }
+
+    public void SetRoomAsset(RoomAsset roomAsset){
+        this.roomAsset = roomAsset;
+    }
+
+    public void AddDoor(Door newDoor){
+        this.doors.Add(newDoor);
+    }
 
     //From a given mask, will turn correct walls into doors.
     public void SetDoors(int mask){
         int tempMask = mask;
-        for (int i = 0; i < doors.Length; i++){
+
+        for (int i = 0; i < doorPlacers.Length; i++){
+            if(doorPlacers[i] == null)
+                CalculateDoorMask();
+
             if((tempMask & 0b1) == 1)
-                doors[i].SetDoor(true);
+                doorPlacers[i].SetDoor(true, this);
             tempMask = tempMask >> 1;
         }
     }
@@ -26,10 +78,10 @@ public class RoomManager : MonoBehaviour
     }
 
     private void CalculateDoorMask(){
-        Door[] doors = GetComponentsInChildren<Door>();
+        this.doorPlacers = GetComponentsInChildren<DoorPlacer>();
 
-        for (int i = 0; i < doors.Length; i++){
-            Vector3 doorRelativePos = (doors[i].transform.position - transform.position).normalized;
+        for (int i = 0; i < doorPlacers.Length; i++){
+            Vector3 doorRelativePos = (doorPlacers[i].transform.position - transform.position).normalized;
             float angle = Mathf.Round(Quaternion.FromToRotation(Vector3.forward, doorRelativePos).eulerAngles.y / 90);
             switch (angle){
                 case 0:

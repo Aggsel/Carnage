@@ -38,6 +38,10 @@ public class LevelManager : MonoBehaviour
     private int roomCounter = 0;
     private RoomManager[,] grid;
 
+    void Start(){
+        GenerateLevel();
+    }
+
     [ContextMenu("Generate Level")]
     private void GenerateLevel(){
         //If we already have generated a level, make sure we remove the first one first.
@@ -69,8 +73,8 @@ public class LevelManager : MonoBehaviour
             return;
 
         //Should this really access the maze gridsize like this?
-        for (int y = 0; y < this.maze.desiredGridSize.y; y++){
-            for (int x = 0; x < this.maze.desiredGridSize.x; x++){
+        for (int y = 0; y < this.maze.actualGridSize.y; y++){
+            for (int x = 0; x < this.maze.actualGridSize.x; x++){
                 if(this.maze.grid[x,y].visited){
                     PlaceRoom(new Vector2Int(x,y), this.maze.grid[x,y].depth, this.maze.grid[x,y].doorMask);
                 }  
@@ -81,15 +85,18 @@ public class LevelManager : MonoBehaviour
     //Place room at a given position. doorMask dictates where the doors in the room should be.
     private void PlaceRoom(Vector2Int pos, int depth, int doorMask){
         Vector3 offset = new Vector3(pos.x * roomSize.x, this.maze.grid[pos.x, pos.y].roomCounter * itterationOffset, pos.y * roomSize.y);
-        GameObject roomPrefab = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask);
+        RoomAsset roomAsset = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask);
+        GameObject roomPrefab = roomAsset.GetRoom();
         GameObject newRoomObject = Instantiate(roomPrefab, transform.position + offset, transform.rotation, transform);
         RoomManager newRoom = newRoomObject.GetComponent<RoomManager>();
         this.grid[pos.x, pos.y] = newRoom;
 
         newRoom.SetDoors(doorMask);
+        newRoom.SetRoomAsset(roomAsset);
         newRoom.gridPosition = new Vector2Int(pos.x, pos.y);
         newRoom.roomID = roomCounter;
         newRoom.depth = depth;
+        newRoom.normalizedDepth = depth / (float)this.maze.maxDepthReached;
         
         instantiatedRooms.Add(newRoom);
         
@@ -109,7 +116,7 @@ public class MazeGenerator{
     
     public MazeCell[,] grid;
     public Vector2Int desiredGridSize;  //How large of an area the algorithm is allowed to explore.
-    private Vector2Int actualGridSize;  //After generation, this will be how large the level actually is.
+    public Vector2Int actualGridSize;  //After generation, this will be how large the level actually is.
     private Vector2Int initPosition;
     public int maxDepthReached = 0;
     private int seed = 0;
@@ -171,10 +178,12 @@ public class MazeGenerator{
                 continue;
             
             Vector2Int[] offsets = {new Vector2Int(0,1), new Vector2Int(1,0), new Vector2Int(0,-1), new Vector2Int(-1,0)};
-            Vector2Int newCoord = offsets[Random.Range(0, offsets.Length)] + randomCoord;
+            Vector2Int randDir = offsets[Random.Range(0, offsets.Length)];
+            Vector2Int newCoord = randDir + randomCoord;
             if(newCoord.x >= 0 && newCoord.x < this.desiredGridSize.x && newCoord.y >= 0 && newCoord.y < this.desiredGridSize.y){
                 if(grid[newCoord.x, newCoord.y].visited){
-                    Debug.Log("Adding random door.");
+                    AddDoorToMask(randomCoord, randDir);
+                    AddDoorToMask(newCoord, randDir * -1);
                 }
             }
         }
