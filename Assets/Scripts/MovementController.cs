@@ -83,10 +83,8 @@ public class MovementController : MonoBehaviour
     private Vector3 upMovement = Vector3.zero;
     private bool invertedControls = false;
     private float groundedTimer = 0.0f;
-
-    //test 
-    public float vertical = 0.0f;
-    public float horizontal = 0.0f;
+    private float vertical = 0.0f;
+    private float horizontal = 0.0f;
 
     private void Start ()
     {
