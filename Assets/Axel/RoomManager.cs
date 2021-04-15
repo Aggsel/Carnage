@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum RoomType{
+    COMMON,
+    INITIAL,
+    FINAL
+}
+
 public class RoomManager : MonoBehaviour
 {
     [HideInInspector] private Vector2Int gridPosition;

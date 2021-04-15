@@ -6,17 +6,43 @@ using UnityEditor;
 [CreateAssetMenu(fileName = "New Level", menuName = "Room Generation/Level", order = 1)]
 public class LevelAsset : ScriptableObject
 {    
-    [SerializeField] private RoomAsset[] rooms = null;
-    [SerializeField] private int[] weights = null;
-    [SerializeField] private float[] normalizedWeights = null;
+    [Tooltip("What rooms this level can contain.")]
+    [SerializeField] private RoomAsset[] rooms = new RoomAsset[1];
+    [Tooltip("A random room from this list will be used as the initial/spawn room for this level.")]
+    [SerializeField] private RoomAsset[] initialRoomPool = new RoomAsset[1];
+    [Tooltip("A random room from this list will be used as the final room for this level.")]
+    [SerializeField] private RoomAsset[] finalRoomPool = new RoomAsset[1];
+
+    [SerializeField] private int[] weights = new int[1];
+    [SerializeField] private float[] normalizedWeights = new float[1];
     [HideInInspector] [SerializeField] private int sumOfWeights;
 
-    public RoomAsset GetRandomRoom(int doorMask = -1){
+    public RoomAsset GetRandomRoom(int doorMask = -1, RoomType type = RoomType.COMMON){
         List<RoomAsset> compatibleRooms = new List<RoomAsset>();
-        for (int i = 0; i < rooms.Length; i++){
-            if(RoomAsset.CompatibleDoorMask(doorMask, rooms[i].GetDoorMask()))
-                compatibleRooms.Add(rooms[i]);
+
+        switch(type){
+            case RoomType.COMMON:
+                for (int i = 0; i < rooms.Length; i++){
+                    if(RoomAsset.CompatibleDoorMask(doorMask, rooms[i].GetDoorMask()))
+                        compatibleRooms.Add(rooms[i]);
+                }
+                break;
+
+            case RoomType.FINAL:
+                for (int i = 0; i < finalRoomPool.Length; i++){
+                    if(RoomAsset.CompatibleDoorMask(doorMask, finalRoomPool[i].GetDoorMask()))
+                        compatibleRooms.Add(finalRoomPool[i]);
+                }
+                break;
+            
+            case RoomType.INITIAL:
+                for (int i = 0; i < initialRoomPool.Length; i++){
+                    if(RoomAsset.CompatibleDoorMask(doorMask, initialRoomPool[i].GetDoorMask()))
+                        compatibleRooms.Add(initialRoomPool[i]);
+                }
+                break;
         }
+
         int randomIndex = Random.Range(0, compatibleRooms.Count);
         return compatibleRooms[randomIndex];
     }
@@ -79,7 +105,7 @@ internal class LevelAssetEditor : Editor
             for (int i = 0; i < weights.arraySize; i++){
                 
                 RoomAsset currentAsset = (RoomAsset)rooms.GetArrayElementAtIndex(i).objectReferenceValue; 
-                if(currentAsset.GetDoorMask() == 0b1111)
+                if(currentAsset?.GetDoorMask() == 0b1111)
                     defaultRoomExists = true;
 
                 EditorGUILayout.BeginHorizontal();

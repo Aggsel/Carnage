@@ -84,8 +84,10 @@ public class LevelManager : MonoBehaviour
 
     //Place room at a given position. doorMask dictates where the doors in the room should be.
     private void PlaceRoom(Vector2Int pos, int depth, int doorMask){
+        float normalizedDepth = depth / (float)this.maze.maxDepthReached;
+        
         Vector3 offset = new Vector3(pos.x * roomSize.x, this.maze.grid[pos.x, pos.y].roomCounter * itterationOffset, pos.y * roomSize.y);
-        RoomAsset roomAsset = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask);
+        RoomAsset roomAsset = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask, this.maze.grid[pos.x, pos.y].type);
         GameObject roomPrefab = roomAsset.GetRoom();
         GameObject newRoomObject = Instantiate(roomPrefab, transform.position + offset, transform.rotation, transform);
         RoomManager newRoom = newRoomObject.GetComponent<RoomManager>();
@@ -93,7 +95,6 @@ public class LevelManager : MonoBehaviour
 
         newRoom.SetDoors(doorMask);
         newRoom.SetRoomAsset(roomAsset);
-        float normalizedDepth = depth / (float)this.maze.maxDepthReached;
         newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth);
         instantiatedRooms.Add(newRoom);
         
@@ -106,6 +107,7 @@ internal struct MazeCell{
     internal bool visited;
     internal int depth;
     internal int roomCounter;
+    internal RoomType type;
 }
 
 //Recursive backtracker for maze generation.
@@ -136,6 +138,7 @@ internal class MazeGenerator{
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
         PlaceRandomDoors();
+        PlaceSpecialRooms();
         //Maze generation is done
         Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
     }
@@ -184,6 +187,29 @@ internal class MazeGenerator{
                 }
             }
         }
+    }
+
+    private void PlaceSpecialRooms(){
+        PlaceInitialRoom();
+        PlaceFinalRoom();
+    }
+
+    private void PlaceFinalRoom(){
+        List<Vector2Int> potentialFinals = new List<Vector2Int>();
+        for (int y = 0; y < this.actualGridSize.y; y++){
+            for (int x = 0; x < this.actualGridSize.x; x++){
+                if(this.grid[x,y].depth == maxDepthReached && this.grid[x,y].type == RoomType.COMMON)
+                    potentialFinals.Add(new Vector2Int(x,y));
+            }
+        }
+        int randomIndex = Random.Range(0, potentialFinals.Count);
+        Vector2Int randomPos = potentialFinals[randomIndex];
+
+        this.grid[randomPos.x, randomPos.y].type = RoomType.FINAL;
+    }
+
+    private void PlaceInitialRoom(){
+        this.grid[this.initPosition.x, this.initPosition.y].type = RoomType.INITIAL;
     }
 
     private void PlaceRoom(Vector2Int pos, int depth){
