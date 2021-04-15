@@ -125,7 +125,7 @@ public class PauseController : MonoBehaviour
 
     private void SetKeycode (int keyIndex, KeyCode key)
     {
-        Debug.Log("Change " + keyIndex + " to " + key.ToString());
+        //Debug.Log("Change " + keyIndex + " to " + key.ToString());
         keydown = false;
 
         switch (keyIndex)
@@ -211,6 +211,7 @@ public class PauseController : MonoBehaviour
     
     #region keybinds
     //keybindings
+    //optimize this break out to one extra func that does the repeating stuff
     public void ChangeButton_Dash(TextMeshProUGUI text)
     {
         if(!changingKey)
