@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Itemstat", menuName = "Itemstat")]
 public class Itemstats : ScriptableObject
 {
+
     public string itemName;
     public string itemDescription;
     public string attribute;

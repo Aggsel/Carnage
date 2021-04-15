@@ -20,6 +20,8 @@ public struct WeaponAttributes
     public float coolingRate;
     [Tooltip("The general disarray of accuracy whilst shooting, ramps up as the player shoots consecutively, higher value means a more innacuracte standard for the weapon")]
     public float accuracy;
+    [Tooltip("The flat amount of health the player has")]
+    public float health;
 }
 
 [Serializable]
@@ -39,6 +41,8 @@ public struct WeaponAttributesResultant
     public float coolingRate;
     [Tooltip("Base accuracy with all additive buffs applied")]
     public float accuracy;
+    [Tooltip("Base health with buffs applied")]
+    public float health;
 }
 
 public class Buff
@@ -134,6 +138,10 @@ public class AttributeController : MonoBehaviour
                     float accuracyDiff = weaponAttributesBase.accuracy * item.increment - weaponAttributesBase.accuracy;
                     weaponAttributesResultant.accuracy += accuracyDiff;
                     break;
+                case "health":
+                    float healthDiff = weaponAttributesBase.health * item.increment - weaponAttributesBase.health;
+                    weaponAttributesResultant.health += healthDiff;
+                    break;
 
             }
 
@@ -169,6 +177,10 @@ public class AttributeController : MonoBehaviour
                         float accuracyDiff = weaponAttributesBase.accuracy * item.incrementTwo - weaponAttributesBase.accuracy;
                         weaponAttributesResultant.accuracy += accuracyDiff;
                         break;
+                    case "health":
+                        float healthDiff = weaponAttributesBase.health * item.incrementTwo - weaponAttributesBase.health;
+                        weaponAttributesResultant.health += healthDiff;
+                        break;
 
                 }
             }
@@ -184,5 +196,6 @@ public class AttributeController : MonoBehaviour
         weaponAttributesResultant.coolingInitialize = weaponAttributesBase.coolingIntialize;
         weaponAttributesResultant.coolingRate = weaponAttributesBase.coolingRate;
         weaponAttributesResultant.accuracy = weaponAttributesBase.accuracy;
+        weaponAttributesResultant.health = weaponAttributesBase.health;
     }
 }

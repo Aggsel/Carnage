@@ -5,14 +5,29 @@ using UnityEngine;
 public class Pickupable : MonoBehaviour
 {
     public Itemstats itemstat;
-    public GameObject player;
+    private GameObject player;
     private AttributeController attributeInstance;
     private float rotationSpeed = 50f;
+
+    //When the mouse hovers over the GameObject, it turns to this color (red)
+    Color m_MouseOverColor = Color.red;
+
+    //This stores the GameObject’s original color
+    Color m_OriginalColor;
+
+    //Get the GameObject’s mesh renderer to access the GameObject’s material and color
+    MeshRenderer m_Renderer;
 
 
     void Start()
     {
+        player = GameObject.Find("Player");
         attributeInstance = player.GetComponent<AttributeController>();
+
+        //Fetch the mesh renderer component from the GameObject
+        m_Renderer = GetComponent<MeshRenderer>();
+        //Fetch the original color of the GameObject
+        m_OriginalColor = m_Renderer.material.color;
     }
 
     void Update()
@@ -35,5 +50,16 @@ public class Pickupable : MonoBehaviour
 
         Destroy(this.gameObject);
         
+    }
+
+    void OnMouseOver()
+    {
+        Debug.Log("This is " + itemstat.itemName);
+        m_Renderer.material.color = m_MouseOverColor;
+    }
+
+    void OnMouseExit()
+    {
+        m_Renderer.material.color = m_OriginalColor;
     }
 }
