@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9213630547790897067}
   - component: {fileID: 5968386620516767796}
+  - component: {fileID: 6316284733599867350}
   m_Layer: 0
   m_Name: DoorPlacer
   m_TagString: Untagged
@@ -46,8 +47,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorObject: {fileID: 5710077041434182761, guid: f1109a02afcb9ca4dbea218db8022dda,
     type: 3}
-  wallObject: {fileID: 919132149155446097, guid: 5b9d4c6554a21ad4aa41aa718536301d,
+  wallObject: {fileID: 5740628429539139443, guid: 66b43f670c0c6a940acaaa8daa437385,
     type: 3}
+--- !u!65 &6316284733599867350
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349648862041743235}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 4, z: 0.5}
+  m_Center: {x: 0, y: 2, z: 1}
 --- !u!1 &5448216112940395573
 GameObject:
   m_ObjectHideFlags: 0

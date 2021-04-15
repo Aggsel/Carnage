@@ -355,12 +355,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b74ce8b920ac167449e337e20194335d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seed: 44
+  seed: 250
   level: {fileID: 11400000, guid: 2864d894d87c79c4a8cac96c79922cff, type: 2}
-  maxDepth: 20
+  maxDepth: 16
   randomDoorIterations: 10
-  roomSize: {x: 10, y: 10}
-  desiredLevelGridSize: {x: 10, y: 10}
+  roomSize: {x: 24, y: 24}
+  desiredLevelGridSize: {x: 4, y: 4}
   spawnRoomLocation: {x: 0, y: 0}
   OnFinishedGeneration:
     m_PersistentCalls:
@@ -379,7 +379,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &272269143
 GameObject:
@@ -1058,7 +1058,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1207688785 stripped
 GameObject:
@@ -1129,7 +1129,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1469554998
 PrefabInstance:
@@ -1291,7 +1291,7 @@ PrefabInstance:
     - target: {fileID: 4158066617535324497, guid: d07a2373103de454984b393284a88386,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4158066617535324497, guid: d07a2373103de454984b393284a88386,
         type: 3}
@@ -1462,7 +1462,7 @@ Transform:
   - {fileID: 1612923501}
   - {fileID: 838826894}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1787434736
 GameObject:
@@ -1774,5 +1774,5 @@ Transform:
   - {fileID: 70154142}
   - {fileID: 272269144}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
