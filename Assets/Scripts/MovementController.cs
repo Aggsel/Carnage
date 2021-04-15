@@ -38,8 +38,6 @@ public class MovementController : MonoBehaviour
     [Serializable]
     public struct DashVariables
     {
-        [Tooltip("The key which is used to trigger the dash")]
-        public KeyCode dashKey;
         [Tooltip("Dude, the length of the dash..")]
         public float dashLength;
         [Tooltip("How fast the dash is")]
@@ -53,6 +51,7 @@ public class MovementController : MonoBehaviour
 
     [Tooltip("Dont touch")]
     [SerializeField] private Transform cam = null;
+    [Tooltip("Dont touch")]
     [SerializeField] private LayerMask wallLayermask = 0;
 
     [SerializeField] private MovementVariables movementVar = new MovementVariables();
@@ -60,8 +59,17 @@ public class MovementController : MonoBehaviour
     [SerializeField] private DashVariables dashVar = new DashVariables();
 
     [HideInInspector]
-    public CharacterController cc = null;
+    public CharacterController cc = null; //change to get function
 
+    //keys
+    private KeyCode moveForward;
+    private KeyCode moveBack;
+    private KeyCode moveRight;
+    private KeyCode moveLeft;
+    private KeyCode dash;
+    private KeyCode jump;
+
+    //private
     private float speed = 0f;
     private float mouseX = 0f;
     private float mouseY = 0f;
@@ -76,12 +84,17 @@ public class MovementController : MonoBehaviour
     private bool invertedControls = false;
     private float groundedTimer = 0.0f;
 
+    //test 
+    public float vertical = 0.0f;
+    public float horizontal = 0.0f;
+
     private void Start ()
     {
         cc = GetComponent<CharacterController>();
         speed = movementVar.runSpeed;
     }
 
+    #region options related
     //Options
     public void SetSensitivity (float value)
     {
@@ -97,6 +110,28 @@ public class MovementController : MonoBehaviour
     {
         invertedControls = !invertedControls;
     }
+
+    //update keybinds
+    private void ReadKeybinds (KeyBindAsignments keys)
+    {
+        moveForward = keys.moveForward;
+        moveBack = keys.moveBack;
+        moveRight = keys.moveRight;
+        moveLeft = keys.moveLeft;
+        dash = keys.dash;
+        jump = keys.jump;
+    }
+
+    private void Awake ()
+    {
+        PauseController.updateKeysFunction += ReadKeybinds;
+    }
+
+    private void OnDestroy ()
+    {
+        PauseController.updateKeysFunction -= ReadKeybinds;
+    }
+    #endregion
 
     //script
     private void Update ()
@@ -131,7 +166,7 @@ public class MovementController : MonoBehaviour
 
         #region Dash from input
         //dash
-        if (Input.GetKeyDown(dashVar.dashKey) && Time.time > nextDash && charge >= 1.0f && newDir.sqrMagnitude > 0.1f)
+        if (Input.GetKeyDown(dash) && Time.time > nextDash && charge >= 1.0f && newDir.sqrMagnitude > 0.1f)
         {
             nextDash = Time.time + dashVar.dashRate;
 
@@ -210,16 +245,50 @@ public class MovementController : MonoBehaviour
         }
 
         //set speed
-        //if alwaysRun == true, speed = runSpeed if not do whats right of the colon
         speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
 
         //read movement direction from axis
-        var horizontal = Input.GetAxis("Horizontal") * speed;
-        var vertical = Input.GetAxis("Vertical") * speed;
+        //var horizontal = Input.GetAxis("Horizontal") * speed;
+        //var vertical = Input.GetAxis("Vertical") * speed;
+
+        //new movement
+        if(Input.GetKey(moveForward) || Input.GetKey(moveBack))
+        {
+            if (Input.GetKey(moveForward))
+            {
+                vertical = Mathf.Clamp(vertical + 1, -1.0f, 1.0f);
+            }
+
+            if (Input.GetKey(moveBack))
+            {
+                vertical = Mathf.Clamp(vertical - 1, -1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            vertical = 0.0f;
+        }
+
+        if (Input.GetKey(moveRight) || Input.GetKey(moveLeft))
+        {
+            if (Input.GetKey(moveRight))
+            {
+                horizontal = Mathf.Clamp(horizontal + 1, -1.0f, 1.0f);
+            }
+
+            if (Input.GetKey(moveLeft))
+            {
+                horizontal = Mathf.Clamp(horizontal - 1, -1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            horizontal = 0.0f;
+        }
 
         //add axis movement to correct direction
-        Vector3 forwardMovement = transform.forward * vertical;
-        Vector3 sideMovement = transform.right * horizontal;
+        Vector3 forwardMovement = transform.forward * vertical * speed;
+        Vector3 sideMovement = transform.right * horizontal * speed;
         upMovement = transform.up * verticalVelocity;
 
         #region jumping
@@ -235,7 +304,7 @@ public class MovementController : MonoBehaviour
         }
 
         //jump key
-        if (Input.GetKeyDown(KeyCode.Space) && groundedTimer > 0.0f)
+        if (Input.GetKeyDown(jump) && groundedTimer > 0.0f)
         {
             verticalVelocity = movementVar.jumpForce;
         }
