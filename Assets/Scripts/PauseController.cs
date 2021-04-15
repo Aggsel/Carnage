@@ -41,6 +41,7 @@ public struct KeyBindAsignments
     public KeyCode pause; //5
     public KeyCode jump; //6
     public KeyCode melee; //7
+    public KeyCode action; //8
 }
 #endregion
 
@@ -153,6 +154,9 @@ public class PauseController : MonoBehaviour
                 break;
             case 7: //melee
                 keybindAssignments.melee = key;
+                break;
+            case 8: //action
+                keybindAssignments.action = key;
                 break;
             default:
                 break;
@@ -321,6 +325,20 @@ public class PauseController : MonoBehaviour
 
             changingKey = true;
             changingKeyIndex = 7;
+        }
+    }
+
+    public void ChangeButton_Action (TextMeshProUGUI text)
+    {
+        if (!changingKey)
+        {
+            LockCursor(false);
+
+            changingKeyText = text;
+            changingKeyText.text = "None";
+
+            changingKey = true;
+            changingKeyIndex = 8;
         }
     }
     #endregion
