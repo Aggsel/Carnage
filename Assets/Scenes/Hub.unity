@@ -2292,6 +2292,7 @@ MonoBehaviour:
   - {fileID: 1496373247}
   - {fileID: 1496373246}
   - {fileID: 1496373248}
+  - {fileID: 1374399264}
   menuObjects:
   - {fileID: 170821676}
   - {fileID: 924554593}
@@ -3295,7 +3296,7 @@ GameObject:
   - component: {fileID: 430098300}
   - component: {fileID: 430098299}
   - component: {fileID: 430098298}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8370,6 +8371,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1374399264 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3027235087629037938, guid: ee42cd0995687dc41b167485bca81841,
+    type: 3}
+  m_PrefabInstance: {fileID: 1496373245}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 587c4a29234d7ad499936acdb98c1bbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1381280324
 GameObject:
   m_ObjectHideFlags: 0
@@ -8945,6 +8958,16 @@ PrefabInstance:
       propertyPath: movementVar.jumpLeeway
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105676, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: scripts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105676, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: scripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 1496373248}
     - target: {fileID: 3027235087010105677, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: defaultAmount

@@ -52,13 +52,15 @@ public class WeaponSway : MonoBehaviour
     //weaponsway from camera rotation (changes rotation)
     private void CameraSway ()
     {
-        mouseY = Input.GetAxis("Mouse X") * Mathf.Log(mc.GetSensitivity(), mc.GetSensitivity() / 2.0f) * (rotationAmount * 0.1f);
-        mouseX = Input.GetAxis("Mouse Y") * Mathf.Log(mc.GetSensitivity(), mc.GetSensitivity() / 2.0f) * (rotationAmount * 0.1f);
+        mouseY = Input.GetAxis("Mouse X") * Mathf.Log10(mc.GetSensitivity() * 0.25f) * (rotationAmount * 0.1f);
+        mouseX = Input.GetAxis("Mouse Y") * Mathf.Log10(mc.GetSensitivity() * 0.25f) * (rotationAmount * 0.1f);
 
         desiredRot = new Vector3(mouseX, mouseY, right.x * -100f);
         Quaternion dest = Quaternion.Euler(startRot + desiredRot);
 
-        float step = Mathf.Log(mc.GetSensitivity(), mc.GetSensitivity() / 0.2f) * 0.5f * rotationSpeed * Time.deltaTime;
+        //old
+        //float step = Mathf.Log(mc.GetSensitivity(), mc.GetSensitivity() * Mathf.Pow(1.5f, 3.0f)) * 0.5f * rotationSpeed * Time.deltaTime;
+        float step = (1.0f - Mathf.Log10(mc.GetSensitivity()) * 2.0f * rotationSpeed * Time.deltaTime) * 0.1f;
         transform.localRotation = Quaternion.Slerp(transform.localRotation, dest, step);
     }
 

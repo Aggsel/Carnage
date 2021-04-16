@@ -207,14 +207,14 @@ public class MovementController : MonoBehaviour
     private void CameraRotation()
     {
         //add input from mouseX and mouseY axis to variables
-        if(!invertedControls)
+        mouseY += Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
+
+        if (!invertedControls)
         {
-            mouseY += Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
             mouseX += Input.GetAxis("Mouse Y") * (cameraVar.mouseSensitivity * 0.1f);
         }
         else
         {
-            mouseY -= Input.GetAxis("Mouse X") * (cameraVar.mouseSensitivity * 0.1f);
             mouseX -= Input.GetAxis("Mouse Y") * (cameraVar.mouseSensitivity * 0.1f);
         }
 
@@ -244,10 +244,6 @@ public class MovementController : MonoBehaviour
 
         //set speed
         speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
-
-        //read movement direction from axis
-        //var horizontal = Input.GetAxis("Horizontal") * speed;
-        //var vertical = Input.GetAxis("Vertical") * speed;
 
         //new movement
         if(Input.GetKey(moveForward) || Input.GetKey(moveBack))
@@ -334,27 +330,37 @@ public class MovementController : MonoBehaviour
             dir = Vector3.ClampMagnitude(dir, speed);
             dir += upMovement;
 
-            //fix wallriding glitch
-            RaycastHit hit;
-            Vector3 newDir = new Vector3(dir.x, 0, dir.z).normalized;
-            Ray ray = new Ray(transform.position, newDir);
+            #region wallriding glitch fix
+            RaycastHit rightHit;
+            Vector3 rightDir = new Vector3(0, 0, dir.z).normalized;
+            Ray rightRay = new Ray(transform.position, rightDir);
 
-            Debug.DrawRay(ray.origin, ray.direction * 1.0f, Color.green);
+            //Debug.DrawRay(rightRay.origin, rightRay.direction * 1.0f, Color.green);
 
-            if (Physics.Raycast(ray, out hit, 1.0f, wallLayermask))
+            if (Physics.Raycast(rightRay, out rightHit, 1.0f, wallLayermask))
             {
                 if(dir.z > 0.0f || dir.z < 0.0f)
                 {
-                    //Debug.Log("Stop wallgrinding bitch on z");
+                    //Debug.Log("Stop wallgrinding bitch on side");
                     dir = new Vector3(dir.x, dir.y, 0.0f);
                 }
-                
-                if(dir.x > 0.0f || dir.x < 0.0f)
+            }
+
+            RaycastHit leftHit;
+            Vector3 leftDir = new Vector3(dir.x, 0, 0).normalized;
+            Ray leftRay = new Ray(transform.position, leftDir);
+
+            //Debug.DrawRay(leftRay.origin, leftRay.direction * 1.0f, Color.red);
+
+            if (Physics.Raycast(leftRay, out leftHit, 1.0f, wallLayermask))
+            {
+                if (dir.x > 0.0f || dir.x < 0.0f)
                 {
-                    //Debug.Log("Stop wallgrinding bitch on x");
+                    //Debug.Log("Stop wallgrinding bitch on forward");
                     dir = new Vector3(0.0f, dir.y, dir.z);
                 }
             }
+            #endregion
 
             cc.Move(dir * Time.deltaTime);
         }

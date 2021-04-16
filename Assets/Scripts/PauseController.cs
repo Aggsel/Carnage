@@ -92,6 +92,27 @@ public class PauseController : MonoBehaviour
         {
             UpdatePause(true);
         }
+
+        //change keys for shift
+        if(changingKey)
+        {
+            //hardcode shift
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !keydown)
+            {
+                keydown = true;
+                changingKeycode = KeyCode.LeftShift;
+
+                SetKeycode(changingKeyIndex, changingKeycode);
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightShift) && !keydown)
+            {
+                keydown = true;
+                changingKeycode = KeyCode.RightShift;
+
+                SetKeycode(changingKeyIndex, changingKeycode);
+            }
+        }
     }
 
     //setting & changine keycode
@@ -99,17 +120,10 @@ public class PauseController : MonoBehaviour
     {
         if(changingKey)
         {
+            //all input except shift & alt
             Event e = Event.current;
 
-            /*if(e.type.Equals(EventType.KeyDown) && !keydown)
-            {
-                keydown = true;
-                changingKeycode = e.keyCode;
-
-                SetKeycode(changingKeyIndex, changingKeycode);
-            }*/
-
-            if(e.isKey && !keydown)
+            if (e.isKey && !keydown)
             {
                 keydown = true;
                 changingKeycode = e.keyCode;
