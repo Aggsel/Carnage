@@ -38,11 +38,7 @@ public class InteractionController : MonoBehaviour
             {
                 //u can use loadasync perhaps
                 Debug.Log("Start run");
-
-                if(SceneManager.GetSceneByName("Level1").IsValid()) //axel scene here
-                {
-                    SceneManager.LoadScene("Level1");
-                }
+                SceneManager.LoadScene("Level1");
             }
         }
     }
