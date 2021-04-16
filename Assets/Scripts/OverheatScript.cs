@@ -5,34 +5,24 @@ using UnityEngine.UI;
 
 public class OverheatScript : MonoBehaviour
 {
-    //[SerializeField] private Slider slider = null;
     [SerializeField] private GameObject player = null;
-    [SerializeField] private WeaponAttributes weaponInstance = null;
-    //[SerializeField] private Gradient gradient = null;
-    //[SerializeField] private Image fill = null;
-
-    private float heatValue = 0f;
+    [SerializeField] private AttributeController attributeInstance;
+    public float heatValue = 0f;
     private float heatMax = 0f;
-
     private bool recentlyHeated = false;
     private bool overheated = false;
     private float coolingInitializeRemaining = 0f;
-    private float incrementedCoolingInitialize = 0f;
-    private float incrementedCoolingRate = 0f;
+    private Buff buffReferenceOne = null;
 
 
     void Start()
     {
-        weaponInstance = player.GetComponent<FiringController>().weaponAttributes;
-        heatMax = weaponInstance.heatMaximum;
-        //slider.maxValue = weaponInstance.heatMaximum;
-        //slider.value = 0f;
+        attributeInstance = player.GetComponent<AttributeController>();
     }
 
     void Update()
     {
-        //slider.maxValue = weaponInstance.heatMaximum;
-        heatMax = weaponInstance.heatMaximum;
+        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
         if(recentlyHeated == true)
         {
             coolingInitializeRemaining -= Time.deltaTime;
@@ -43,8 +33,7 @@ public class OverheatScript : MonoBehaviour
         }
         else
         {
-            //slider.value -= weaponInstance.coolingRate * Time.deltaTime;
-            heatValue -= weaponInstance.coolingRate * Time.deltaTime;
+            heatValue -= attributeInstance.weaponAttributesResultant.coolingRate * Time.deltaTime;
             heatValue = Mathf.Clamp(heatValue, 0f, heatMax);
 
 
@@ -52,9 +41,7 @@ public class OverheatScript : MonoBehaviour
             {
                 player.GetComponent<FiringController>().Cooled();
                 overheated = false;
-                weaponInstance.coolingIntializeTime -= incrementedCoolingInitialize;
-                weaponInstance.coolingRate -= incrementedCoolingRate;
-
+                attributeInstance.RemoveBuff(buffReferenceOne);
             }
         }
 
@@ -63,18 +50,14 @@ public class OverheatScript : MonoBehaviour
     public void Heat(float heatGeneration)
     {
         heatValue += heatGeneration;
-        //fill.color = gradient.Evaluate(slider.normalizedValue);
-        if(heatValue >= weaponInstance.heatMaximum)
+        if(heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
         {
-            incrementedCoolingInitialize = weaponInstance.coolingIntializeTime * 1.75f - weaponInstance.coolingIntializeTime;
-            incrementedCoolingRate = weaponInstance.coolingRate * 1.5f - weaponInstance.coolingRate;
-            weaponInstance.coolingIntializeTime += incrementedCoolingInitialize;
-            weaponInstance.coolingRate += incrementedCoolingRate;
+            buffReferenceOne = attributeInstance.AddBuff("coolinginitialize", "coolingrate", 1.75f, 1.5f);
             player.GetComponent<FiringController>().Overheated();
             overheated = true;
         }
         recentlyHeated = true;
-        coolingInitializeRemaining = weaponInstance.coolingIntializeTime;
+        coolingInitializeRemaining = attributeInstance.weaponAttributesResultant.coolingInitialize;
     }
 
     private void OnGUI()
