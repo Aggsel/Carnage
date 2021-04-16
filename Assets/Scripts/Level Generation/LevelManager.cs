@@ -42,6 +42,7 @@ public class LevelManager : MonoBehaviour
 
     void Start(){
         GenerateLevel();
+        // ActivateNeighbors(this.spawnRoomLocation);
     }
 
     [ContextMenu("Generate Level")]
@@ -57,6 +58,7 @@ public class LevelManager : MonoBehaviour
         this.grid = new RoomManager[desiredLevelGridSize.x, desiredLevelGridSize.y];
 
         PopulateLevel();
+        ActivateNeighbors(spawnRoomLocation);
         OnFinishedGeneration.Invoke();
     }
 
@@ -69,6 +71,23 @@ public class LevelManager : MonoBehaviour
         instantiatedRooms = new List<RoomManager>();
 
         this.maze = null;
+    }
+
+    public void ActivateNeighbors(Vector2Int pos){
+        for (int y = 0; y < this.grid.GetLength(1); y++){
+            for (int x = 0; x < this.grid.GetLength(0); x++){
+                this.grid[x,y]?.gameObject.SetActive(false);
+            }
+        }
+
+        for (int y = -1; y < 2; y++){
+            for (int x = -1; x < 2; x++){
+                Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
+                if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
+                    this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
+                }
+            }
+        }
     }
 
     //Based on the maze, place rooms.

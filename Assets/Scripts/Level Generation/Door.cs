@@ -25,8 +25,8 @@ public class Door : MonoBehaviour
         if(doorCollider == null || door == null)
             return;
 
-        if(!open & this.triggerZone != null)
-            this.triggerZone.enabled = false;
+        // if(!open & this.triggerZone != null)
+        //     this.triggerZone.enabled = true;
 
         doorCollider.enabled = !open;
         door.SetActive(!open);
