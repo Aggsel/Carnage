@@ -20,6 +20,7 @@ public class RoomManager : MonoBehaviour
     [HideInInspector] [SerializeField] private RoomAsset roomAsset;
     private UnityEvent onCombatComplete = new UnityEvent();
     private int doorMask = 0;
+    private LevelManager parentLevelManager = null;
     
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -56,11 +57,12 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f){
+    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
+        this.parentLevelManager = newManager;
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){

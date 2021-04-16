@@ -9,6 +9,8 @@ public class LevelManager : MonoBehaviour
     [Header("Generation Attributes")]
     [Tooltip("Seed for the random generation.")]
     [SerializeField] private int seed = 0;
+    [Tooltip("Will ignore the seed above if active.")]
+    [SerializeField] private bool randomizeSeed = false;
     [Tooltip("What prefabs CAN be placed during generation.")]
     [SerializeField] private LevelAsset level = null;
     [Tooltip("How far away from the start room any room is allowed, e.g. 4 Max Depth means no room is allowed further away than 4 rooms from the start room.")]
@@ -49,6 +51,8 @@ public class LevelManager : MonoBehaviour
             DeleteLevel();
 
         roomCounter = 0;
+        
+        int seed = randomizeSeed ? System.Environment.TickCount : this.seed;
         this.maze = new MazeGenerator(desiredLevelGridSize, seed, maxDepth, spawnRoomLocation, randomDoorIterations);
         this.grid = new RoomManager[desiredLevelGridSize.x, desiredLevelGridSize.y];
 
@@ -95,7 +99,7 @@ public class LevelManager : MonoBehaviour
 
         newRoom.SetDoors(doorMask);
         newRoom.SetRoomAsset(roomAsset);
-        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth);
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this);
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
@@ -134,7 +138,7 @@ internal class MazeGenerator{
     }
 
     public void GenerateMaze(){
-        Random.InitState(this.seed);
+            Random.InitState(this.seed);
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
         PlaceRandomDoors();

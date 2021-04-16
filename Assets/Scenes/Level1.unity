@@ -356,6 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: 250
+  randomizeSeed: 1
   level: {fileID: 11400000, guid: 2864d894d87c79c4a8cac96c79922cff, type: 2}
   maxDepth: 16
   randomDoorIterations: 10
@@ -901,6 +902,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 430098296}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!143 &708659156 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 1420478635511701221, guid: d07a2373103de454984b393284a88386,
+    type: 3}
+  m_PrefabInstance: {fileID: 1469554998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &838826893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,6 +1145,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1420478635511701222, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: movementVar.runSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1420478635511701222, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: movementVar.jumpForce
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1420478635511701222, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: movementVar.fallAcceleration
+      value: 2.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1420478635511701222, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: cc
+      value: 
+      objectReference: {fileID: 708659156}
     - target: {fileID: 3474156306952129449, guid: d07a2373103de454984b393284a88386,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

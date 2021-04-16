@@ -6,6 +6,9 @@ public class EnemyBase : MonoBehaviour
 {
     private EnemySpawnPoint parentSpawn;
 
+    public virtual void OnShot(){
+    }
+    
     private void OnDestroy(){
         parentSpawn?.ReportDeath(this);
     }
