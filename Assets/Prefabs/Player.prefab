@@ -936,8 +936,7 @@ GameObject:
   - component: {fileID: 3202284222324870443}
   - component: {fileID: 3027235087010105679}
   - component: {fileID: 3027235087010105678}
-  - component: {fileID: 1496373255}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1023,7 +1022,7 @@ MonoBehaviour:
   bulletCam: {fileID: 3027235086142218614}
   hitEffect: {fileID: 6817321594469807644, guid: 267d378f6915a1545b8a2b2ebb418bcf,
     type: 3}
-  overheatBar: {fileID: 3027235087629037940}
+  overheatObject: {fileID: 3027235087629037940}
   muzzleFlash: {fileID: 685327040004643853}
 --- !u!114 &3027235087010105667
 MonoBehaviour:
@@ -1230,21 +1229,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &1496373255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3027235087010105666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b58c60921c1d98e429d2c642ed420fe6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionLayermask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!1 &3027235087611904551
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,6 +1272,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3027235087629037941}
   - component: {fileID: 3027235087629037938}
+  - component: {fileID: 3115236543131543689}
   m_Layer: 9
   m_Name: weaponSlot
   m_TagString: Untagged
