@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pickupable : MonoBehaviour
 {
-    public Itemstats itemstat;
+    public Itemstat itemstat;
     private GameObject player;
     private AttributeController attributeInstance;
     private float rotationSpeed = 50f;
