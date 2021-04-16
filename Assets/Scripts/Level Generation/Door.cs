@@ -8,7 +8,6 @@ public class Door : MonoBehaviour
     [SerializeField] private UnityEvent onEnterRoom = new UnityEvent();
     [HideInInspector] [SerializeField] private RoomManager parentRoom;
     [SerializeField] private Collider doorCollider = null;
-    [SerializeField] private Collider triggerZone = null;
     [SerializeField] private GameObject door = null;
     private bool isOpen = true;
 
@@ -17,16 +16,13 @@ public class Door : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other){
-        //Check if other is player.
-        parentRoom.OnEnterRoom();
+        if(other.GetComponent<MovementController>() != null)
+            parentRoom.OnEnterRoom();
     }
 
     public void OpenDoor(bool open){
         if(doorCollider == null || door == null)
             return;
-
-        // if(!open & this.triggerZone != null)
-        //     this.triggerZone.enabled = true;
 
         doorCollider.enabled = !open;
         door.SetActive(!open);

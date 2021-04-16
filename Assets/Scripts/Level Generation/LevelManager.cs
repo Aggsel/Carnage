@@ -42,7 +42,6 @@ public class LevelManager : MonoBehaviour
 
     void Start(){
         GenerateLevel();
-        // ActivateNeighbors(this.spawnRoomLocation);
     }
 
     [ContextMenu("Generate Level")]
@@ -197,14 +196,14 @@ internal class MazeGenerator{
     private void PlaceRandomDoors(){
         for (int i = 0; i < randomDoorIterations; i++){
             Vector2Int randomCoord = new Vector2Int(Random.Range(0, actualGridSize.x), Random.Range(0, actualGridSize.y));
-            if(!grid[randomCoord.x, randomCoord.y].visited)
+            if(!grid[randomCoord.x, randomCoord.y].visited || grid[randomCoord.x, randomCoord.y].type == RoomType.FINAL)
                 continue;
             
             Vector2Int[] offsets = {new Vector2Int(0,1), new Vector2Int(1,0), new Vector2Int(0,-1), new Vector2Int(-1,0)};
             Vector2Int randDir = offsets[Random.Range(0, offsets.Length)];
             Vector2Int newCoord = randDir + randomCoord;
             if(newCoord.x >= 0 && newCoord.x < this.desiredGridSize.x && newCoord.y >= 0 && newCoord.y < this.desiredGridSize.y){
-                if(grid[newCoord.x, newCoord.y].visited){
+                if(grid[newCoord.x, newCoord.y].visited || grid[newCoord.x, newCoord.y].type == RoomType.FINAL){
                     AddDoorToMask(randomCoord, randDir);
                     AddDoorToMask(newCoord, randDir * -1);
                 }
