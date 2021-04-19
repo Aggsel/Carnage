@@ -66,7 +66,7 @@ public class FiringController : MonoBehaviour
             {
                 target.TakeDamage(weaponAttributes.damage);
             }
-            bulletHit.transform.GetComponent<EnemyBase>()?.OnShot();
+            bulletHit.transform.GetComponent<EnemyBehavior>()?.OnShot();
             GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
             Destroy(impact, 2f);
         }

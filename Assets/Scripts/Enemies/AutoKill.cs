@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AutoKill : EnemyBase
+public class AutoKill : EnemyBehavior
 {
     [SerializeField] private float timeToKill = 4.0f;
     

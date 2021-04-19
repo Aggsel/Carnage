@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBehavior : MonoBehaviour
 {
     private EnemySpawnPoint parentSpawn;
+    protected EnemyState currentState = null;
+
+    public void SetState(EnemyState newState){
+        currentState?.OnStateExit();
+        this.currentState = newState;
+        currentState.OnStateEnter();
+    }
 
     public virtual void OnShot(){
     }
