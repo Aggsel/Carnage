@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7365665687255662975
+--- !u!1 &8616145571452670022
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7181451354687780504}
-  - component: {fileID: 7041378868942243383}
-  - component: {fileID: 7684886225881208308}
-  - component: {fileID: 4714872010475417144}
-  - component: {fileID: 3077875059793080600}
-  - component: {fileID: 95334537480027424}
+  - component: {fileID: 8215419631087396769}
+  - component: {fileID: 8075705732167309070}
+  - component: {fileID: 8866629011080774861}
+  - component: {fileID: 5819842903262117633}
+  - component: {fileID: 4259389687750565921}
+  - component: {fileID: 1222754874283207705}
   m_Layer: 0
-  m_Name: SuicidalCube
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7181451354687780504
+--- !u!4 &8215419631087396769
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7365665687255662975}
+  m_GameObject: {fileID: 8616145571452670022}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.25, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7041378868942243383
+--- !u!33 &8075705732167309070
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7365665687255662975}
+  m_GameObject: {fileID: 8616145571452670022}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7684886225881208308
+--- !u!23 &8866629011080774861
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7365665687255662975}
+  m_GameObject: {fileID: 8616145571452670022}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -82,34 +82,34 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &4714872010475417144
+--- !u!65 &5819842903262117633
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7365665687255662975}
+  m_GameObject: {fileID: 8616145571452670022}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!195 &3077875059793080600
+--- !u!195 &4259389687750565921
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7365665687255662975}
+  m_GameObject: {fileID: 8616145571452670022}
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 7
+  m_Acceleration: 200
   avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_AngularSpeed: 500
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -117,17 +117,27 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &95334537480027424
+--- !u!114 &1222754874283207705
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7365665687255662975}
+  m_GameObject: {fileID: 8616145571452670022}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34bbf24e344be674fb3ad11614964dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 3077875059793080600}
-  player: {fileID: 0}
+  bloodDecalProjector: {fileID: 1099489180470404072, guid: a634fe900566378439449b167688cb5c,
+    type: 3}
+  agent: {fileID: 0}
+  chaseState:
+    attackRange: 2.5
+    chaseSpeed: 10
+  patrolState:
+    attackRange: 1.5
+    enemyVisionDistance: 30
+    patrolSpeed: 5
+  attackState:
+    attackRange: 1.5

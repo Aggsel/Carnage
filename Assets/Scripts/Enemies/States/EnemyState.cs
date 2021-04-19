@@ -22,7 +22,7 @@ public class EnemyState
         timer += Time.deltaTime;
     }
 
-    public virtual void OnShot(){}
+    public virtual void OnShot(HitObject hit){}
 
     public virtual void OnStateEnter(){
         previousMovementSpeed = agent.speed;

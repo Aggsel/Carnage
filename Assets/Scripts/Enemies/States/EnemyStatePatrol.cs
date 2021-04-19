@@ -37,7 +37,7 @@ public class EnemyStatePatrol : EnemyState
             SetState(behaviour.chaseState);
     }
 
-    public override void OnShot(){
+    public override void OnShot(HitObject hit){
         behaviour.SetState(behaviour.chaseState);
     }
 }

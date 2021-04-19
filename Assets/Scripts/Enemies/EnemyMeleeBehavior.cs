@@ -39,8 +39,10 @@ public class EnemyMeleeBehavior : EnemyBehavior
         return this.agent;
     }
 
-    public override void OnShot(){
-        currentState.OnShot();
+    public override void OnShot(HitObject hit){
+        base.OnShot(hit);
+
+        currentState.OnShot(hit);
         this.health -= 5.0f;
 
         if(CheckDeathCriteria())

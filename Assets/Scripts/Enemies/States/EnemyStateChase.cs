@@ -25,7 +25,7 @@ public class EnemyStateChase : EnemyState
     public override void Update(){
         base.Update();
 
-        Debug.DrawLine(behaviour.transform.position, agent.destination, Color.white);
+        // Debug.DrawLine(behaviour.transform.position, agent.destination, Color.white);
         agent.SetDestination(behaviour.GetTargetTransform().position);
 
         this.timer += Time.deltaTime;
