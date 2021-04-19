@@ -77,7 +77,6 @@ public class MovementController : MonoBehaviour
     private float lastPress = 0f;
     private float nextDash = 0f;
     private List<Vector3> positioningList = new List<Vector3>();
-    private Vector3 dir = Vector3.zero;
     private float fallForce = 1.5f;
     private float charge = 3.0f;
     private Vector3 upMovement = Vector3.zero;
@@ -85,6 +84,11 @@ public class MovementController : MonoBehaviour
     private float groundedTimer = 0.0f;
     private float vertical = 0.0f;
     private float horizontal = 0.0f;
+
+    //test
+    public Vector3 dir = Vector3.zero;
+    public float dot = 0.0f;
+    public float edgeForce = 2.0f;
 
     private void Start ()
     {
@@ -330,39 +334,41 @@ public class MovementController : MonoBehaviour
             dir = Vector3.ClampMagnitude(dir, speed);
             dir += upMovement;
 
-            #region wallriding glitch fix
-            RaycastHit rightHit;
-            Vector3 rightDir = new Vector3(0, 0, dir.z).normalized;
-            Ray rightRay = new Ray(transform.position, rightDir);
+            #region wallriding glitch fix #2
+            /*RaycastHit hit;
+            Ray ray = new Ray(transform.position, Vector3.down);
+            Debug.DrawRay(transform.position, Vector3.down * 2.0f, Color.cyan);
 
-            //Debug.DrawRay(rightRay.origin, rightRay.direction * 1.0f, Color.green);
-
-            if (Physics.Raycast(rightRay, out rightHit, 1.0f, wallLayermask))
+            if(Physics.Raycast(ray, out hit, 2.0f, wallLayermask))
             {
-                if(dir.z > 0.0f || dir.z < 0.0f)
+                dot = Vector3.Dot(hit.normal, Vector3.up);
+
+                if (dot < 1.0f)
                 {
-                    //Debug.Log("Stop wallgrinding bitch on side");
-                    dir = new Vector3(dir.x, dir.y, 0.0f);
+                    
                 }
-            }
-
-            RaycastHit leftHit;
-            Vector3 leftDir = new Vector3(dir.x, 0, 0).normalized;
-            Ray leftRay = new Ray(transform.position, leftDir);
-
-            //Debug.DrawRay(leftRay.origin, leftRay.direction * 1.0f, Color.red);
-
-            if (Physics.Raycast(leftRay, out leftHit, 1.0f, wallLayermask))
-            {
-                if (dir.x > 0.0f || dir.x < 0.0f)
-                {
-                    //Debug.Log("Stop wallgrinding bitch on forward");
-                    dir = new Vector3(0.0f, dir.y, dir.z);
-                }
-            }
+            }*/
             #endregion
 
+            //main movement
             cc.Move(dir * Time.deltaTime);
+
+            //slope jitter fix
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position, Vector3.down);
+            Debug.DrawRay(transform.position, Vector3.down * 2.0f, Color.cyan);
+
+            if (Physics.Raycast(ray, out hit, 2.0f, wallLayermask))
+            {
+                if(hit.normal != Vector3.up)
+                {
+                    //HACK
+                    if(dir.x != 0 || dir.z != 0)
+                    {
+                        cc.Move(((dir / 2) + (Vector3.down * edgeForce)) * Time.deltaTime);
+                    }
+                }
+            }
         }
     }
 
