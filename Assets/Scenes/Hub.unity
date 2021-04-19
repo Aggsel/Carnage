@@ -2211,8 +2211,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea117055073bb004c88eef303666328d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preferenceDirectory: 
-  saveDirectory: 
+  preferences:
+    preferenceFilename: \preferences.txt
+    preferenceStartContent: '12
+
+      25
+
+      25
+
+      60
+
+      0'
 --- !u!114 &314115726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2226,6 +2235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 582adbd84082fdb4faf7cd4beb1ccd14, type: 2}
+  mc: {fileID: 1496373247}
   scripts:
   - {fileID: 1496373248}
   - {fileID: 1496373247}
@@ -2238,10 +2248,15 @@ MonoBehaviour:
   - {fileID: 793060096}
   optionAssignments:
     mouseValue: {fileID: 252574148}
+    mouseSlider: {fileID: 1173664851}
     soundValue: {fileID: 1511030796}
+    soundSlider: {fileID: 1085001101}
     musicValue: {fileID: 383993578}
+    musicSlider: {fileID: 1923384369}
     fovValue: {fileID: 420761411}
+    fovSlider: {fileID: 177262732}
     gammaValue: {fileID: 1240712460}
+    gammaSlider: {fileID: 1381280326}
   keybindAssignments:
     moveForward: 119
     moveBack: 115

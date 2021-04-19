@@ -20,13 +20,19 @@ public struct OptionAssignments
 {
     [Header("Mouse: ")]
     public TextMeshProUGUI mouseValue;
+    public Slider mouseSlider;
     [Header("Sound & Music: ")]
     public TextMeshProUGUI soundValue;
+    public Slider soundSlider;
+
     public TextMeshProUGUI musicValue;
+    public Slider musicSlider;
     [Header("FOV: ")]
     public TextMeshProUGUI fovValue;
+    public Slider fovSlider;
     [Header("Post processing: ")]
     public TextMeshProUGUI gammaValue;
+    public Slider gammaSlider;
 }
 
 [Serializable]
@@ -49,6 +55,7 @@ public class PauseController : MonoBehaviour
 {
     [Header("Set things, dont touch")]
     [SerializeField] private VolumeProfile profile = null;
+    [SerializeField] private MovementController mc = null;
     [Tooltip("Programmer stuff, no touchy")]
     [SerializeField] private MonoBehaviour[] scripts = null;
     [Tooltip("Programmer stuff, no touchy")]
@@ -58,7 +65,8 @@ public class PauseController : MonoBehaviour
 
     private bool paused = false;
     private int menuStage = 0; //nothing, pause, options
-    private MovementController mc = null;
+    //private MovementController mc = null;
+    private SerializeController sc = null; //use unityActions instead
 
     private bool changingKey = false;
     private int changingKeyIndex = 0;
@@ -70,20 +78,32 @@ public class PauseController : MonoBehaviour
     //test
     public static UnityAction<KeyBindAsignments> updateKeysFunction = (_) => { }; //wtf är ens detta
 
+    private void Awake ()
+    {
+        //have to put it in Awake cuz of serialization
+        //mc = FindObjectOfType<MovementController>();
+    }
+
     private void Start ()
     {
-        mc = FindObjectOfType<MovementController>();
-
         //reset gamma, dont do this in build
-        if (!profile.TryGet<LiftGammaGain>(out var gamma))
+        /*if (!profile.TryGet<LiftGammaGain>(out var gamma))
         {
             Debug.LogWarning("THIS SHOULD NOT HAPPEN");
             gamma = profile.Add<LiftGammaGain>(false);
         }
         gamma.gamma.value = new Vector4(gamma.gamma.value.x, gamma.gamma.value.y, gamma.gamma.value.z, 0.0f);
+        */
 
         UpdatePause(false);
         updateKeysFunction.Invoke(keybindAssignments);
+        sc = FindObjectOfType<SerializeController>();
+    }
+
+    //Get Sliders for serializing
+    public OptionAssignments GetOptions ()
+    {
+        return optionAssignments;
     }
 
     private void Update ()
@@ -377,6 +397,7 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
+        sc.SavePreferences();
     }
 
     //options
