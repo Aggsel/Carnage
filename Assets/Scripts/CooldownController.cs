@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class CooldownController : MonoBehaviour
 {
-    public string abilityButton = "Fire1";
     public Active active;
-
     [SerializeField] private GameObject player;
     private float cooldownDuration;
     private float readyTime;
@@ -14,9 +12,27 @@ public class CooldownController : MonoBehaviour
     private float activeActuationTime;
     private float activeActuationTimeLeft;
     private bool activeActuated;
+    private KeyCode activate;
+
+    private void ReadKeybinds(KeyBindAsignments keys)
+    {
+        activate = keys.action;
+    }
+
+    private void Awake()
+    {
+        PauseController.updateKeysFunction += ReadKeybinds;
+    }
+
+    private void OnDestroy()
+    {
+        PauseController.updateKeysFunction -= ReadKeybinds;
+    }
+
 
     void Start()
     {
+        //add a way to re-initialize items onto cooldownController (from itemholder?)
         Initialize(active, player);
     }
 
@@ -43,8 +59,7 @@ public class CooldownController : MonoBehaviour
             if (cdFinished)
             {
                 ActiveReady();
-                //Change input to controller-specific action button
-                if (Input.GetKeyDown(KeyCode.E) && active != null)
+                if (Input.GetKeyDown(activate) && active != null)
                 {
                     Triggered();
                 }
@@ -64,7 +79,6 @@ public class CooldownController : MonoBehaviour
     {
         activeActuated = true;
         activeActuationTimeLeft = activeActuationTime;
-        
         cooldownTimeLeft = cooldownDuration;
         active.TriggerActive();
     }

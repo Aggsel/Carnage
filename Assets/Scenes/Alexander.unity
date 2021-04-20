@@ -794,7 +794,7 @@ PrefabInstance:
         type: 3}
       propertyPath: active
       value: 
-      objectReference: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24,
+      objectReference: {fileID: 11400000, guid: f244942de1287f647899e31bea2e8b1a,
         type: 2}
     - target: {fileID: 9221805980496537163, guid: d07a2373103de454984b393284a88386,
         type: 3}
@@ -811,7 +811,8 @@ PrefabInstance:
       propertyPath: abilityButton
       value: E
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4850570114859090270, guid: d07a2373103de454984b393284a88386, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d07a2373103de454984b393284a88386, type: 3}
 --- !u!1 &1645738566
 GameObject:
@@ -864,6 +865,20 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 157288813}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1728043892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728043891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b260c2ef3127054299513a178cca44a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 0}
+  projectileForce: 250
 --- !u!1001 &7618181373939401291
 PrefabInstance:
   m_ObjectHideFlags: 0

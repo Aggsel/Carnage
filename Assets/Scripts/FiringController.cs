@@ -7,13 +7,13 @@ using UnityEngine.VFX;
 public class FiringController : MonoBehaviour
 {
     [SerializeField] private Camera bulletCam = null;
-
     [SerializeField] private GameObject hitEffect = null;
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
-    private int bitmask;
+    private ProjectileShotController psc;
 
+    private int bitmask;
     private AttributeController attributeInstance;
     private float timeToFire = 0f;
     private bool overheated = false;
@@ -77,4 +77,10 @@ public class FiringController : MonoBehaviour
     {
         overheated = false;
     }
+
+    public void InitializeProjectile()
+    {
+
+    }
+
 }

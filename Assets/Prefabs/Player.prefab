@@ -930,6 +930,7 @@ GameObject:
   - component: {fileID: 3027235087010105664}
   - component: {fileID: 8714417031819896354}
   - component: {fileID: 6662323191297907505}
+  - component: {fileID: 6100689584837751783}
   - component: {fileID: 3027235087010105667}
   - component: {fileID: 3027235087010105676}
   - component: {fileID: 3027235087010105677}
@@ -1025,6 +1026,20 @@ MonoBehaviour:
     type: 3}
   overheatObject: {fileID: 3027235087629037940}
   muzzleFlash: {fileID: 685327040004643853}
+--- !u!114 &6100689584837751783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3027235087010105666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b260c2ef3127054299513a178cca44a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 0}
+  projectileForce: 250
 --- !u!114 &3027235087010105667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1371,7 +1386,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6168320d808999e42b495590bdfd63c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityButton: Fire1
   active: {fileID: 0}
   player: {fileID: 0}
 --- !u!1001 &1142714833565880525
