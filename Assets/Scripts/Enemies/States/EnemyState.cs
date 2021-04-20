@@ -6,16 +6,16 @@ using UnityEngine.AI;
 [System.Serializable]
 public class EnemyState
 {
-    [SerializeField] protected float attackRange = 3.0f;
+    [Tooltip("How far from the player the enemy has to be in order to initiate an attack. Keep in mind that this is not the range of the actual attack.")]
+    [SerializeField] protected float attackInitiationRange = 4.0f;
 
-    protected EnemyMeleeBehavior behaviour;
-    [HideInInspector] protected NavMeshAgent agent;
+    protected EnemyBehavior behaviour;
+    protected NavMeshAgent agent;
     protected float timer = 0.0f;
-    private float previousMovementSpeed = 0.0f;
 
-    public EnemyState(EnemyMeleeBehavior behaviourReference){
+    public EnemyState(EnemyBehavior behaviourReference){
         this.behaviour = behaviourReference;
-        this.agent = behaviour.GetAgent();
+        this.agent = behaviourReference.GetAgent();
     }
 
     public virtual void Update(){
@@ -24,12 +24,9 @@ public class EnemyState
 
     public virtual void OnShot(HitObject hit){}
 
-    public virtual void OnStateEnter(){
-        previousMovementSpeed = agent.speed;
-    }
+    public virtual void OnStateEnter(){}
 
     public virtual void OnStateExit(){
-        agent.speed = previousMovementSpeed;
         timer = 0.0f;
     }
 

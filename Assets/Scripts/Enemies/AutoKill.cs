@@ -6,7 +6,7 @@ public class AutoKill : EnemyBehavior
 {
     [SerializeField] private float timeToKill = 4.0f;
     
-    void Update(){
+    protected override void Update(){
         timeToKill -= Time.deltaTime;
         if(timeToKill <= 0){
             Destroy(this.gameObject);

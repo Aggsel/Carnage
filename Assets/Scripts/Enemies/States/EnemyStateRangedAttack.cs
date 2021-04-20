@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class EnemyStateAttack : EnemyState
+public class EnemyStateRangedAttack : EnemyState
 {
     [Tooltip("How fast the enemy should rotate toward the player when winding up the attack.")]
     [SerializeField] private float rotationSpeed = 13.0f;
-    [Tooltip("How long it should take between stopping in attack-range to when the actual attack takes place.")]
-    [SerializeField] private float windupDuration = 0.4f;
-    [Tooltip("How far the enemy can reach when attacking.")]
-    [SerializeField] private float attackRange = 5.0f;
+    [Tooltip("Cooldown before enemy can fire another shot.")]
+    [SerializeField] private float shotCooldown = 1.0f;
 
-    public EnemyStateAttack(EnemyBehavior behaviourReference) : base(behaviourReference){}
+    private float attackRange = 30.0f; //TODO: Remove this.
+
+    public EnemyStateRangedAttack(EnemyBehavior behaviourReference) : base(behaviourReference){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();
@@ -20,7 +20,7 @@ public class EnemyStateAttack : EnemyState
         agent.ResetPath();
         agent.isStopped = true;
 
-        SetDebugColor(Color.green);
+        SetDebugColor(Color.white);
     }
 
     public override void OnStateExit(){
@@ -33,10 +33,13 @@ public class EnemyStateAttack : EnemyState
         base.Update();
 
         RotateTowardsTarget();
-        if(base.timer >= windupDuration){
+        if(base.timer >= shotCooldown){
             Attack();
-            SetState(behaviour.chaseState);
+            base.timer = 0.0f;
         }
+
+        if(Vector3.Distance(behaviour.transform.position, behaviour.GetTargetTransform().position) >= attackRange || !CheckLineOfSight())
+            SetState(behaviour.chaseState);
     }
 
     private void RotateTowardsTarget(){
@@ -51,6 +54,18 @@ public class EnemyStateAttack : EnemyState
                 Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * hit.distance, Color.red, 1.0f);
                 Debug.Log("Hit player");
             }
+        }
+    }
+
+    private bool CheckLineOfSight(){
+        RaycastHit hit;
+        if (Physics.Raycast(agent.transform.position, base.behaviour.GetTargetTransform().position - agent.transform.position, out hit, Mathf.Infinity)){
+            if(hit.collider.GetComponent<MovementController>() != null)
+                return true;
+            return false;
+        }
+        else{
+            return false;
         }
     }
 
