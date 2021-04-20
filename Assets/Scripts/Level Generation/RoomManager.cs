@@ -21,6 +21,7 @@ public class RoomManager : MonoBehaviour
     private UnityEvent onCombatComplete = new UnityEvent();
     private int doorMask = 0;
     private LevelManager parentLevelManager = null;
+    private bool hasBeenVisited = false;
     
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -36,13 +37,22 @@ public class RoomManager : MonoBehaviour
 
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoom(){
+        if(!hasBeenVisited)
+            OnEnterRoomFirstTime();
+
+        this.parentLevelManager.ActivateNeighbors(this.gridPosition); //This should activate EVERY time a new room is entered. Not just first time.
+    }
+
+    public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
         this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
         int enemyCount = waveHandler.Start();
-
+        
         //Close door if any enemies were spawned.
         if(enemyCount > 0)
             OpenDoors(false);
+
+        hasBeenVisited = true;
     }
 
     //Is called whenever wavehandler has finished the last wave.
