@@ -1,5 +1,41 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &4158066617028368479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420478635511701223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58c60921c1d98e429d2c642ed420fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionLayermask:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &4158066617250745800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420478636537472721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0fea1dc9519fe042b2fa68e92ea9fe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1420478635511701223}
+  weaponInstance:
+    damage: 0
+    fireRate: 0
+    heatGeneration: 0
+    heatMaximum: 0
+    coolingIntializeTime: 0
+    coolingRate: 0
+    accuracy: 0
 --- !u!1 &4158066615808771760
 GameObject:
   m_ObjectHideFlags: 0
@@ -9916,11 +9952,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 3027235087010105664, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: m_Height
-      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 3027235087010105664, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}

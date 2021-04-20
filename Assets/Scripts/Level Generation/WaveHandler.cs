@@ -55,12 +55,12 @@ public class WaveHandler
             if(spawnPoints[i].IsGuaranteedSpawn())
                 continue;
 
+            if(accumulatedDifficulty >= roomDifficulty)
+                break;
+                
             accumulatedDifficulty += spawnPoints[i].SpawnRandomEnemy();
             activeSpawnPoints.Add(spawnPoints[i]);
             naturalEnemyCount++;
-
-            if(accumulatedDifficulty >= roomDifficulty)
-                break;
         }
 
         if(naturalEnemyCount + guaranteedEnemyCount > 0)
