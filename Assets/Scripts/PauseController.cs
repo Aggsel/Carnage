@@ -49,6 +49,20 @@ public struct KeyBindAsignments
     public KeyCode melee; //7
     public KeyCode action; //8
 }
+
+[Serializable]
+public struct KeybindTexts
+{
+    public TextMeshProUGUI forwardText; //0
+    public TextMeshProUGUI backText; //1
+    public TextMeshProUGUI rightText; //2
+    public TextMeshProUGUI leftText; //3
+    public TextMeshProUGUI dashText; //4
+    public TextMeshProUGUI pauseText; //5
+    public TextMeshProUGUI jumpText; //6
+    public TextMeshProUGUI meleeText; //7
+    public TextMeshProUGUI actionText; //8
+}
 #endregion
 
 public class PauseController : MonoBehaviour
@@ -62,6 +76,7 @@ public class PauseController : MonoBehaviour
     [SerializeField] private GameObject[] menuObjects = null;
     [SerializeField] private OptionAssignments optionAssignments = new OptionAssignments();
     [SerializeField] private KeyBindAsignments keybindAssignments = new KeyBindAsignments();
+    [SerializeField] private KeybindTexts keybindTexts = new KeybindTexts();
 
     private bool paused = false;
     private int menuStage = 0; //nothing, pause, options
@@ -104,6 +119,56 @@ public class PauseController : MonoBehaviour
     public OptionAssignments GetOptions ()
     {
         return optionAssignments;
+    }
+
+    public KeyBindAsignments GetKeybindings ()
+    {
+        return keybindAssignments;
+    }
+
+    public void SetKeyBindings (int index, KeyCode key)
+    {
+        switch (index)
+        {
+            case 0: //moveForward
+                keybindAssignments.moveForward = key;
+                keybindTexts.forwardText.text = key.ToString();
+                break;
+            case 1: //moveBack
+                keybindAssignments.moveBack = key;
+                keybindTexts.backText.text = key.ToString();
+                break;
+            case 2: //moveRight
+                keybindAssignments.moveRight = key;
+                keybindTexts.rightText.text = key.ToString();
+                break;
+            case 3: //moveLeft
+                keybindAssignments.moveLeft = key;
+                keybindTexts.leftText.text = key.ToString();
+                break;
+            case 4: //dash
+                keybindAssignments.dash = key;
+                keybindTexts.dashText.text = key.ToString();
+                break;
+            case 5: //pause
+                keybindAssignments.pause = key;
+                keybindTexts.pauseText.text = key.ToString();
+                break;
+            case 6: //jump
+                keybindAssignments.jump = key;
+                keybindTexts.jumpText.text = key.ToString();
+                break;
+            case 7: //melee
+                keybindAssignments.melee = key;
+                keybindTexts.meleeText.text = key.ToString();
+                break;
+            case 8: //action
+                keybindAssignments.action = key;
+                keybindTexts.actionText.text = key.ToString();
+                break;
+            default:
+                break;
+        }
     }
 
     private void Update ()
