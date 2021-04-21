@@ -45,7 +45,8 @@ public class SerializeController : MonoBehaviour
             {
                 lines[i] = Regex.Replace(lines[i], "[^\\w\\._]", "");
             }
-            
+
+            Debug.Log("Load bitch");
             LoadPreferences(lines);
         }
     }
