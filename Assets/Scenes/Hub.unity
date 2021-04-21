@@ -2206,74 +2206,41 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 314115724}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Script: {fileID: 11500000, guid: ea117055073bb004c88eef303666328d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGlobal: 1
-  fadeRadius: 0
-  priority: 0
-  customPasses:
-  - id: 0
-  - id: 1
-  injectionPoint: 2
-  references:
-    version: 1
-    00000000:
-      type: {class: DrawRenderersCustomPass, ns: UnityEngine.Rendering.HighDefinition,
-        asm: Unity.RenderPipelines.HighDefinition.Runtime}
-      data:
-        m_Name: RenderOnTop_Always
-        enabled: 1
-        targetColorBuffer: 0
-        targetDepthBuffer: 0
-        clearFlags: 0
-        passFoldout: 0
-        m_Version: 0
-        filterFoldout: 1
-        rendererFoldout: 1
-        renderQueueType: 10
-        passNames:
-        - Forward
-        layerMask:
-          serializedVersion: 2
-          m_Bits: 512
-        sortingCriteria: -1
-        overrideMaterial: {fileID: 0}
-        overrideMaterialPassIndex: 0
-        overrideMaterialPassName: Forward
-        overrideDepthState: 1
-        depthCompareFunction: 8
-        depthWrite: 1
-        shaderPass: 0
-    00000001:
-      type: {class: DrawRenderersCustomPass, ns: UnityEngine.Rendering.HighDefinition,
-        asm: Unity.RenderPipelines.HighDefinition.Runtime}
-      data:
-        m_Name: RenderOnTop_Less
-        enabled: 1
-        targetColorBuffer: 0
-        targetDepthBuffer: 0
-        clearFlags: 0
-        passFoldout: 0
-        m_Version: 0
-        filterFoldout: 1
-        rendererFoldout: 1
-        renderQueueType: 10
-        passNames:
-        - Forward
-        layerMask:
-          serializedVersion: 2
-          m_Bits: 512
-        sortingCriteria: -1
-        overrideMaterial: {fileID: 0}
-        overrideMaterialPassIndex: 0
-        overrideMaterialPassName: Forward
-        overrideDepthState: 1
-        depthCompareFunction: 4
-        depthWrite: 1
-        shaderPass: 0
+  preferences:
+    preferenceFilename: \preferences.txt
+    preferenceStartContent: '10
+
+      25
+
+      25
+
+      60
+
+      0
+
+      W
+
+      S
+
+      D
+
+      A
+
+      LeftShift
+
+      Tab
+
+      Space
+
+      F
+
+      E'
+  finLine: 
 --- !u!114 &314115726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2287,21 +2254,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 582adbd84082fdb4faf7cd4beb1ccd14, type: 2}
+  mc: {fileID: 1496373247}
   scripts:
   - {fileID: 1496373248}
   - {fileID: 1496373247}
   - {fileID: 1496373246}
   - {fileID: 1496373248}
+  - {fileID: 1374399264}
   menuObjects:
   - {fileID: 170821676}
   - {fileID: 924554593}
   - {fileID: 793060096}
   optionAssignments:
     mouseValue: {fileID: 252574148}
+    mouseSlider: {fileID: 1173664851}
     soundValue: {fileID: 1511030796}
+    soundSlider: {fileID: 1085001101}
     musicValue: {fileID: 383993578}
+    musicSlider: {fileID: 1923384369}
     fovValue: {fileID: 420761411}
+    fovSlider: {fileID: 177262732}
     gammaValue: {fileID: 1240712460}
+    gammaSlider: {fileID: 1381280326}
   keybindAssignments:
     moveForward: 119
     moveBack: 115
@@ -2312,6 +2286,16 @@ MonoBehaviour:
     jump: 32
     melee: 102
     action: 101
+  keybindTexts:
+    forwardText: {fileID: 808923903}
+    backText: {fileID: 2052344200}
+    rightText: {fileID: 861025860}
+    leftText: {fileID: 1277959243}
+    dashText: {fileID: 1601089132}
+    pauseText: {fileID: 96675765}
+    jumpText: {fileID: 605454436}
+    meleeText: {fileID: 414520543}
+    actionText: {fileID: 677105733}
 --- !u!4 &314115727
 Transform:
   m_ObjectHideFlags: 0
@@ -3295,7 +3279,7 @@ GameObject:
   - component: {fileID: 430098300}
   - component: {fileID: 430098299}
   - component: {fileID: 430098298}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8370,6 +8354,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1374399264 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3027235087629037938, guid: ee42cd0995687dc41b167485bca81841,
+    type: 3}
+  m_PrefabInstance: {fileID: 1496373245}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 587c4a29234d7ad499936acdb98c1bbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1381280324
 GameObject:
   m_ObjectHideFlags: 0
@@ -8875,20 +8871,30 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105664, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: m_SlopeLimit
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105664, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: m_StepOffset
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3027235087010105665, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.13
+      value: -10.34
       objectReference: {fileID: 0}
     - target: {fileID: 3027235087010105665, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.13
+      value: -4.18
       objectReference: {fileID: 0}
     - target: {fileID: 3027235087010105665, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.56
+      value: 3.7
       objectReference: {fileID: 0}
     - target: {fileID: 3027235087010105665, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
@@ -8945,6 +8951,21 @@ PrefabInstance:
       propertyPath: movementVar.jumpLeeway
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105667, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: edgeForce
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105676, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: scripts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105676, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: scripts.Array.data[0]
+      value: 
+      objectReference: {fileID: 1496373248}
     - target: {fileID: 3027235087010105677, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: defaultAmount
@@ -10261,8 +10282,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1612923500}
   m_LocalRotation: {x: -0.0000003799796, y: -0.99144495, z: -0.13052589, w: 0.0000029206276}
-  m_LocalPosition: {x: -17.277, y: -8.02, z: -2.09}
-  m_LocalScale: {x: 5.9724984, y: 5.0622597, z: 14.440562}
+  m_LocalPosition: {x: -17.29, y: -8.02, z: -2.09}
+  m_LocalScale: {x: 5.9724984, y: 5.0622597, z: 14}
   m_Children: []
   m_Father: {fileID: 1765043999}
   m_RootOrder: 4
