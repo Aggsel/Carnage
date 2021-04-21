@@ -35,14 +35,14 @@ public class RoomManager : MonoBehaviour
         onCombatComplete.RemoveListener(OnCombatComplete);
     }
 
-    //Is called whenever a room is entered for the first time.
     public void OnEnterRoom(){
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
 
-        this.parentLevelManager.ActivateNeighbors(this.gridPosition); //This should activate EVERY time a new room is entered. Not just first time.
+        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
     }
 
+    //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
         this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
@@ -73,6 +73,7 @@ public class RoomManager : MonoBehaviour
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
         this.parentLevelManager = newManager;
+        MergeMeshes();
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
@@ -123,6 +124,40 @@ public class RoomManager : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void MergeMeshes(){
+        Quaternion oldRot = transform.rotation;
+        Vector3 oldPos = transform.position;
+
+        transform.rotation = Quaternion.identity;
+        transform.position = Vector3.zero;
+
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        Mesh finalMesh = new Mesh();
+        
+        CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+
+        for (int i = 0; i < meshFilters.Length; i++){
+            if(meshFilters[i].transform == transform)
+                continue;
+
+            combiners[i].subMeshIndex = 0;
+            combiners[i].mesh = meshFilters[i].sharedMesh;
+            combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
+
+            Destroy(meshFilters[i]);
+            Destroy(meshFilters[i].GetComponent<MeshRenderer>());
+        }
+
+        finalMesh.CombineMeshes(combiners);
+        MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = finalMesh;
+        MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = meshFilters[Random.Range(0,meshFilters.Length)].GetComponent<MeshRenderer>().material;
+
+        transform.position = oldPos;
+        transform.rotation = oldRot;
     }
 
     //Will draw a sphere at the spawn/initial room.
