@@ -26,6 +26,8 @@ public class MeleeController : MonoBehaviour
 
     [Tooltip("Dont change this please")]
     [SerializeField] private GameObject weaponModel = null;
+    [Tooltip("For programmers, scripts that are disabled while using melee")]
+    [SerializeField] private MonoBehaviour[] scripts = null;
     [SerializeField] private MeleeVariables meleeVar = new MeleeVariables();
 
     private bool inHit = false;
@@ -114,6 +116,12 @@ public class MeleeController : MonoBehaviour
 
         yield return new WaitForSeconds(meleeVar.rate);
         weaponModel.SetActive(true);
+
+        for (int i = 0; i < scripts.Length; i++)
+        {
+            scripts[i].enabled = true;
+        }
+
         yield return new WaitForSeconds(meleeVar.ratePadding);
         inHit = false;
     }
@@ -124,6 +132,11 @@ public class MeleeController : MonoBehaviour
         {
             inHit = true;
             weaponModel.SetActive(false);
+
+            for (int i = 0; i < scripts.Length; i++)
+            {
+                scripts[i].enabled = false;
+            }
 
             //Instead of calling the coroutine directly
             //wait for animation and use animation keys to call the Melee IEnumerator this way we sync the hit animation to the raycast

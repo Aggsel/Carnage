@@ -20,13 +20,19 @@ public struct OptionAssignments
 {
     [Header("Mouse: ")]
     public TextMeshProUGUI mouseValue;
+    public Slider mouseSlider;
     [Header("Sound & Music: ")]
     public TextMeshProUGUI soundValue;
+    public Slider soundSlider;
+
     public TextMeshProUGUI musicValue;
+    public Slider musicSlider;
     [Header("FOV: ")]
     public TextMeshProUGUI fovValue;
+    public Slider fovSlider;
     [Header("Post processing: ")]
     public TextMeshProUGUI gammaValue;
+    public Slider gammaSlider;
 }
 
 [Serializable]
@@ -43,22 +49,39 @@ public struct KeyBindAsignments
     public KeyCode melee; //7
     public KeyCode action; //8
 }
+
+[Serializable]
+public struct KeybindTexts
+{
+    public TextMeshProUGUI forwardText; //0
+    public TextMeshProUGUI backText; //1
+    public TextMeshProUGUI rightText; //2
+    public TextMeshProUGUI leftText; //3
+    public TextMeshProUGUI dashText; //4
+    public TextMeshProUGUI pauseText; //5
+    public TextMeshProUGUI jumpText; //6
+    public TextMeshProUGUI meleeText; //7
+    public TextMeshProUGUI actionText; //8
+}
 #endregion
 
 public class PauseController : MonoBehaviour
 {
     [Header("Set things, dont touch")]
     [SerializeField] private VolumeProfile profile = null;
+    [SerializeField] private MovementController mc = null;
     [Tooltip("Programmer stuff, no touchy")]
     [SerializeField] private MonoBehaviour[] scripts = null;
     [Tooltip("Programmer stuff, no touchy")]
     [SerializeField] private GameObject[] menuObjects = null;
     [SerializeField] private OptionAssignments optionAssignments = new OptionAssignments();
     [SerializeField] private KeyBindAsignments keybindAssignments = new KeyBindAsignments();
+    [SerializeField] private KeybindTexts keybindTexts = new KeybindTexts();
 
     private bool paused = false;
     private int menuStage = 0; //nothing, pause, options
-    private MovementController mc = null;
+    //private MovementController mc = null;
+    private SerializeController sc = null; //use unityActions instead
 
     private bool changingKey = false;
     private int changingKeyIndex = 0;
@@ -70,20 +93,82 @@ public class PauseController : MonoBehaviour
     //test
     public static UnityAction<KeyBindAsignments> updateKeysFunction = (_) => { }; //wtf är ens detta
 
+    private void Awake ()
+    {
+        //have to put it in Awake cuz of serialization
+        //mc = FindObjectOfType<MovementController>();
+    }
+
     private void Start ()
     {
-        mc = FindObjectOfType<MovementController>();
-
         //reset gamma, dont do this in build
-        if (!profile.TryGet<LiftGammaGain>(out var gamma))
+        /*if (!profile.TryGet<LiftGammaGain>(out var gamma))
         {
             Debug.LogWarning("THIS SHOULD NOT HAPPEN");
             gamma = profile.Add<LiftGammaGain>(false);
         }
         gamma.gamma.value = new Vector4(gamma.gamma.value.x, gamma.gamma.value.y, gamma.gamma.value.z, 0.0f);
+        */
 
         UpdatePause(false);
         updateKeysFunction.Invoke(keybindAssignments);
+        sc = FindObjectOfType<SerializeController>();
+    }
+
+    //Get Sliders for serializing
+    public OptionAssignments GetOptions ()
+    {
+        return optionAssignments;
+    }
+
+    public KeyBindAsignments GetKeybindings ()
+    {
+        return keybindAssignments;
+    }
+
+    public void SetKeyBindings (int index, KeyCode key)
+    {
+        switch (index)
+        {
+            case 0: //moveForward
+                keybindAssignments.moveForward = key;
+                keybindTexts.forwardText.text = key.ToString();
+                break;
+            case 1: //moveBack
+                keybindAssignments.moveBack = key;
+                keybindTexts.backText.text = key.ToString();
+                break;
+            case 2: //moveRight
+                keybindAssignments.moveRight = key;
+                keybindTexts.rightText.text = key.ToString();
+                break;
+            case 3: //moveLeft
+                keybindAssignments.moveLeft = key;
+                keybindTexts.leftText.text = key.ToString();
+                break;
+            case 4: //dash
+                keybindAssignments.dash = key;
+                keybindTexts.dashText.text = key.ToString();
+                break;
+            case 5: //pause
+                keybindAssignments.pause = key;
+                keybindTexts.pauseText.text = key.ToString();
+                break;
+            case 6: //jump
+                keybindAssignments.jump = key;
+                keybindTexts.jumpText.text = key.ToString();
+                break;
+            case 7: //melee
+                keybindAssignments.melee = key;
+                keybindTexts.meleeText.text = key.ToString();
+                break;
+            case 8: //action
+                keybindAssignments.action = key;
+                keybindTexts.actionText.text = key.ToString();
+                break;
+            default:
+                break;
+        }
     }
 
     private void Update ()
@@ -92,6 +177,27 @@ public class PauseController : MonoBehaviour
         {
             UpdatePause(true);
         }
+
+        //change keys for shift
+        if(changingKey)
+        {
+            //hardcode shift
+            if (Input.GetKeyDown(KeyCode.LeftShift) && !keydown)
+            {
+                keydown = true;
+                changingKeycode = KeyCode.LeftShift;
+
+                SetKeycode(changingKeyIndex, changingKeycode);
+            }
+
+            if (Input.GetKeyDown(KeyCode.RightShift) && !keydown)
+            {
+                keydown = true;
+                changingKeycode = KeyCode.RightShift;
+
+                SetKeycode(changingKeyIndex, changingKeycode);
+            }
+        }
     }
 
     //setting & changine keycode
@@ -99,17 +205,10 @@ public class PauseController : MonoBehaviour
     {
         if(changingKey)
         {
+            //all input except shift & alt
             Event e = Event.current;
 
-            /*if(e.type.Equals(EventType.KeyDown) && !keydown)
-            {
-                keydown = true;
-                changingKeycode = e.keyCode;
-
-                SetKeycode(changingKeyIndex, changingKeycode);
-            }*/
-
-            if(e.isKey && !keydown)
+            if (e.isKey && !keydown)
             {
                 keydown = true;
                 changingKeycode = e.keyCode;
@@ -363,6 +462,7 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
+        sc.SavePreferences();
     }
 
     //options
