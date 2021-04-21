@@ -20,8 +20,8 @@ public class SerializeController : MonoBehaviour
     private PauseController pc;
     private string dir = "";
 
-    [TextArea(15, 20)]
-    public string finLine;
+    //[TextArea(15, 20)]
+    //public string finLine;
 
     private void OnEnable()
     {
@@ -45,8 +45,7 @@ public class SerializeController : MonoBehaviour
             {
                 lines[i] = Regex.Replace(lines[i], "[^\\w\\._]", "");
             }
-
-            Debug.Log("Load bitch");
+            
             LoadPreferences(lines);
         }
     }
