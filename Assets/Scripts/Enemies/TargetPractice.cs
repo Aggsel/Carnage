@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetPractice : EnemyBase
+public class TargetPractice : EnemyBehavior
 {
-    public override void OnShot(){
+    public override void OnShot(HitObject hit){
         Destroy(this.gameObject);
     }
 }
