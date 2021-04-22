@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Itemholder : MonoBehaviour
 {
-    public Active[] charActives;    // All actives
-    public Active[] charPassives;    // All passives
+    public Itemhold itemholder;
+
+    void Start()
+    {
+        itemholder = Resources.Load<Itemhold>("Itemhold");
+    }
 }
