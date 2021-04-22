@@ -16,7 +16,7 @@ public class Door : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other){
-        if(other.GetComponent<MovementController>() != null)
+        if(other.gameObject.layer == 12)
             parentRoom.OnEnterRoom();
     }
 

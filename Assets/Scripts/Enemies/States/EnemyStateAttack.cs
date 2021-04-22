@@ -35,12 +35,12 @@ public class EnemyStateAttack : EnemyState
         RotateTowardsTarget();
         if(base.timer >= windupDuration){
             Attack();
-            SetState(behaviour.chaseState);
+            SetState(behavior.chaseState);
         }
     }
 
     private void RotateTowardsTarget(){
-        Vector3 direction = (behaviour.GetTargetTransform().position - agent.transform.position).normalized;
+        Vector3 direction = (behavior.GetTargetPosition() - agent.transform.position).normalized;
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * rotationSpeed);
     }
 
@@ -49,7 +49,7 @@ public class EnemyStateAttack : EnemyState
         if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, attackRange)){
             if(hit.collider.GetComponent<MovementController>() != null){
                 Debug.DrawRay(agent.transform.position, agent.transform.TransformDirection(Vector3.forward) * hit.distance, Color.red, 1.0f);
-                Debug.Log("Hit player");
+                // Debug.Log("Hit player");
             }
         }
     }
