@@ -31,14 +31,14 @@ public class EnemyStatePatrol : EnemyState
     public override void Update(){
         base.Update();
 
-        Vector3 newPos = base.behaviour.transform.position + new Vector3(Random.Range(0.0f, 5.0f), base.behaviour.transform.position.y, Random.Range(0.0f, 5.0f));
+        Vector3 newPos = base.behavior.transform.position + new Vector3(Random.Range(0.0f, 5.0f), base.behavior.transform.position.y, Random.Range(0.0f, 5.0f));
         agent.SetDestination(newPos);
 
-        if(Vector3.Distance(behaviour.transform.position, behaviour.GetTargetTransform().position) <= enemyVisionDistance)
-            SetState(behaviour.chaseState);
+        if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= enemyVisionDistance)
+            SetState(behavior.chaseState);
     }
 
     public override void OnShot(HitObject hit){
-        behaviour.SetState(behaviour.chaseState);
+        behavior.SetState(behavior.chaseState);
     }
 }

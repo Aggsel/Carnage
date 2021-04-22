@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 4259389687750565921}
   - component: {fileID: 1222754874283207705}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Enemy Melee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,7 +226,6 @@ MonoBehaviour:
   bloodDecalProjector: {fileID: 1099489180470404072, guid: a634fe900566378439449b167688cb5c,
     type: 3}
   decalRotation: 0.35
-  agent: {fileID: 0}
   chaseState:
     attackInitiationRange: 1
     chaseSpeed: 6
@@ -240,3 +239,10 @@ MonoBehaviour:
     rotationSpeed: 0
     windupDuration: 0
     attackRange: 1.5
+  rangedAttackState:
+    attackInitiationRange: 0
+    rotationSpeed: 0
+    shotCooldown: 0
+  agent: {fileID: 0}
+  player: {fileID: 0}
+  health: 10

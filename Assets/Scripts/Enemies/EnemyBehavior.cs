@@ -20,7 +20,7 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField] public EnemyStateRangedAttack rangedAttackState;
 
     [HideInInspector] public NavMeshAgent agent;
-    private GameObject player;
+    [SerializeField] private GameObject player;
 
     protected virtual void Start(){
         if(this.agent == null)
@@ -38,12 +38,25 @@ public class EnemyBehavior : MonoBehaviour
         currentState?.Update();
     }
 
-    public Transform GetTargetTransform(){
-        return player.transform;
+    public Vector3 GetTargetPosition(){
+        return player.transform.position;
     }
 
     public NavMeshAgent GetAgent(){
         return this.agent;
+    }
+
+    public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition){
+        RaycastHit hit;
+        if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, Mathf.Infinity)){
+            //Should this mask passed as an function argument instead?
+            if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0)
+                return true;
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 
     public void SetState(EnemyState newState){
