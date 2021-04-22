@@ -99,8 +99,11 @@ public class AttributeController : MonoBehaviour
 
     public void RemoveBuff(Buff objectRef)
     {
-        buffList.Remove(objectRef);
-        Recalculate();
+        if(buffList.Contains(objectRef))
+        {
+            buffList.Remove(objectRef);
+            Recalculate();
+        }
     }
 
     void Recalculate()
