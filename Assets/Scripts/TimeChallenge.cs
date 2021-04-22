@@ -13,11 +13,11 @@ public class TimeChallenge : MonoBehaviour
             timer += Time.deltaTime;
     }
 
-    void OnGUI(){
-        GUIStyle style = new GUIStyle(GUI.skin.label);
-        style.fontSize = 40;
-        GUI.Label(new Rect(50, 20, 200, 200), timer.ToString("F2"), style);
-    }
+    // void OnGUI(){
+    //     GUIStyle style = new GUIStyle(GUI.skin.label);
+    //     style.fontSize = 40;
+    //     GUI.Label(new Rect(50, 20, 200, 200), timer.ToString("F2"), style);
+    // }
 
     void OnTriggerEnter(Collider other){
         isActive = false;
