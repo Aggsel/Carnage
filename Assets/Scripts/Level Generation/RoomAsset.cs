@@ -10,13 +10,15 @@ public class RoomAsset : ScriptableObject
     [HideInInspector] [SerializeField] private RoomManager roomManager = null;
     [SerializeField] private int doorMask = 0;  //What walls CAN be doors.
 
-    [Header("Difficulty Scaling")]
+    [Header("Enemy Spawning")]
     [Tooltip(@"How the difficulty changes depending on where in the level this room spawns. 
     First value is if the room is at the begining of the level, second if it is at the end. 
     Difficulty will linearly scale throughout the level.")]
     [SerializeField] private Vector2 difficultyRange = new Vector2();
     [Tooltip("How much the difficulty is allowed to differ from the linearly scaled value above.")]
     [SerializeField] private float randomness = 0.0f;
+    [Tooltip("How many waves of enemies should spawn in this room.")]
+    [SerializeField] private int numberOfEnemyWaves = 1;
 
     void OnValidate(){
         if(roomPrefab != null){
@@ -39,6 +41,10 @@ public class RoomAsset : ScriptableObject
 
     public float GetRandomness(){
         return this.randomness;
+    }
+
+    public int GetEnemyWaveCount(){
+        return numberOfEnemyWaves;
     }
 
     //Checks whether or not a mask works with a room configuration.

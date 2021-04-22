@@ -45,7 +45,7 @@ public class RoomManager : MonoBehaviour
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
-        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount());
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
