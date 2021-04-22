@@ -20,8 +20,8 @@ public class SerializeController : MonoBehaviour
     private PauseController pc;
     private string dir = "";
 
-    [TextArea(15, 20)]
-    public string finLine;
+    //[TextArea(15, 20)]
+    //public string finLine;
 
     private void OnEnable()
     {
