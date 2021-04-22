@@ -34,7 +34,14 @@ public class WeaponSway : MonoBehaviour
 
     private void Start ()
     {
-        mc = GetComponentInParent<MovementController>();
+        if(GetComponentInParent<MovementController>() != null)
+        {
+            mc = GetComponentInParent<MovementController>();
+        }
+        else
+        {
+            Debug.LogWarning("Could not find player movementController.cs");
+        }
 
         startPos = transform.localPosition;
         desiredPos = startPos;

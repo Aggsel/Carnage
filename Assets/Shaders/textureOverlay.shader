@@ -49,8 +49,8 @@
 		float4 overlayTex = tex2D(_OverlayTexture, input.texcoord);
 
 		//grönskärm slask
-		float diff = step(_Threshold, dot(normalize(overlayTex.xyz), float3(0.0f, 1.0f, 0.0f)));
-		float3 finalColor = lerp(overlayTex.xyz, outColor, diff);
+		//float diff = step(_Threshold, dot(normalize(overlayTex.xyz), float3(0.0f, 1.0f, 0.0f)));
+		float3 finalColor = outColor * (1 - overlayTex.w) + overlayTex.xyz * overlayTex.w;
 
         return float4(finalColor, 1);
     }
