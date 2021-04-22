@@ -135,11 +135,11 @@ MonoBehaviour:
       enableBigTilePrepass: 0
       isFptlEnabled: 0
   clearColorMode: 1
-  backgroundColorHDR: {r: 0, g: 1, b: 0, a: 0}
+  backgroundColorHDR: {r: 0, g: 0, b: 0, a: 0}
   clearDepth: 1
   volumeLayerMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 1
   volumeAnchorOverride: {fileID: 0}
   antialiasing: 0
   SMAAQuality: 2
@@ -157,7 +157,7 @@ MonoBehaviour:
   flipYMode: 0
   fullscreenPassthrough: 0
   allowDynamicResolution: 0
-  customRenderingSettings: 0
+  customRenderingSettings: 1
   invertFaceCulling: 0
   probeLayerMask:
     serializedVersion: 2
@@ -165,7 +165,7 @@ MonoBehaviour:
   hasPersistentHistory: 0
   m_RenderingPathCustomFrameSettings:
     bitDatas:
-      data1: 70297877217101
+      data1: 69748121403213
       data2: 4539628425463136256
     lodBias: 1
     lodBiasMode: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
     materialQuality: 0
   renderingPathCustomFrameSettingsOverrideMask:
     mask:
-      data1: 0
+      data1: 549755846656
       data2: 0
   defaultFrameSettings: 0
 --- !u!1 &173343196715989322
@@ -223,6 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3027235087010105666}
+  passiveList: []
 --- !u!1 &2724875621777923313
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,7 +602,7 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
-  clearColorMode: 2
+  clearColorMode: 1
   backgroundColorHDR: {r: 0, g: 0, b: 0, a: 1}
   clearDepth: 1
   volumeLayerMask:
@@ -1023,7 +1024,7 @@ CharacterController:
   m_StepOffset: 0
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!114 &8714417031819896354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1118,6 +1119,9 @@ MonoBehaviour:
     dashRate: 1
     dashRechargeRate: 3
   cc: {fileID: 0}
+  dir: {x: 0, y: 0, z: 0}
+  dot: 0
+  edgeForce: 2
 --- !u!114 &3027235087010105676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1131,6 +1135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponModel: {fileID: 3027235087629037940}
+  scripts:
+  - {fileID: 6662323191297907505}
   meleeVar:
     showDebug: 0
     range: 2.5
@@ -1151,8 +1157,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 582adbd84082fdb4faf7cd4beb1ccd14, type: 2}
-  defaultAmount: 5
-  defaultTime: 0.75
+  shakeOrigin: {fileID: 1513428940}
+  mainCamera: {fileID: 3027235086142218615}
+  defaultAmount: 1.2
+  defaultTime: 0.6
+  defaultRotationTangent: 15
 --- !u!114 &3202284222324870443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1431,7 +1440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6168320d808999e42b495590bdfd63c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24, type: 2}
+  active: {fileID: 11400000, guid: f244942de1287f647899e31bea2e8b1a, type: 2}
   player: {fileID: 3027235087010105666}
 --- !u!1001 &1142714833565880525
 PrefabInstance:
