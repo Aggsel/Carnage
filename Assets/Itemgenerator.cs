@@ -22,7 +22,6 @@ public class Itemgenerator : MonoBehaviour
     private void Generate()
     {
         randomIndex = Random.Range(0, (reference.itemholder.actives.Length + reference.itemholder.passives.Length));
-        Debug.Log(randomIndex);
         if (randomIndex > (reference.itemholder.actives.Length - 1))
         {
             randomIndex -= (reference.itemholder.actives.Length); 

@@ -37,7 +37,7 @@ public class CooldownController : MonoBehaviour
 
     public void Initialize(Active selectedActive, GameObject player)
     {
-        activeActuated = false;
+        DeTrigger();
         active = selectedActive;
         if(active != null)
         {
@@ -84,9 +84,12 @@ public class CooldownController : MonoBehaviour
 
     private void DeTrigger()
     {
-        activeActuated = false;
-        activeActuationTimeLeft = activeActuationTime;
-        active.DetriggerActive();
+        if(active != null)
+        {
+            activeActuated = false;
+            activeActuationTimeLeft = activeActuationTime;
+            active.DetriggerActive();
+        }
     }
 
 
