@@ -14,7 +14,12 @@ public abstract class Active : ScriptableObject
     [SerializeField] public bool depool;
     [HideInInspector] public bool dontSpawn = false;
 
+    //Intialize the active, create any needed references in here
     public abstract void Initialize(GameObject obj);
+
+    //This will trigger the active's effect somehow, wether that be buffing, fire a missile or otherwise
     public abstract void TriggerActive();
+
+    //Automatically called when the active's initial cooldown time is over, nullifies the active's behaviour somehow
     public abstract void DetriggerActive();
 }

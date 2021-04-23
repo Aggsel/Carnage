@@ -29,7 +29,6 @@ public class CooldownController : MonoBehaviour
         PauseController.updateKeysFunction -= ReadKeybinds;
     }
 
-
     void Start()
     {
         Initialize(active, player);
@@ -91,7 +90,6 @@ public class CooldownController : MonoBehaviour
             active.DetriggerActive();
         }
     }
-
 
     private void ActiveReady()
     {

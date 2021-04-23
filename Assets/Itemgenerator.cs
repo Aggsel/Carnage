@@ -53,7 +53,6 @@ public class Itemgenerator : MonoBehaviour
                 }
             }
         }
-
     }
 
     private void OnTriggerEnter(Collider other)
@@ -68,9 +67,7 @@ public class Itemgenerator : MonoBehaviour
             {
                 pc.Initialize(passive, other.gameObject);
             }
-
             Destroy(this.gameObject);
-
         }
     }
 

@@ -17,7 +17,7 @@ public class PassiveController : MonoBehaviour
     {
         for (int i = 0; i < passiveList.Count; i++)
         {
-            if (passiveList[i].CheckValidity())
+            if (passiveList[i].CheckValidity()) //if a passive is valid, then it means it's effect can be triggered this frame
             {
                 passiveList[i].TriggerPassive();
             }
