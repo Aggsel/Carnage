@@ -6,7 +6,7 @@ public class EnemySpawnPoint : MonoBehaviour
 {
     [Tooltip("Enemy prefab")]
     [SerializeField] private List<GameObject> availableEnemies = new List<GameObject>();
-    private List<EnemyBase> spawnedEnemies = new List<EnemyBase>();
+    private List<EnemyBehavior> spawnedEnemies = new List<EnemyBehavior>();
     private WaveHandler waveHandler;
 
     [Tooltip("Will guarantee that this enemy spawns upon entering the room. The difficulty that this enemy adds to the room will not be taken into account.")]
@@ -19,7 +19,7 @@ public class EnemySpawnPoint : MonoBehaviour
         GameObject randomEnemy = availableEnemies[randIndex];
         randomEnemy = Instantiate(randomEnemy, transform);
 
-        EnemyBase enemy = randomEnemy.GetComponent<EnemyBase>();
+        EnemyBehavior enemy = randomEnemy.GetComponent<EnemyBehavior>();
         enemy.SetParentSpawn(this);
         spawnedEnemies.Add(enemy);
 
@@ -27,7 +27,7 @@ public class EnemySpawnPoint : MonoBehaviour
         return 1.0f;
     }
 
-    public void ReportDeath(EnemyBase enemy){
+    public void ReportDeath(EnemyBehavior enemy){
         spawnedEnemies.Remove(enemy);
         if(AreAllEnemiesDead()){
             waveHandler.ReportDeath(this);

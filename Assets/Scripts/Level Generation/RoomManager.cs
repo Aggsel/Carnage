@@ -21,6 +21,7 @@ public class RoomManager : MonoBehaviour
     private UnityEvent onCombatComplete = new UnityEvent();
     private int doorMask = 0;
     private LevelManager parentLevelManager = null;
+    private bool hasBeenVisited = false;
     
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -34,15 +35,24 @@ public class RoomManager : MonoBehaviour
         onCombatComplete.RemoveListener(OnCombatComplete);
     }
 
-    //Is called whenever a room is entered for the first time.
     public void OnEnterRoom(){
-        float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
-        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
-        int enemyCount = waveHandler.Start();
+        if(!hasBeenVisited)
+            OnEnterRoomFirstTime();
 
+        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+    }
+
+    //Is called whenever a room is entered for the first time.
+    public void OnEnterRoomFirstTime(){
+        float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount());
+        int enemyCount = waveHandler.Start();
+        
         //Close door if any enemies were spawned.
         if(enemyCount > 0)
             OpenDoors(false);
+
+        hasBeenVisited = true;
     }
 
     //Is called whenever wavehandler has finished the last wave.
@@ -63,6 +73,7 @@ public class RoomManager : MonoBehaviour
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
         this.parentLevelManager = newManager;
+        MergeMeshes();
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
@@ -113,6 +124,40 @@ public class RoomManager : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void MergeMeshes(){
+        Quaternion oldRot = transform.rotation;
+        Vector3 oldPos = transform.position;
+
+        transform.rotation = Quaternion.identity;
+        transform.position = Vector3.zero;
+
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        Mesh finalMesh = new Mesh();
+        
+        CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+
+        for (int i = 0; i < meshFilters.Length; i++){
+            if(meshFilters[i].transform == transform)
+                continue;
+
+            combiners[i].subMeshIndex = 0;
+            combiners[i].mesh = meshFilters[i].sharedMesh;
+            combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
+
+            Destroy(meshFilters[i]);
+            Destroy(meshFilters[i].GetComponent<MeshRenderer>());
+        }
+
+        finalMesh.CombineMeshes(combiners);
+        MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = finalMesh;
+        MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = meshFilters[Random.Range(0,meshFilters.Length)].GetComponent<MeshRenderer>().material;
+
+        transform.position = oldPos;
+        transform.rotation = oldRot;
     }
 
     //Will draw a sphere at the spawn/initial room.

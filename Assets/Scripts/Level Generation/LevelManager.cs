@@ -57,6 +57,7 @@ public class LevelManager : MonoBehaviour
         this.grid = new RoomManager[desiredLevelGridSize.x, desiredLevelGridSize.y];
 
         PopulateLevel();
+        ActivateNeighbors(spawnRoomLocation);
         OnFinishedGeneration.Invoke();
     }
 
@@ -69,6 +70,23 @@ public class LevelManager : MonoBehaviour
         instantiatedRooms = new List<RoomManager>();
 
         this.maze = null;
+    }
+
+    public void ActivateNeighbors(Vector2Int pos){
+        for (int y = 0; y < this.grid.GetLength(1); y++){
+            for (int x = 0; x < this.grid.GetLength(0); x++){
+                this.grid[x,y]?.gameObject.SetActive(false);
+            }
+        }
+
+        for (int y = -1; y < 2; y++){
+            for (int x = -1; x < 2; x++){
+                Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
+                if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
+                    this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
+                }
+            }
+        }
     }
 
     //Based on the maze, place rooms.
@@ -178,14 +196,14 @@ internal class MazeGenerator{
     private void PlaceRandomDoors(){
         for (int i = 0; i < randomDoorIterations; i++){
             Vector2Int randomCoord = new Vector2Int(Random.Range(0, actualGridSize.x), Random.Range(0, actualGridSize.y));
-            if(!grid[randomCoord.x, randomCoord.y].visited)
+            if(!grid[randomCoord.x, randomCoord.y].visited || grid[randomCoord.x, randomCoord.y].type == RoomType.FINAL)
                 continue;
             
             Vector2Int[] offsets = {new Vector2Int(0,1), new Vector2Int(1,0), new Vector2Int(0,-1), new Vector2Int(-1,0)};
             Vector2Int randDir = offsets[Random.Range(0, offsets.Length)];
             Vector2Int newCoord = randDir + randomCoord;
             if(newCoord.x >= 0 && newCoord.x < this.desiredGridSize.x && newCoord.y >= 0 && newCoord.y < this.desiredGridSize.y){
-                if(grid[newCoord.x, newCoord.y].visited){
+                if(grid[newCoord.x, newCoord.y].visited || grid[newCoord.x, newCoord.y].type == RoomType.FINAL){
                     AddDoorToMask(randomCoord, randDir);
                     AddDoorToMask(newCoord, randDir * -1);
                 }

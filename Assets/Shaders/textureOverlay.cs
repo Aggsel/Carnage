@@ -16,7 +16,7 @@ public sealed class textureOverlay : CustomPostProcessVolumeComponent, IPostProc
     public ClampedFloatParameter threshold = new ClampedFloatParameter(0f, 0f, 1f);
 
     // Do not forget to add this post process in the Custom Post Process Orders list (Project Settings > HDRP Default Settings).
-    public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.BeforePostProcess;
+    public override CustomPostProcessInjectionPoint injectionPoint => CustomPostProcessInjectionPoint.AfterPostProcess;
 
     const string kShaderName = "Hidden/Shader/textureOverlay";
 
