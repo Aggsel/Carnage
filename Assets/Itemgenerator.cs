@@ -21,20 +21,39 @@ public class Itemgenerator : MonoBehaviour
 
     private void Generate()
     {
-        randomIndex = Random.Range(0, reference.itemholder.actives.Length + reference.itemholder.passives.Length);
-        if(randomIndex > (reference.itemholder.actives.Length - 1))
+        randomIndex = Random.Range(0, (reference.itemholder.actives.Length + reference.itemholder.passives.Length));
+        Debug.Log(randomIndex);
+        if (randomIndex > (reference.itemholder.actives.Length - 1))
         {
             randomIndex -= (reference.itemholder.actives.Length); 
-            passive = reference.itemholder.passives[randomIndex];
+            if(reference.itemholder.passives[randomIndex].dontSpawn == true)
+            {
+                Generate();
+            } 
+            else
+            {
+                passive = reference.itemholder.passives[randomIndex];
+                if (reference.itemholder.passives[randomIndex].depool == true)
+                {
+                    reference.DepoolItemPassive(randomIndex);
+                }
+            }
         }
         else
         {
-            active = reference.itemholder.actives[randomIndex];
+            if(reference.itemholder.actives[randomIndex].dontSpawn == true)
+            {
+                Generate();
+            }
+            else
+            {
+                active = reference.itemholder.actives[randomIndex];
+                if (reference.itemholder.actives[randomIndex].depool == true)
+                {
+                    reference.DepoolItemActive(randomIndex);
+                }
+            }
         }
-    }
-
-    void Update()
-    {
 
     }
 

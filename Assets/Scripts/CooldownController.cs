@@ -112,7 +112,4 @@ public class CooldownController : MonoBehaviour
             readyTime = cooldownDuration + Time.time;
         }
     }
-
-
-
 }
