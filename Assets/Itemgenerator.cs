@@ -15,7 +15,7 @@ public class Itemgenerator : MonoBehaviour
     {
         cc = GameObject.Find("Player/ActiveHolder").GetComponent<CooldownController>();
         pc = GameObject.Find("Player/PassiveHolder").GetComponent<PassiveController>();
-        reference = GameObject.Find("ItemHolder").GetComponent<Itemholder>();
+        reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
         Generate(); //make it seeded later tbh
     }
 
