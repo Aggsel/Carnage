@@ -1158,10 +1158,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 582adbd84082fdb4faf7cd4beb1ccd14, type: 2}
   shakeOrigin: {fileID: 1513428940}
-  mainCamera: {fileID: 3027235086142218615}
-  defaultAmount: 1.2
-  defaultTime: 0.6
-  defaultRotationTangent: 15
+  mainOrigin: {fileID: 3027235086785651097}
+  shakeVar:
+    shakeAmount: 0
+    shakeTime: 0
+    shakeRotationTangent: 0
+  recoilVar:
+    recoilAmount: 0
+    reocilIncrease: 0
+    recoilSpeed: 0
+    recoilRotation: {x: 0, y: 0, z: 0}
+    recoilPosition: {x: 0, y: 0, z: 0}
+    recoilNoise: {x: 0, y: 0, z: 0}
 --- !u!114 &3202284222324870443
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 public class MovementController : MonoBehaviour
 {
@@ -46,6 +48,8 @@ public class MovementController : MonoBehaviour
         public float dashRate;
         [Tooltip("How fast the dash charges increases / recharges")]
         public float dashRechargeRate;
+        [Tooltip("Camera field of view when dashing")]
+        public float dashFov;
     }
     #endregion
 
@@ -53,6 +57,10 @@ public class MovementController : MonoBehaviour
     [SerializeField] private Transform cam = null;
     [Tooltip("Dont touch")]
     [SerializeField] private LayerMask wallLayermask = 0;
+    [Tooltip("Dont touch")]
+    [SerializeField] private VolumeProfile profile = null;
+    [Tooltip("Dont touch")]
+    [SerializeField] private Camera fovCamera = null;
 
     [SerializeField] private MovementVariables movementVar = new MovementVariables();
     [SerializeField] private CameraVariables cameraVar = new CameraVariables();
@@ -84,11 +92,14 @@ public class MovementController : MonoBehaviour
     private float groundedTimer = 0.0f;
     private float vertical = 0.0f;
     private float horizontal = 0.0f;
+    private Vector3 dir = Vector3.zero;
+    private float edgeForce = 2.0f;
 
     //test
-    public Vector3 dir = Vector3.zero;
-    public float dot = 0.0f;
-    public float edgeForce = 2.0f;
+    private MotionBlur globalMotion = null;
+    private float startFov = 0.0f;
+    private float endFov = 0.0f;
+    private float half = 0.0f;
 
     private void Start ()
     {
@@ -166,20 +177,42 @@ public class MovementController : MonoBehaviour
 
         //Debug.DrawRay(ray.origin, ray.direction * (dashVar.dashLength / 2), Color.green);
 
+        //read hdrp profile if null add it
+        if (!profile.TryGet<MotionBlur>(out var motion))
+        {
+            Debug.LogWarning("THIS SHOULD NOT HAPPEN");
+            motion = profile.Add<MotionBlur>(false);
+        }
+
         #region Dash from input
         //dash
         if (Input.GetKeyDown(dash) && Time.time > nextDash && charge >= 1.0f && newDir.sqrMagnitude > 0.1f)
         {
             nextDash = Time.time + dashVar.dashRate;
 
+            //effects: fov & motionblur
+            motion.active = true;
+            globalMotion = motion;
+
+            //dash stuff
             if (!Physics.Raycast(ray, out hit, (dashVar.dashLength / 2)))
             {
-                positioningList.Add(transform.position + (ray.direction * (dashVar.dashLength / 2)));
+                Vector3 pos = transform.position + (ray.direction * (dashVar.dashLength / 2));
+                half = Vector3.SqrMagnitude(transform.position - pos) * 0.5f;
+                startFov = fovCamera.fieldOfView;
+                endFov = fovCamera.fieldOfView + dashVar.dashFov;
+
+                positioningList.Add(pos);
             }
             else
             {
                 //if ray hit something, block dash. Also make sure no clipping occur using player radius
-                positioningList.Add(new Vector3(hit.point.x - newDir.x * cc.radius, transform.position.y, hit.point.z - newDir.z * cc.radius));
+                Vector3 pos = new Vector3(hit.point.x - newDir.x * cc.radius, transform.position.y, hit.point.z - newDir.z * cc.radius);
+                half = Vector3.SqrMagnitude(transform.position - pos) * 0.5f;
+                startFov = fovCamera.fieldOfView;
+                endFov = fovCamera.fieldOfView + dashVar.dashFov;
+
+                positioningList.Add(pos);
             }
 
             charge -= 1.0f;
@@ -190,19 +223,34 @@ public class MovementController : MonoBehaviour
     
     //in addition to normal movement i have an AdditionalPositioning function -
     //for teleporting or doing other stuff than moving in the normal translating (Movement) function
-    private void AdditionalPositioning(Vector3 pos)
+    private void AdditionalPositioning(Vector3 pos, MotionBlur motion)
     {
         float step = dashVar.dashSpeed * Time.deltaTime;
         float dist = Vector3.SqrMagnitude(transform.position - pos); //optimized
-        //float dist = Vector3.Distance(transform.position, pos);
 
         if (dist > 0.1f)
         {
+            //Debug.Log(dist + ", " + half);
             transform.position = Vector3.MoveTowards(transform.position, pos, step);
+
+            //fov
+            if(dist >= half)
+            {
+                Debug.Log("YES");
+                fovCamera.fieldOfView = Mathf.Lerp(fovCamera.fieldOfView, endFov, step * 0.5f);
+            }
+            else
+            {
+                Debug.Log("NO");
+                fovCamera.fieldOfView = Mathf.Lerp(fovCamera.fieldOfView, startFov, step * 0.5f);
+            }
         }
         else
         {
+            //effects
+            motion.active = false;
             positioningList.Remove(positioningList[0]);
+            half = 0.0f;
             cc.enabled = true;
         }
     }
@@ -242,7 +290,7 @@ public class MovementController : MonoBehaviour
 
             cc.enabled = false;
             verticalVelocity = 0.0f; //reset upforce
-            AdditionalPositioning(positioningList[0]);
+            AdditionalPositioning(positioningList[0], globalMotion);
             return;
         }
 

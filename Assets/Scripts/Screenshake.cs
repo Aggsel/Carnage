@@ -35,7 +35,7 @@ public class Screenshake : MonoBehaviour
     [Header("Assignable: ")]
     [SerializeField] private VolumeProfile profile = null;
     [SerializeField] Transform shakeOrigin = null;
-    [SerializeField] Transform mainCamera = null;
+    [SerializeField] Transform mainOrigin = null;
 
     [SerializeField] ShakeVariables shakeVar = new ShakeVariables();
     [SerializeField] RecoilVariables recoilVar = new RecoilVariables();
@@ -54,7 +54,7 @@ public class Screenshake : MonoBehaviour
     private void Start ()
     {
         startPos = shakeOrigin.localPosition;
-        mainStartPos = mainCamera.localPosition;
+        mainStartPos = mainOrigin.localPosition;
 
         startRot = shakeOrigin.localEulerAngles;
     }
@@ -66,16 +66,17 @@ public class Screenshake : MonoBehaviour
             StartCoroutine(Shake(shakeVar.shakeAmount, shakeVar.shakeTime));
         }
 
-        //dont do like this, call from FiringController.cs
-        if (Input.GetMouseButtonDown(0))
-        {
-            noise = new Vector3(UnityEngine.Random.Range(-recoilVar.recoilNoise.x, recoilVar.recoilNoise.x),
-                UnityEngine.Random.Range(-recoilVar.recoilNoise.y, recoilVar.recoilNoise.y), 
-                UnityEngine.Random.Range(-recoilVar.recoilNoise.z, recoilVar.recoilNoise.z));
-            recoil += recoilVar.reocilIncrease;
-        }
-
         Recoil();
+    }
+
+    public void RecoilCall ()
+    {
+        noise = new Vector3(UnityEngine.Random.Range(-recoilVar.recoilNoise.x, recoilVar.recoilNoise.x),
+                UnityEngine.Random.Range(-recoilVar.recoilNoise.y, recoilVar.recoilNoise.y),
+                UnityEngine.Random.Range(-recoilVar.recoilNoise.z, recoilVar.recoilNoise.z)) * 0.5f;
+
+        //on firerate change also change recoilIncrease to keep it stable
+        recoil += recoilVar.reocilIncrease;
     }
 
     private void Recoil ()
@@ -83,8 +84,10 @@ public class Screenshake : MonoBehaviour
         if(recoil > 0.01f)
         {
             Quaternion newNoise = Quaternion.Euler(recoilVar.recoilRotation + noise);
-            shakeOrigin.transform.localRotation = Quaternion.Slerp(shakeOrigin.transform.localRotation, newNoise, Time.deltaTime * recoilVar.recoilSpeed);
-            
+            Quaternion mainNoise = Quaternion.Euler((-recoilVar.recoilRotation * 0.75f) + noise);
+            shakeOrigin.transform.localRotation = Quaternion.Slerp(shakeOrigin.transform.localRotation, newNoise, Time.deltaTime * recoilVar.recoilSpeed * 0.25f);
+            mainOrigin.transform.localRotation = Quaternion.Slerp(mainOrigin.transform.localRotation, mainNoise, Time.deltaTime * recoilVar.recoilSpeed * 0.5f);
+
             //ja jo men lite collision kan förekomma här med screenshake
             desiredPos = (recoilVar.recoilPosition + noise) * recoilVar.recoilAmount;
             shakeOrigin.localPosition = Vector3.MoveTowards(shakeOrigin.localPosition, desiredPos + startPos, Time.deltaTime * recoilVar.recoilSpeed);
@@ -96,6 +99,7 @@ public class Screenshake : MonoBehaviour
             recoil = 0.0f;
             shakeOrigin.transform.localRotation = Quaternion.Slerp(shakeOrigin.transform.localRotation, Quaternion.Euler(startRot), Time.deltaTime * recoilVar.recoilSpeed * 10.0f);
             shakeOrigin.localPosition = Vector3.MoveTowards(shakeOrigin.localPosition, startPos, Time.deltaTime * recoilVar.recoilSpeed * 5.0f);
+            mainOrigin.transform.localRotation = Quaternion.Slerp(mainOrigin.transform.localRotation, Quaternion.Euler(startRot), Time.deltaTime * recoilVar.recoilSpeed * 10.0f);
         }
     }
 
@@ -124,7 +128,7 @@ public class Screenshake : MonoBehaviour
             desiredPos = new Vector3(right, up, 0);
 
             shakeOrigin.localPosition = Vector3.MoveTowards(shakeOrigin.localPosition, desiredPos * 0.2f + startPos, step);
-            mainCamera.localPosition = Vector3.MoveTowards(mainCamera.localPosition, desiredPos + startPos, step);
+            mainOrigin.localPosition = Vector3.MoveTowards(mainOrigin.localPosition, desiredPos + startPos, step);
 
             //rotation only works with weapon, cuz movementcontroller controls all main camera rotation
             desiredRot = new Vector3(right, up, 0) * shakeVar.shakeRotationTangent;
@@ -159,7 +163,7 @@ public class Screenshake : MonoBehaviour
         }
 
         shakeOrigin.localPosition = startPos;
-        mainCamera.localPosition = mainStartPos;
+        mainOrigin.localPosition = mainStartPos;
         motion.active = false;
     }
 }

@@ -12,6 +12,7 @@ public class FiringController : MonoBehaviour
     [SerializeField] private VisualEffect muzzleFlash = null;
 
     private ProjectileShotController psc;
+    private Screenshake ss;
 
     private int bitmask;
     private AttributeController attributeInstance;
@@ -22,6 +23,7 @@ public class FiringController : MonoBehaviour
     {
         GameObject player = this.gameObject;
         attributeInstance = player.GetComponent<AttributeController>();
+        ss = FindObjectOfType<Screenshake>();
         int playerLayer = 12;
         bitmask = ~(1 << playerLayer);
     }
@@ -50,6 +52,9 @@ public class FiringController : MonoBehaviour
         direction.y += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         direction.z += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         RaycastHit bulletHit;
+
+        //recoil
+        ss.RecoilCall();
 
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
         {
