@@ -5,7 +5,7 @@ using UnityEngine;
 public class CooldownController : MonoBehaviour
 {
     public Active active;
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject player = null;
     private float cooldownDuration;
     private float readyTime;
     private float cooldownTimeLeft;
