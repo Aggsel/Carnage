@@ -6,7 +6,7 @@ public class Itemholder : MonoBehaviour
 {
     public Itemhold itemholder;
 
-    void Start()
+    void Awake()
     {
         itemholder = Resources.Load<Itemhold>("Itemhold");
     }

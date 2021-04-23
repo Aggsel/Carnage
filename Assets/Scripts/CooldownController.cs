@@ -32,7 +32,6 @@ public class CooldownController : MonoBehaviour
 
     void Start()
     {
-        //add a way to re-initialize items onto cooldownController (from itemholder?)
         Initialize(active, player);
     }
 

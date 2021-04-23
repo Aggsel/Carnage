@@ -7,11 +7,6 @@ public class PassiveController : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private List<Passive> passiveList = new List<Passive>();
 
-    void Start()
-    {
-        //create a way to call initialize on passive item's that get picked up, do the same in CooldownController
-    }
-
     public void Initialize(Passive addedPassive, GameObject player)
     {
         passiveList.Add(addedPassive);
