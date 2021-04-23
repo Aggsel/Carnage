@@ -19,5 +19,7 @@ public class HitObject
     public HitObject(Vector3 shotDirection, Vector3 hitPosition, float damage = 0.0f, float knockback = 0.0f){
         this.shotDirection = shotDirection;
         this.hitPosition = hitPosition;
+        this.damage = damage;
+        this.knockback = knockback;
     }
 }
