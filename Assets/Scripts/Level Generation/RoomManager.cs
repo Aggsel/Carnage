@@ -140,25 +140,25 @@ public class RoomManager : MonoBehaviour
 
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
         Mesh finalMesh = new Mesh();
-        
+
         CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
 
         for (int i = 0; i < meshFilters.Length; i++){
             if(meshFilters[i].transform == transform)
                 continue;
 
-            MeshRenderer currentMR = meshFilters[i].GetComponent<MeshRenderer>();
+            MeshRenderer currentMeshRenderer = meshFilters[i].GetComponent<MeshRenderer>();
 
-            if(currentMR.sharedMaterial == validMaterial)
+            if(currentMeshRenderer.sharedMaterial != validMaterial)
                 continue;
 
             combiners[i].subMeshIndex = 0;
             combiners[i].mesh = meshFilters[i].sharedMesh;
             combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            combiners[i].lightmapScaleOffset = currentMR.lightmapScaleOffset;
+            combiners[i].lightmapScaleOffset = currentMeshRenderer.lightmapScaleOffset;
 
             Destroy(meshFilters[i]);
-            Destroy(currentMR);
+            Destroy(currentMeshRenderer);
         }
 
         finalMesh.CombineMeshes(combiners, true, true, true);
