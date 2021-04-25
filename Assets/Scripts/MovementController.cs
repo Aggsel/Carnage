@@ -198,7 +198,8 @@ public class MovementController : MonoBehaviour
             if (!Physics.Raycast(ray, out hit, (dashVar.dashLength / 2)))
             {
                 Vector3 pos = transform.position + (ray.direction * (dashVar.dashLength / 2));
-                half = Vector3.SqrMagnitude(transform.position - pos) * 0.5f;
+                half = Vector3.Distance(transform.position, pos) * 0.5f;
+                //half = Vector3.SqrMagnitude(transform.position - pos) * 0.5f;
                 startFov = fovCamera.fieldOfView;
                 endFov = fovCamera.fieldOfView + dashVar.dashFov;
 
@@ -208,7 +209,8 @@ public class MovementController : MonoBehaviour
             {
                 //if ray hit something, block dash. Also make sure no clipping occur using player radius
                 Vector3 pos = new Vector3(hit.point.x - newDir.x * cc.radius, transform.position.y, hit.point.z - newDir.z * cc.radius);
-                half = Vector3.SqrMagnitude(transform.position - pos) * 0.5f;
+                half = Vector3.Distance(transform.position, pos) * 0.5f;
+                //half = Vector3.SqrMagnitude(transform.position - pos) * 0.5f;
                 startFov = fovCamera.fieldOfView;
                 endFov = fovCamera.fieldOfView + dashVar.dashFov;
 
@@ -226,22 +228,20 @@ public class MovementController : MonoBehaviour
     private void AdditionalPositioning(Vector3 pos, MotionBlur motion)
     {
         float step = dashVar.dashSpeed * Time.deltaTime;
-        float dist = Vector3.SqrMagnitude(transform.position - pos); //optimized
+        float dist = Vector3.Distance(transform.position, pos);//Vector3.SqrMagnitude(transform.position - pos); //optimized
 
         if (dist > 0.1f)
         {
-            //Debug.Log(dist + ", " + half);
+            //Debug.Log(dist + ", " + half);    
             transform.position = Vector3.MoveTowards(transform.position, pos, step);
 
             //fov
             if(dist >= half)
             {
-                Debug.Log("YES");
-                fovCamera.fieldOfView = Mathf.Lerp(fovCamera.fieldOfView, endFov, step * 0.5f);
+                fovCamera.fieldOfView = Mathf.Lerp(fovCamera.fieldOfView, endFov, step * 0.25f);
             }
             else
             {
-                Debug.Log("NO");
                 fovCamera.fieldOfView = Mathf.Lerp(fovCamera.fieldOfView, startFov, step * 0.5f);
             }
         }
@@ -251,6 +251,7 @@ public class MovementController : MonoBehaviour
             motion.active = false;
             positioningList.Remove(positioningList[0]);
             half = 0.0f;
+            fovCamera.fieldOfView = startFov;
             cc.enabled = true;
         }
     }
