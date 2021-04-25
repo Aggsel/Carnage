@@ -7,6 +7,7 @@ using UnityEngine.VFX;
 public class FiringController : MonoBehaviour
 {
     [SerializeField] private Camera bulletCam = null;
+    [SerializeField] private ParticleSystem cases;
     [SerializeField] private GameObject hitEffect = null;
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
@@ -52,6 +53,16 @@ public class FiringController : MonoBehaviour
         direction.y += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         direction.z += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         RaycastHit bulletHit;
+
+        //bullet cases
+        cases.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        ParticleSystem.MainModule main = cases.main;
+
+        main.startRotationX = (bulletCam.transform.eulerAngles.x + 90.0f + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationY = (bulletCam.transform.eulerAngles.y + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationZ = bulletCam.transform.eulerAngles.z * Mathf.Deg2Rad;
+
+        cases.Play();
 
         //recoil
         ss.RecoilCall();
