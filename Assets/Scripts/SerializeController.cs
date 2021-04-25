@@ -41,10 +41,10 @@ public class SerializeController : MonoBehaviour
             lines = System.IO.File.ReadAllLines(dir);
 
             //before load check for weird shit
-            for (int i = 0; i < lines.Length; i++)
+            /*for (int i = 0; i < lines.Length; i++)
             {
                 lines[i] = Regex.Replace(lines[i], "[^\\w\\._]", "");
-            }
+            }*/
             
             LoadPreferences(lines);
         }
@@ -103,6 +103,7 @@ public class SerializeController : MonoBehaviour
 
         oa.gammaSlider.value = float.Parse(lines[4]);
         pc.ChangeGamma(oa.gammaSlider);
+        Debug.Log("Set gamma to: " + oa.gammaSlider.value);
 
         //Keybindings
         for (int i = 5; i < lines.Length; i++)
@@ -136,6 +137,7 @@ public class SerializeController : MonoBehaviour
             ka.action.ToString();
 
         WriteToPreferences(saveString);
+        Debug.Log("Saved gamma to: " + oa.gammaSlider.value);
     }
     #endregion
 }
