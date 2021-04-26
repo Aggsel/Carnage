@@ -223,6 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3027235087010105666}
+  passiveList: []
 --- !u!1 &2724875621777923313
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,6 +1119,9 @@ MonoBehaviour:
     dashRate: 1
     dashRechargeRate: 3
   cc: {fileID: 0}
+  dir: {x: 0, y: 0, z: 0}
+  dot: 0
+  edgeForce: 2
 --- !u!114 &3027235087010105676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1131,6 +1135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponModel: {fileID: 3027235087629037940}
+  scripts: []
   meleeVar:
     showDebug: 0
     range: 2.5
@@ -1431,7 +1436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6168320d808999e42b495590bdfd63c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24, type: 2}
+  active: {fileID: 0}
   player: {fileID: 3027235087010105666}
 --- !u!1001 &1142714833565880525
 PrefabInstance:
