@@ -13,22 +13,18 @@ public class P_Buff : Passive
     [SerializeField] public float attributePercentage;
     [Tooltip("The value of which to change the second attribute. A value of 1.25 means a 25% percent increase.")]
     [SerializeField] public float secondAttributePercentage;
-
     private AttributeController ac;
     private Buff buffReference = null;
     private bool validity;
 
     public override void Initialize(GameObject obj)
     {
-        Debug.Log("Initialized passive");
         ac = obj.GetComponent<AttributeController>();
         validity = true;
-
     }
 
     public override void TriggerPassive()
     {
-        Debug.Log("Triggered Passive");
         if (secondAttribute != "")
         {
             buffReference = ac.AddBuff(attribute, secondAttribute, attributePercentage, secondAttributePercentage);
@@ -37,9 +33,7 @@ public class P_Buff : Passive
         {
             buffReference = ac.AddBuff(attribute, attributePercentage);
         }
-
         validity = false;
-
     }
 
     public override void DeTriggerPassive()
