@@ -10650,18 +10650,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4158066617535324497}
     m_Modifications:
-    - target: {fileID: 818980358, guid: ee42cd0995687dc41b167485bca81841, type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 1.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 818980358, guid: ee42cd0995687dc41b167485bca81841, type: 3}
-      propertyPath: InitialModule.startSpeed.minScalar
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 818980358, guid: ee42cd0995687dc41b167485bca81841, type: 3}
-      propertyPath: InitialModule.gravityModifier.scalar
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 685327040004643852, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -10671,41 +10659,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: looping
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: moveWithTransform
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 0.025
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: TrailModule.mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: TrailModule.lifetime.scalar
-      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 3027235087010105665, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
@@ -10767,38 +10720,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5065991170005627374, guid: ee42cd0995687dc41b167485bca81841,
+    - target: {fileID: 5877993609706822723, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
-      propertyPath: active
+      propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 6147567574041687757, guid: ee42cd0995687dc41b167485bca81841,
+    - target: {fileID: 5877993609706822723, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
-      propertyPath: m_RenderAlignment
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6662323191297907505, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: lineEffect
+      propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 1220493415093097784}
-    - target: {fileID: 7057530327100022274, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.33
       objectReference: {fileID: 0}
-    - target: {fileID: 8714417031819896354, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: weaponAttributesBase.accuracy
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 8714417031819896354, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: weaponAttributesBase.heatGeneration
-      value: 0.5
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1953758404341273910, guid: ee42cd0995687dc41b167485bca81841, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee42cd0995687dc41b167485bca81841, type: 3}
 --- !u!4 &1420478635511701220 stripped
 Transform:
@@ -10806,16 +10738,16 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4158066617028368293}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7332203421648964756 stripped
+--- !u!114 &1420478635511701222 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6662323191297907505, guid: ee42cd0995687dc41b167485bca81841,
+  m_CorrespondingSourceObject: {fileID: 3027235087010105667, guid: ee42cd0995687dc41b167485bca81841,
     type: 3}
   m_PrefabInstance: {fileID: 4158066617028368293}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef03fd49b93f1a5439a5e53a8487c55d, type: 3}
+  m_Script: {fileID: 11500000, guid: 76b68effcdb42c849b138f4d0e316849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1420478635511701225 stripped
@@ -10842,22 +10774,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 587c4a29234d7ad499936acdb98c1bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!198 &1220493415093097784 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2973637742781596317, guid: ee42cd0995687dc41b167485bca81841,
-    type: 3}
-  m_PrefabInstance: {fileID: 4158066617028368293}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1420478635511701222 stripped
+--- !u!114 &7332203421648964756 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3027235087010105667, guid: ee42cd0995687dc41b167485bca81841,
+  m_CorrespondingSourceObject: {fileID: 6662323191297907505, guid: ee42cd0995687dc41b167485bca81841,
     type: 3}
   m_PrefabInstance: {fileID: 4158066617028368293}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76b68effcdb42c849b138f4d0e316849, type: 3}
+  m_Script: {fileID: 11500000, guid: ef03fd49b93f1a5439a5e53a8487c55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4158066617028368479

@@ -24,7 +24,7 @@ public class MainMenu : MonoBehaviour
     #region mainMenu crap
     public void StartButton ()
     {
-        SceneManager.LoadScene("Hub");
+        SceneManager.LoadScene(1);
     }
 
     public void ExitButton ()
