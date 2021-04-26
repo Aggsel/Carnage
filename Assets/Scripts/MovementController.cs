@@ -405,7 +405,7 @@ public class MovementController : MonoBehaviour
             //slope jitter fix
             RaycastHit hit;
             Ray ray = new Ray(transform.position, Vector3.down);
-            Debug.DrawRay(transform.position, Vector3.down * 2.0f, Color.cyan);
+            //Debug.DrawRay(transform.position, Vector3.down * 2.0f, Color.cyan);
 
             if (Physics.Raycast(ray, out hit, 2.0f, wallLayermask))
             {
@@ -417,6 +417,19 @@ public class MovementController : MonoBehaviour
                         cc.Move(((dir / 2) + (Vector3.down * edgeForce)) * Time.deltaTime);
                     }
                 }
+            }
+
+            //stuck in roof fix
+            RaycastHit hit2;
+            Vector3 poss = transform.position + new Vector3(0, cc.height * 0.5f, 0);
+            Ray ray2 = new Ray(poss, Vector3.up);
+            //Debug.DrawRay(poss, Vector3.up * 0.25f, Color.red);
+
+            if (Physics.Raycast(ray2, out hit2, 0.35f, wallLayermask))
+            {
+                upMovement = Vector3.zero;
+                verticalVelocity = 0.0f;
+                dir = new Vector3(dir.x, -fallForce * 9.81f, dir.z);
             }
         }
     }
