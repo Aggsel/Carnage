@@ -9,8 +9,6 @@ public class A_Buff : Active
     [SerializeField] private string attributeToBuff = "firerate";
     [Tooltip("Percentages to shift the attribute with, a value of 2.5 equals 250% modifier.")]
     [SerializeField] private float increment = 0f;
-
-
     private Buff reference = null;
     private AttributeController ac;
 
@@ -31,5 +29,4 @@ public class A_Buff : Active
             ac.RemoveBuff(reference);
         }
     }
-
 }
