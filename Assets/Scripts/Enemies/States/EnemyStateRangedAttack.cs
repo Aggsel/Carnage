@@ -11,7 +11,7 @@ public class EnemyStateRangedAttack : EnemyState
     [SerializeField] private float shotCooldown = 0.2f;
     private float timeOutOfSight = 0.0f;
 
-    private float attackRange = 30.0f; //TODO: Remove this.
+    private float attackRange = 15.0f; //TODO: Remove this.
 
     public EnemyStateRangedAttack(EnemyBehavior behaviorReference) : base(behaviorReference){}
 
@@ -20,6 +20,8 @@ public class EnemyStateRangedAttack : EnemyState
         
         agent.ResetPath();
         agent.isStopped = true;
+
+        anim.SetTrigger("attack");
 
         SetDebugColor(Color.white);
     }
@@ -33,10 +35,10 @@ public class EnemyStateRangedAttack : EnemyState
     public override void Update(){
         base.Update();
 
-        if(base.timer >= shotCooldown){
+        /*if(base.timer >= shotCooldown){
             base.timer = 0.0f;
-            Attack();
-        }
+            RangedAttack();
+        }*/
 
         RotateTowardsTarget();
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
@@ -45,8 +47,8 @@ public class EnemyStateRangedAttack : EnemyState
         if(!lineOfSight && timeOutOfSight >= 2.0f)
             SetState(behavior.chaseState);
 
-        if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) >= attackRange)
-            SetState(behavior.chaseState);
+        //if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) >= attackRange)
+        //    SetState(behavior.chaseState);
     }
 
     private void RotateTowardsTarget(){
@@ -54,8 +56,17 @@ public class EnemyStateRangedAttack : EnemyState
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * rotationSpeed);
     }
 
-    private void Attack(){
+    public void RangedAttack(){
         //Fire projectile towards behaviour.GetTargetPosition()
+        Debug.Log("FIREBALL");
+    }
+
+    public void StopRangedAttack()
+    {
+        anim.ResetTrigger("attack");
+        //anim.SetTrigger("attack");
+        SetState(behavior.chaseState);
+        //Debug.Log("Reset Trigger");
     }
 
     private bool CheckLineOfSight(){

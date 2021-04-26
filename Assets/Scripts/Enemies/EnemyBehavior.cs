@@ -22,7 +22,12 @@ public class EnemyBehavior : MonoBehaviour
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
 
+    [HideInInspector] public Animator anim = null;
+
     protected virtual void Start(){
+
+        anim = GetComponentInChildren<Animator>();
+
         if(this.agent == null)
             this.agent = GetComponent<NavMeshAgent>();
 
@@ -44,6 +49,11 @@ public class EnemyBehavior : MonoBehaviour
 
     public NavMeshAgent GetAgent(){
         return this.agent;
+    }
+
+    public void Attack_Main ()
+    {
+        Debug.Log("kuk");
     }
 
     public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition){
