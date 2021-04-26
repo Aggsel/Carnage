@@ -10,6 +10,11 @@ public class RoomAsset : ScriptableObject
     [HideInInspector] [SerializeField] private RoomManager roomManager = null;
     [SerializeField] private int doorMask = 0;  //What walls CAN be doors.
 
+    [Header("Items")]
+    [SerializeField] private GameObject itemSpawnPrefab = null;
+    [Range(0.0f,1.0f)]
+    [SerializeField] private float spawnChance = 0.1f;
+
     [Header("Enemy Spawning")]
     [Tooltip(@"How the difficulty changes depending on where in the level this room spawns. 
     First value is if the room is at the begining of the level, second if it is at the end. 
@@ -45,6 +50,16 @@ public class RoomAsset : ScriptableObject
 
     public int GetEnemyWaveCount(){
         return numberOfEnemyWaves;
+    }
+
+    public GameObject GetItemSpawnPrefab(){
+        if(Random.Range(0.0f, 1.0f) >= spawnChance)
+            return null;
+
+        if(itemSpawnPrefab != null)
+            return itemSpawnPrefab;
+            
+        return null;
     }
 
     //Checks whether or not a mask works with a room configuration.
