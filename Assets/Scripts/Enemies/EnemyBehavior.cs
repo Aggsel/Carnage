@@ -75,7 +75,8 @@ public class EnemyBehavior : MonoBehaviour
     }
     
     private void OnDestroy(){
-        parentSpawn?.ReportDeath(this);
+        if(this != null)    //In order to prevent unwanted behaviour while destroying enemies when exiting the game.
+            parentSpawn?.ReportDeath(this);
     }
 
 }
