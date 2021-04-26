@@ -46,7 +46,6 @@ public class RoomManager : MonoBehaviour
     public void OnEnterRoom(){
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
-
         this.parentLevelManager.ActivateNeighbors(this.gridPosition);
     }
 

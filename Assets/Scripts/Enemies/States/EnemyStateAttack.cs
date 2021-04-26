@@ -33,12 +33,7 @@ public class EnemyStateAttack : EnemyState
 
     public override void Update(){
         base.Update();
-
         RotateTowardsTarget();
-        /*if(base.timer >= windupDuration){
-            Attack();
-            SetState(behavior.chaseState);
-        }*/
     }
 
     private void RotateTowardsTarget(){
