@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class EnemyBehavior : MonoBehaviour
 {
     private EnemySpawnPoint parentSpawn;
-    protected EnemyState currentState = null;
+    [SerializeField] protected EnemyState currentState = null;
     [Header("Blood Decals")]
     [SerializeField] GameObject bloodDecalProjector = null;
     [Tooltip("A value of 0.0f will set the decals rotation to continue from the shot direction. A value of 1.0f will rotate the decals to face straight down.")]

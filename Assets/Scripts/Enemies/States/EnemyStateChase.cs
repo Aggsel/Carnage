@@ -8,7 +8,7 @@ public class EnemyStateChase : EnemyState
     [Tooltip("Enemy movement speed while chasing the player.")]
     [SerializeField] private float chaseSpeed = 12.0f;
     [Tooltip("What distance from the player that this enemy should stop.")]
-    [SerializeField] private float stoppingDistance = 1.0f;
+    [SerializeField] public float stoppingDistance = 1.0f;
     private float previousStoppingDistance = 0.0f;
     private float previousSpeed = 0.0f;
     
