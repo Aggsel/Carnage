@@ -37,7 +37,7 @@ public class EnemyStateChase : EnemyState
 
         agent.SetDestination(behavior.GetTargetPosition());
 
-        if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= attackInitiationRange)
+        if (Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= attackInitiationRange)
             SetState(behavior.attackState);
     }
 }

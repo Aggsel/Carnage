@@ -11,7 +11,7 @@ public class EnemyStateRangedAttack : EnemyState
     [SerializeField] private float shotCooldown = 0.2f;
     private float timeOutOfSight = 0.0f;
 
-    private float attackRange = 30.0f; //TODO: Remove this.
+    private float attackRange = 15.0f; //TODO: Remove this.
 
     public EnemyStateRangedAttack(EnemyBehavior behaviorReference) : base(behaviorReference){}
 
@@ -20,6 +20,8 @@ public class EnemyStateRangedAttack : EnemyState
         
         agent.ResetPath();
         agent.isStopped = true;
+
+        anim.SetTrigger("attack");
 
         SetDebugColor(Color.white);
     }
@@ -33,19 +35,11 @@ public class EnemyStateRangedAttack : EnemyState
     public override void Update(){
         base.Update();
 
-        if(base.timer >= shotCooldown){
-            base.timer = 0.0f;
-            Attack();
-        }
-
         RotateTowardsTarget();
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
         timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
         if(!lineOfSight && timeOutOfSight >= 2.0f)
-            SetState(behavior.chaseState);
-
-        if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) >= attackRange)
             SetState(behavior.chaseState);
     }
 
@@ -54,21 +48,12 @@ public class EnemyStateRangedAttack : EnemyState
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * rotationSpeed);
     }
 
-    private void Attack(){
+    public void RangedAttack(){
         //Fire projectile towards behaviour.GetTargetPosition()
     }
 
-    private bool CheckLineOfSight(){
-        RaycastHit hit;
-        if (Physics.Raycast(agent.transform.position, base.behavior.GetTargetPosition() - agent.transform.position, out hit, Mathf.Infinity)){
-            if(hit.collider.GetComponent<MovementController>() != null){
-                return true;
-            }
-            return false;
-        }
-        else{
-            return false;
-        }
+    public void StopRangedAttack(){
+        anim.ResetTrigger("attack");
+        SetState(behavior.chaseState);
     }
-
 }

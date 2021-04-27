@@ -27,6 +27,6 @@ public class TimeChallenge : MonoBehaviour
     private IEnumerator GoToHub(){
         
         yield return new WaitForSeconds(5.0f);
-        SceneManager.LoadScene("Hub");
+        SceneManager.LoadScene(1);
     }
 }

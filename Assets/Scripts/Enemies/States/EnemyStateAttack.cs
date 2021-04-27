@@ -21,6 +21,7 @@ public class EnemyStateAttack : EnemyState
         agent.ResetPath();
         agent.isStopped = true;
 
+        anim.SetTrigger("attack");
         SetDebugColor(Color.green);
     }
 
@@ -32,12 +33,7 @@ public class EnemyStateAttack : EnemyState
 
     public override void Update(){
         base.Update();
-
         RotateTowardsTarget();
-        if(base.timer >= windupDuration){
-            Attack();
-            SetState(behavior.chaseState);
-        }
     }
 
     private void RotateTowardsTarget(){
@@ -45,12 +41,17 @@ public class EnemyStateAttack : EnemyState
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * rotationSpeed);
     }
 
-    private void Attack(){
+    public void StopAttack ()
+    {
+        anim.ResetTrigger("attack");
+        SetState(behavior.chaseState);
+    }
+
+    public void Attack(){
         RaycastHit hit;
         if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, attackRange)){
             Vector3 dir = agent.transform.position - hit.point;
             hit.collider.GetComponent<HealthController>()?.OnShot(new HitObject(dir, hit.point, damage: 1.0f));
         }
     }
-
 }

@@ -22,7 +22,12 @@ public class EnemyBehavior : MonoBehaviour
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
 
+    [HideInInspector] public Animator anim = null;
+
     protected virtual void Start(){
+
+        anim = GetComponentInChildren<Animator>();
+
         if(this.agent == null)
             this.agent = GetComponent<NavMeshAgent>();
 
