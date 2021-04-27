@@ -100,10 +100,12 @@ public class MovementController : MonoBehaviour
     private float startFov = 0.0f;
     private float endFov = 0.0f;
     private float half = 0.0f;
+    private CapsuleCollider cap = null;
 
     private void Start ()
     {
         cc = GetComponent<CharacterController>();
+        cap = GetComponent<CapsuleCollider>();
         speed = movementVar.runSpeed;
     }
 
@@ -252,6 +254,7 @@ public class MovementController : MonoBehaviour
             positioningList.Remove(positioningList[0]);
             half = 0.0f;
             fovCamera.fieldOfView = startFov;
+            cap.enabled = false;
             cc.enabled = true;
         }
     }
@@ -290,6 +293,7 @@ public class MovementController : MonoBehaviour
             }
 
             cc.enabled = false;
+            cap.enabled = true;
             verticalVelocity = 0.0f; //reset upforce
             AdditionalPositioning(positioningList[0], globalMotion);
             return;
