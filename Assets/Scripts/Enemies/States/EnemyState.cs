@@ -14,11 +14,7 @@ public class EnemyState
     protected Animator anim;
     protected float timer = 0.0f;
 
-    public EnemyState(EnemyBehavior behaviourReference){
-        this.behavior = behaviourReference;
-        this.agent = behaviourReference.GetAgent();
-        this.anim = behaviourReference.anim;
-    }
+    public EnemyState(){}
 
     public virtual void Update(){
         timer += Time.deltaTime;
@@ -27,6 +23,12 @@ public class EnemyState
             Debug.Log("Agent was null :(");
 
         anim.SetFloat("speed", agent.velocity.magnitude);
+    }
+
+    public void SetBehaviour(EnemyBehavior behaviorReference){
+        this.behavior = behaviorReference;
+        this.agent = behaviorReference.GetAgent();
+        this.anim = behaviorReference.anim;
     }
 
     public virtual void OnShot(HitObject hit){}

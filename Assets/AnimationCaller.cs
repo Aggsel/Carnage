@@ -30,4 +30,17 @@ public class AnimationCaller : MonoBehaviour
         EnemyBehavior eb = GetComponentInParent<EnemyBehavior>();
         eb.rangedAttackState.StopRangedAttack();
     }
+
+    //player
+    public void PlayerMeleeStart ()
+    {
+        MeleeController mc = GetComponentInParent<MeleeController>();
+        mc.StartMelee();
+    }
+
+    public void PlayerMeleeReset ()
+    {
+        MeleeController mc = GetComponentInParent<MeleeController>();
+        mc.ResetMelee();
+    }
 }

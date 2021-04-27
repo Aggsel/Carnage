@@ -18,7 +18,7 @@ public class EnemyMeleeBehavior : EnemyBehavior
         //Apply knockback, this should not be applied here.
         this.agent.transform.position += new Vector3(hit.shotDirection.x, 0.0f, hit.shotDirection.z).normalized * hit.knockback;
 
-        this.health -= 5.0f;
+        this.health -= hit.damage;
         if(CheckDeathCriteria())
             Destroy(this.gameObject);
     }

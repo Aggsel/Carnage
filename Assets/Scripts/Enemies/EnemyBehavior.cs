@@ -7,17 +7,17 @@ using UnityEngine.AI;
 public class EnemyBehavior : MonoBehaviour
 {
     private EnemySpawnPoint parentSpawn;
-    protected EnemyState currentState = null;
+    [SerializeField] protected EnemyState currentState = null;
     [Header("Blood Decals")]
     [SerializeField] GameObject bloodDecalProjector = null;
     [Tooltip("A value of 0.0f will set the decals rotation to continue from the shot direction. A value of 1.0f will rotate the decals to face straight down.")]
     [Range(0.0f,1.0f)]
     [SerializeField] private float decalRotation = 0.35f;
 
-    [SerializeField] public EnemyStateChase chaseState;
-    [SerializeField] public EnemyStatePatrol patrolState;
-    [SerializeField] public EnemyStateAttack attackState;
-    [SerializeField] public EnemyStateRangedAttack rangedAttackState;
+    [SerializeField] public EnemyStateChase chaseState = new EnemyStateChase();
+    [SerializeField] public EnemyStatePatrol patrolState = new EnemyStatePatrol();
+    [SerializeField] public EnemyStateAttack attackState = new EnemyStateAttack();
+    [SerializeField] public EnemyStateRangedAttack rangedAttackState = new EnemyStateRangedAttack();
 
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
@@ -33,10 +33,10 @@ public class EnemyBehavior : MonoBehaviour
 
         this.player = GameObject.Find("Player"); //Don't do this.
 
-        chaseState = new EnemyStateChase(this);
-        patrolState = new EnemyStatePatrol(this);
-        attackState = new EnemyStateAttack(this);
-        rangedAttackState = new EnemyStateRangedAttack(this);
+        chaseState.SetBehaviour(this);
+        patrolState.SetBehaviour(this);
+        attackState.SetBehaviour(this);
+        rangedAttackState.SetBehaviour(this);
     }
 
     protected virtual void Update(){
@@ -68,6 +68,15 @@ public class EnemyBehavior : MonoBehaviour
         currentState?.OnStateExit();
         this.currentState = newState;
         currentState.OnStateEnter();
+    }
+
+    public void FireProjectile(GameObject projectile, Transform spawnTransform = null){
+        if(projectile == null)
+            return;
+        if(spawnTransform == null)
+            spawnTransform = transform;
+        GameObject instantiatedProjectile = Instantiate(projectile, spawnTransform.position, spawnTransform.rotation, transform.parent);
+        instantiatedProjectile.GetComponent<EnemyProjectile>().parent = anim.gameObject;
     }
 
     public virtual void OnShot(HitObject hit){

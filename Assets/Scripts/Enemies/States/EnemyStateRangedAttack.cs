@@ -7,13 +7,13 @@ public class EnemyStateRangedAttack : EnemyState
 {
     [Tooltip("How fast the enemy should rotate toward the player when winding up the attack.")]
     [SerializeField] private float rotationSpeed = 13.0f;
-    [Tooltip("Cooldown before enemy can fire another shot.")]
-    [SerializeField] private float shotCooldown = 0.2f;
+    // [Tooltip("Cooldown before enemy can fire another shot.")]
+    // [SerializeField] private float shotCooldown = 0.2f;
     private float timeOutOfSight = 0.0f;
+    [SerializeField] private GameObject projectilePrefab = null;
+    [SerializeField] private Transform projectileSpawnPosition = null;
 
-    private float attackRange = 15.0f; //TODO: Remove this.
-
-    public EnemyStateRangedAttack(EnemyBehavior behaviorReference) : base(behaviorReference){}
+    public EnemyStateRangedAttack() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();
@@ -39,8 +39,10 @@ public class EnemyStateRangedAttack : EnemyState
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
         timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
-        if(!lineOfSight && timeOutOfSight >= 2.0f)
+        if(!lineOfSight && timeOutOfSight >= 2.0f){
+            Debug.Log("Stop hiding yo");
             SetState(behavior.chaseState);
+        }
     }
 
     private void RotateTowardsTarget(){
@@ -49,6 +51,7 @@ public class EnemyStateRangedAttack : EnemyState
     }
 
     public void RangedAttack(){
+        behavior.FireProjectile(projectilePrefab, projectileSpawnPosition);
         //Fire projectile towards behaviour.GetTargetPosition()
     }
 

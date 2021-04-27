@@ -17,7 +17,7 @@ public class EnemyRangedBehavior : EnemyBehavior
 
         //This is really dumb, ideally the current state should be responsible 
         //for when to change state, NOT the behaviour.
-        if(Vector3.Distance(transform.position, GetTargetPosition()) <= 10.0f && currentState != rangedAttackState){
+        if(Vector3.Distance(transform.position, GetTargetPosition()) <= chaseState.stoppingDistance && currentState != rangedAttackState){
             RotateTowardsTarget();
             if(EnemyBehavior.CheckLineOfSight(agent.transform.position, GetTargetPosition()))
                 SetState(rangedAttackState);
@@ -34,7 +34,7 @@ public class EnemyRangedBehavior : EnemyBehavior
         base.OnShot(hit);
         currentState.OnShot(hit);
 
-        this.health -= 5.0f;
+        this.health -= hit.damage;
         if(CheckDeathCriteria())
             Destroy(this.gameObject);
     }
