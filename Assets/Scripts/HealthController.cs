@@ -60,7 +60,7 @@ public class HealthController : MonoBehaviour
         bloodImageGO.SetActive(true);
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
 
-        if (damageIndicator == null)
+        if (bloodImageGO == null)
         {
             Debug.LogWarning("Missing damage indicator reference!");
         }
