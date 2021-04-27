@@ -7,13 +7,17 @@ using UnityEngine.VFX;
 public class FiringController : MonoBehaviour
 {
     [SerializeField] private Camera bulletCam = null;
-
+    [SerializeField] private Transform muzzlePoint = null;
+    [SerializeField] private ParticleSystem lineEffect = null;
+    [SerializeField] private ParticleSystem cases = null;
     [SerializeField] private GameObject hitEffect = null;
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
-    private int bitmask;
+    private ProjectileShotController psc;
+    private Screenshake ss;
 
+    private int bitmask;
     private AttributeController attributeInstance;
     private float timeToFire = 0f;
     private bool overheated = false;
@@ -22,6 +26,7 @@ public class FiringController : MonoBehaviour
     {
         GameObject player = this.gameObject;
         attributeInstance = player.GetComponent<AttributeController>();
+        ss = FindObjectOfType<Screenshake>();
         int playerLayer = 12;
         bitmask = ~(1 << playerLayer);
     }
@@ -51,6 +56,24 @@ public class FiringController : MonoBehaviour
         direction.z += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         RaycastHit bulletHit;
 
+        lineEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        muzzlePoint.transform.LookAt(direction + muzzlePoint.transform.position);
+
+        lineEffect.Play();
+
+        //bullet cases
+        cases.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        ParticleSystem.MainModule main = cases.main;
+
+        main.startRotationX = (bulletCam.transform.eulerAngles.x + 90.0f + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationY = (bulletCam.transform.eulerAngles.y + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationZ = bulletCam.transform.eulerAngles.z * Mathf.Deg2Rad;
+
+        cases.Play();
+
+        //recoil
+        ss.RecoilCall();
+
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
         {
             //draw line
@@ -61,7 +84,7 @@ public class FiringController : MonoBehaviour
             {
                 target.TakeDamage(attributeInstance.weaponAttributesResultant.damage);
             }
-            bulletHit.transform.GetComponent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point));
+            bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point));
             GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
             Destroy(impact, 2f);
         }
@@ -77,4 +100,10 @@ public class FiringController : MonoBehaviour
     {
         overheated = false;
     }
+
+    public void InitializeProjectile()
+    {
+
+    }
+
 }

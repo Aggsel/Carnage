@@ -35,13 +35,9 @@ public class EnemyStateChase : EnemyState
     public override void Update(){
         base.Update();
 
-        Debug.DrawLine(behaviour.transform.position, agent.destination, Color.white);
-        agent.SetDestination(behaviour.GetTargetTransform().position);
+        agent.SetDestination(behavior.GetTargetPosition());
 
-        if(this.timer >= 10.0f)
-            SetState(behaviour.patrolState);
-
-        if(Vector3.Distance(behaviour.transform.position, behaviour.GetTargetTransform().position) <= attackInitiationRange)
-            SetState(behaviour.attackState);
+        if (Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= attackInitiationRange)
+            SetState(behavior.attackState);
     }
 }

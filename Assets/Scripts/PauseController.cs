@@ -79,7 +79,7 @@ public class PauseController : MonoBehaviour
     [SerializeField] private KeybindTexts keybindTexts = new KeybindTexts();
 
     private bool paused = false;
-    private int menuStage = 0; //nothing, pause, options
+    private int menuStage = 0; //nothing, pause, options, exitConfirm
     //private MovementController mc = null;
     private SerializeController sc = null; //use unityActions instead
 
@@ -93,23 +93,8 @@ public class PauseController : MonoBehaviour
     //test
     public static UnityAction<KeyBindAsignments> updateKeysFunction = (_) => { }; //wtf är ens detta
 
-    private void Awake ()
-    {
-        //have to put it in Awake cuz of serialization
-        //mc = FindObjectOfType<MovementController>();
-    }
-
     private void Start ()
     {
-        //reset gamma, dont do this in build
-        /*if (!profile.TryGet<LiftGammaGain>(out var gamma))
-        {
-            Debug.LogWarning("THIS SHOULD NOT HAPPEN");
-            gamma = profile.Add<LiftGammaGain>(false);
-        }
-        gamma.gamma.value = new Vector4(gamma.gamma.value.x, gamma.gamma.value.y, gamma.gamma.value.z, 0.0f);
-        */
-
         UpdatePause(false);
         updateKeysFunction.Invoke(keybindAssignments);
         sc = FindObjectOfType<SerializeController>();
@@ -200,10 +185,54 @@ public class PauseController : MonoBehaviour
         }
     }
 
-    //setting & changine keycode
-    private void OnGUI ()
+    #region main code
+    private void UpdateUi (int index)
     {
-        if(changingKey)
+        menuStage = index;
+
+        for (int i = 0; i < menuObjects.Length; i++)
+        {
+            menuObjects[i].SetActive(false);
+        }
+
+        menuObjects[menuStage].SetActive(true);
+    }
+
+    private void LockCursor (bool yes)
+    {
+        Cursor.lockState = !yes ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = yes;
+    }
+
+    private void UpdatePause (bool yes)
+    {
+        paused = yes;
+
+        for (int i = 0; i < scripts.Length; i++)
+        {
+            scripts[i].enabled = !paused;
+        }
+
+        if(paused)
+        {
+            UpdateUi(1);
+        }
+        else
+        {
+            UpdateUi(0);
+        }
+
+        Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
+        LockCursor(paused);
+    }
+    #endregion
+
+    #region keybinds
+
+    //setting & changine keycode
+    private void OnGUI()
+    {
+        if (changingKey)
         {
             //all input except shift & alt
             Event e = Event.current;
@@ -216,14 +245,14 @@ public class PauseController : MonoBehaviour
                 SetKeycode(changingKeyIndex, changingKeycode);
             }
 
-            if(e.type.Equals(EventType.KeyUp))
+            if (e.type.Equals(EventType.KeyUp))
             {
                 keydown = false;
             }
         }
     }
 
-    private void SetKeycode (int keyIndex, KeyCode key)
+    private void SetKeycode(int keyIndex, KeyCode key)
     {
         //Debug.Log("Change " + keyIndex + " to " + key.ToString());
         keydown = false;
@@ -270,49 +299,6 @@ public class PauseController : MonoBehaviour
         changingKeyText.text = key.ToString();
     }
 
-    #region main code
-    private void UpdateUi (int index)
-    {
-        menuStage = index;
-
-        for (int i = 0; i < menuObjects.Length; i++)
-        {
-            menuObjects[i].SetActive(false);
-        }
-
-        menuObjects[menuStage].SetActive(true);
-    }
-
-    private void LockCursor (bool yes)
-    {
-        Cursor.lockState = !yes ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = yes;
-    }
-
-    private void UpdatePause (bool yes)
-    {
-        paused = yes;
-
-        for (int i = 0; i < scripts.Length; i++)
-        {
-            scripts[i].enabled = !paused;
-        }
-
-        if(paused)
-        {
-            UpdateUi(1);
-        }
-        else
-        {
-            UpdateUi(0);
-        }
-
-        Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
-        LockCursor(paused);
-    }
-    #endregion
-    
-    #region keybinds
     //keybindings
     //optimize this break out to one extra func that does the repeating stuff
     public void ChangeButton_Dash(TextMeshProUGUI text)
@@ -444,6 +430,16 @@ public class PauseController : MonoBehaviour
 
     #region button calls / options
     //main pause
+    public void ButtonYes () //exit confirm
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void ButtonNo () //exit confirm
+    {
+        UpdateUi(1);
+    }
+
     public void ButtonResume ()
     {
         UpdatePause(false);
@@ -451,7 +447,8 @@ public class PauseController : MonoBehaviour
 
     public void ButtonMenu()
     {
-        Application.Quit();
+        UpdateUi(3);
+        //Application.Quit();
     }
     
     public void ButtonOptions ()
@@ -462,6 +459,7 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
+        Debug.Log("SAVE");
         sc.SavePreferences();
     }
 

@@ -97,8 +97,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8254629828873948769}
-  - component: {fileID: 7853663415212059066}
   - component: {fileID: 111606008034460740}
+  - component: {fileID: 2127659739793128982}
   m_Layer: 0
   m_Name: Prefab_Tile_Floor
   m_TagString: Untagged
@@ -113,7 +113,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7310720347460859814}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -122,14 +122,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7853663415212059066
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7310720347460859814}
-  m_Mesh: {fileID: -4375612294980325883, guid: 4db01aa22718bb941a46d9a492ec881c, type: 3}
 --- !u!23 &111606008034460740
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -148,7 +140,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5561349426305759274, guid: ba0322b49780ac4449a09d15c294f279, type: 3}
+  - {fileID: 2100000, guid: e4a14d7504679ec489ac414b1eee7be2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -169,3 +161,11 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!33 &2127659739793128982
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7310720347460859814}
+  m_Mesh: {fileID: -4375612294980325883, guid: 4db01aa22718bb941a46d9a492ec881c, type: 3}

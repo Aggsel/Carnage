@@ -15,15 +15,17 @@ public class EnemyRangedBehavior : EnemyBehavior
     protected override void Update(){
         base.Update();
 
-        if(Vector3.Distance(transform.position, GetTargetTransform().position) <= 20.0f){
+        //This is really dumb, ideally the current state should be responsible 
+        //for when to change state, NOT the behaviour.
+        if(Vector3.Distance(transform.position, GetTargetPosition()) <= 10.0f && currentState != rangedAttackState){
             RotateTowardsTarget();
-            if(CheckLineOfSight())
+            if(EnemyBehavior.CheckLineOfSight(agent.transform.position, GetTargetPosition()))
                 SetState(rangedAttackState);
         }
     }
 
     private void RotateTowardsTarget(){
-        Vector3 direction = (GetTargetTransform().position - agent.transform.position).normalized;
+        Vector3 direction = (GetTargetPosition() - agent.transform.position).normalized;
         direction = new Vector3(direction.x, 0, direction.z);
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * 12.0f);
     }
@@ -32,24 +34,9 @@ public class EnemyRangedBehavior : EnemyBehavior
         base.OnShot(hit);
         currentState.OnShot(hit);
 
-        //Apply knockback, this should not be applied here.
-        this.agent.transform.position += new Vector3(hit.shotDirection.x, 0.0f, hit.shotDirection.z).normalized * hit.knockback;
-
         this.health -= 5.0f;
         if(CheckDeathCriteria())
             Destroy(this.gameObject);
-    }
-
-    private bool CheckLineOfSight(){
-        RaycastHit hit;
-        if (Physics.Raycast(agent.transform.position, GetTargetTransform().position - agent.transform.position, out hit, Mathf.Infinity)){
-            if(hit.collider.GetComponent<MovementController>() != null)
-                return true;
-            return false;
-        }
-        else{
-            return false;
-        }
     }
 
     private bool CheckDeathCriteria(){
