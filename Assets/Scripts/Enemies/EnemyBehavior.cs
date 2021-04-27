@@ -51,11 +51,6 @@ public class EnemyBehavior : MonoBehaviour
         return this.agent;
     }
 
-    public void Attack_Main ()
-    {
-        Debug.Log("kuk");
-    }
-
     public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition){
         RaycastHit hit;
         if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, Mathf.Infinity)){
