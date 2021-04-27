@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
 
     private void Start ()
     {
+        Time.timeScale = 1.0f;
+
         version = Application.version;
 
         //useful later
@@ -24,7 +26,7 @@ public class MainMenu : MonoBehaviour
     #region mainMenu crap
     public void StartButton ()
     {
-        SceneManager.LoadScene("Hub");
+        SceneManager.LoadScene(1);
     }
 
     public void ExitButton ()

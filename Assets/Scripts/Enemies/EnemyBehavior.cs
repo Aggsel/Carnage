@@ -22,7 +22,12 @@ public class EnemyBehavior : MonoBehaviour
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
 
+    [HideInInspector] public Animator anim = null;
+
     protected virtual void Start(){
+
+        anim = GetComponentInChildren<Animator>();
+
         if(this.agent == null)
             this.agent = GetComponent<NavMeshAgent>();
 
@@ -75,7 +80,8 @@ public class EnemyBehavior : MonoBehaviour
     }
     
     private void OnDestroy(){
-        parentSpawn?.ReportDeath(this);
+        if(this != null)    //In order to prevent unwanted behaviour while destroying enemies when exiting the game.
+            parentSpawn?.ReportDeath(this);
     }
 
 }

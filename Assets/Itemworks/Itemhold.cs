@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Controllers/Itemhold")]
 public class Itemhold : ScriptableObject
 {
-    public Active[] charActives;    // All actives
-    //public Passive[] charPassives;
+    public Active[] actives;    // All actives
+    public Passive[] passives;  // All passives
 }

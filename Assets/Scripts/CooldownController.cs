@@ -5,7 +5,7 @@ using UnityEngine;
 public class CooldownController : MonoBehaviour
 {
     public Active active;
-    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject player = null;
     private float cooldownDuration;
     private float readyTime;
     private float cooldownTimeLeft;
@@ -29,16 +29,14 @@ public class CooldownController : MonoBehaviour
         PauseController.updateKeysFunction -= ReadKeybinds;
     }
 
-
     void Start()
     {
-        //add a way to re-initialize items onto cooldownController (from itemholder?)
         Initialize(active, player);
     }
 
     public void Initialize(Active selectedActive, GameObject player)
     {
-        activeActuated = false;
+        DeTrigger();
         active = selectedActive;
         if(active != null)
         {
@@ -85,11 +83,13 @@ public class CooldownController : MonoBehaviour
 
     private void DeTrigger()
     {
-        activeActuated = false;
-        activeActuationTimeLeft = activeActuationTime;
-        active.DetriggerActive();
+        if(active != null)
+        {
+            activeActuated = false;
+            activeActuationTimeLeft = activeActuationTime;
+            active.DetriggerActive();
+        }
     }
-
 
     private void ActiveReady()
     {
@@ -113,7 +113,4 @@ public class CooldownController : MonoBehaviour
             readyTime = cooldownDuration + Time.time;
         }
     }
-
-
-
 }
