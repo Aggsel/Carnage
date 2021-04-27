@@ -8,7 +8,6 @@ public class EnemyMeleeBehavior : EnemyBehavior
 
     protected override void Start(){
         base.Start();
-
         SetState(chaseState);
     }
 
