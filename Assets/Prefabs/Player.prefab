@@ -3796,7 +3796,7 @@ ParticleSystem:
         m_RotationOrder: 4
     minKillSpeed: 0
     maxKillSpeed: 10000
-    radiusScale: 1
+    radiusScale: 0.03
     collidesWith:
       serializedVersion: 2
       m_Bits: 4294967295
@@ -6467,7 +6467,7 @@ MonoBehaviour:
   hitEffect: {fileID: 6817321594469807644, guid: 267d378f6915a1545b8a2b2ebb418bcf,
     type: 3}
   overheatObject: {fileID: 3027235087629037940}
-  muzzleFlash: {fileID: 0}
+  muzzleFlash: {fileID: 5877993609706822722}
 --- !u!114 &6100689584837751783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6510,7 +6510,7 @@ MonoBehaviour:
   cameraVar:
     minX: -90
     maxX: 90
-    mouseSensitivity: 16
+    mouseSensitivity: 12
   dashVar:
     dashLength: 15
     dashSpeed: 35
@@ -6596,6 +6596,8 @@ MonoBehaviour:
   maxHealth: 10
   viewBob: {fileID: 3027235086763249293}
   weaponSway: {fileID: 3027235087629037938}
+  damageIndicator: {fileID: 0}
+  indicatorDuration: 0.45
 --- !u!54 &3545908116954248292
 Rigidbody:
   m_ObjectHideFlags: 0

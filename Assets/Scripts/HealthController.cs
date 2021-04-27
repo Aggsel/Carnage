@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
+
 
 public class HealthController : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class HealthController : MonoBehaviour
     private FiringController firingController;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
+    [SerializeField] private RawImage damageIndicator;
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
@@ -31,9 +34,36 @@ public class HealthController : MonoBehaviour
 
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
+        HideDamageIndicator();
+    }
+
+    private void HideDamageIndicator()
+    {
+        StartCoroutine(FadeImage(true));
+    }
+
+    IEnumerator FadeImage(bool fadeAway)
+    {
+        // fade the overlay
+        if (fadeAway)
+        {
+            for (float i = 1.3f; i >= 0.0f; i -= Time.deltaTime)
+            {
+                damageIndicator.color = new Color(damageIndicator.color.r, damageIndicator.color.g, damageIndicator.color.b, i);
+                yield return null;
+            }
+        }
     }
 
     private void Start() {
+        if(damageIndicator == null)
+        {
+            Debug.LogWarning("Missing damage indicator reference!");
+        }
+        else
+        {
+            damageIndicator.color = new Color(damageIndicator.color.r, damageIndicator.color.g, damageIndicator.color.b, 0.0f);
+        }
         this.currentHealth = maxHealth;
         movementController = GetComponent<MovementController>();
         firingController = GetComponent<FiringController>();
