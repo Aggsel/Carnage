@@ -142,12 +142,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34bbf24e344be674fb3ad11614964dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState:
+    attackInitiationRange: 4
   bloodDecalProjector: {fileID: 1099489180470404072, guid: a634fe900566378439449b167688cb5c,
     type: 3}
   decalRotation: 0.35
   chaseState:
-    attackInitiationRange: 1
-    chaseSpeed: 5
+    attackInitiationRange: 0.9
+    chaseSpeed: 6
     stoppingDistance: 0
   patrolState:
     attackInitiationRange: 0
@@ -155,8 +157,7 @@ MonoBehaviour:
     patrolSpeed: 5
   attackState:
     attackInitiationRange: 0
-    rotationSpeed: 0
-    windupDuration: 0
+    rotationSpeed: 13
     attackRange: 1.5
     damage: 0
   rangedAttackState:
@@ -165,6 +166,8 @@ MonoBehaviour:
     shotCooldown: 0
   agent: {fileID: 0}
   player: {fileID: 0}
+  projectilePrefab: {fileID: 6405931281413678109, guid: d659c977c2f1a904d8317ef009fe73ff,
+    type: 3}
   anim: {fileID: 0}
   health: 10
 --- !u!1001 &3403306408612049747
