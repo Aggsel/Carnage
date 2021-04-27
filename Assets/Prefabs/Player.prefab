@@ -48,7 +48,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -5089,7 +5089,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 47.746483
+  m_Intensity: 1.5915494
   m_Range: 1.5431194
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -6488,6 +6488,11 @@ PrefabInstance:
       propertyPath: TrailModule.lifetime.scalar
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 1940649316566398192, guid: 75f5ea826af8f0c429effef4be034860,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3107912243254962441, guid: 75f5ea826af8f0c429effef4be034860,
         type: 3}
       propertyPath: m_Name
@@ -6556,15 +6561,15 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: -6289332499230727333, guid: 75f5ea826af8f0c429effef4be034860, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 75f5ea826af8f0c429effef4be034860, type: 3}
---- !u!198 &2973637742781596317 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1940649316566398192, guid: 75f5ea826af8f0c429effef4be034860,
-    type: 3}
-  m_PrefabInstance: {fileID: 3723044781676983917}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &9065916821613292141 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5654958520832220160, guid: 75f5ea826af8f0c429effef4be034860,
+    type: 3}
+  m_PrefabInstance: {fileID: 3723044781676983917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &2973637742781596317 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1940649316566398192, guid: 75f5ea826af8f0c429effef4be034860,
     type: 3}
   m_PrefabInstance: {fileID: 3723044781676983917}
   m_PrefabAsset: {fileID: 0}
