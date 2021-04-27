@@ -65,7 +65,7 @@ public class FiringController : MonoBehaviour
         cases.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         ParticleSystem.MainModule main = cases.main;
 
-        main.startRotationX = (bulletCam.transform.eulerAngles.x + 90.0f + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationX = (bulletCam.transform.eulerAngles.x + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
         main.startRotationY = (bulletCam.transform.eulerAngles.y + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
         main.startRotationZ = bulletCam.transform.eulerAngles.z * Mathf.Deg2Rad;
 
