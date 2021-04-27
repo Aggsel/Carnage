@@ -13,10 +13,6 @@ public class MeleeController : MonoBehaviour
         public bool showDebug;
         [Tooltip("The range of the melee attack")]
         public float range;
-        [Tooltip("The speed of which the player can attack (like fireRate of a weapon)")]
-        public float rate;
-        [Tooltip("After a hit ratePadding is added to pad the melee-rate (this reduces melee spam)")]
-        public float ratePadding;
         [Tooltip("Amount of raycasts to detect enemies when using melee, high number means more possibilities to hit enemies")] [Range(1.0f, 10.0f)]
         public int rayAmount;
         [Tooltip("The spread of the 'rayAmount' raycasts. High number means more distance between each ray, these two go hand in hand")] [Range(0.5f, 5.0f)]
@@ -113,6 +109,8 @@ public class MeleeController : MonoBehaviour
 
         if(hitObj != null)
         {
+            StartCoroutine(GetComponent<Screenshake>().Shake(4f, 0.2f));
+
             //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
             if(hitObj.GetComponentInParent<EnemyBehavior>() != null)
             {
