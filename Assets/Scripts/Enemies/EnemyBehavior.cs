@@ -7,43 +7,61 @@ using UnityEngine.AI;
 public class EnemyBehavior : MonoBehaviour
 {
     private EnemySpawnPoint parentSpawn;
-    protected EnemyState currentState = null;
+    [SerializeField] protected EnemyState currentState = null;
     [Header("Blood Decals")]
     [SerializeField] GameObject bloodDecalProjector = null;
     [Tooltip("A value of 0.0f will set the decals rotation to continue from the shot direction. A value of 1.0f will rotate the decals to face straight down.")]
     [Range(0.0f,1.0f)]
     [SerializeField] private float decalRotation = 0.35f;
 
-    [SerializeField] public EnemyStateChase chaseState;
-    [SerializeField] public EnemyStatePatrol patrolState;
-    [SerializeField] public EnemyStateAttack attackState;
-    [SerializeField] public EnemyStateRangedAttack rangedAttackState;
+    [SerializeField] public EnemyStateChase chaseState = new EnemyStateChase();
+    [SerializeField] public EnemyStatePatrol patrolState = new EnemyStatePatrol();
+    [SerializeField] public EnemyStateAttack attackState = new EnemyStateAttack();
+    [SerializeField] public EnemyStateRangedAttack rangedAttackState = new EnemyStateRangedAttack();
 
     [HideInInspector] public NavMeshAgent agent;
-    private GameObject player;
+    [SerializeField] private GameObject player;
+
+    [HideInInspector] public Animator anim = null;
 
     protected virtual void Start(){
+
+        anim = GetComponentInChildren<Animator>();
+
         if(this.agent == null)
             this.agent = GetComponent<NavMeshAgent>();
 
         this.player = GameObject.Find("Player"); //Don't do this.
 
-        chaseState = new EnemyStateChase(this);
-        patrolState = new EnemyStatePatrol(this);
-        attackState = new EnemyStateAttack(this);
-        rangedAttackState = new EnemyStateRangedAttack(this);
+        chaseState.SetBehaviour(this);
+        patrolState.SetBehaviour(this);
+        attackState.SetBehaviour(this);
+        rangedAttackState.SetBehaviour(this);
     }
 
     protected virtual void Update(){
         currentState?.Update();
     }
 
-    public Transform GetTargetTransform(){
-        return player.transform;
+    public Vector3 GetTargetPosition(){
+        return player.transform.position;
     }
 
     public NavMeshAgent GetAgent(){
         return this.agent;
+    }
+
+    public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition){
+        RaycastHit hit;
+        if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, Mathf.Infinity)){
+            //Should this mask passed as an function argument instead?
+            if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0)
+                return true;
+            return false;
+        }
+        else{
+            return false;
+        }
     }
 
     public void SetState(EnemyState newState){
@@ -62,7 +80,8 @@ public class EnemyBehavior : MonoBehaviour
     }
     
     private void OnDestroy(){
-        parentSpawn?.ReportDeath(this);
+        if(this != null)    //In order to prevent unwanted behaviour while destroying enemies when exiting the game.
+            parentSpawn?.ReportDeath(this);
     }
 
 }

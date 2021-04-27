@@ -27,6 +27,14 @@ public class RoomManager : MonoBehaviour
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
     [SerializeField] WaveHandler waveHandler;
 
+    [Header("Item Spawn Points")]
+    [SerializeField] private Transform itemSpawnPoint = null;
+
+    [Header("Mesh Merging")]
+    [Tooltip(@"When merging the meshes the final combined mesh will just have one material. 
+    The merging process will therefore only combine meshes from objects with this material on them.")]
+    [SerializeField] private Material validMaterial;
+
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
     }
@@ -35,17 +43,16 @@ public class RoomManager : MonoBehaviour
         onCombatComplete.RemoveListener(OnCombatComplete);
     }
 
-    //Is called whenever a room is entered for the first time.
     public void OnEnterRoom(){
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
-
-        this.parentLevelManager.ActivateNeighbors(this.gridPosition); //This should activate EVERY time a new room is entered. Not just first time.
+        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
     }
 
+    //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
-        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty);
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount());
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
@@ -58,6 +65,16 @@ public class RoomManager : MonoBehaviour
     //Is called whenever wavehandler has finished the last wave.
     private void OnCombatComplete(){
         OpenDoors(true);
+        
+        SpawnItem();
+    }
+
+    private void SpawnItem(){
+        if(itemSpawnPoint != null){
+            GameObject spawnPrefab = roomAsset.GetItemSpawnPrefab();
+            if(spawnPrefab != null)
+                Instantiate(spawnPrefab, itemSpawnPoint);
+        }
     }
 
     private void OpenDoors(bool open){
@@ -73,6 +90,7 @@ public class RoomManager : MonoBehaviour
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
         this.parentLevelManager = newManager;
+        MergeMeshes();
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
@@ -125,10 +143,56 @@ public class RoomManager : MonoBehaviour
         }
     }
 
+    public void MergeMeshes(){
+        Quaternion oldRot = transform.rotation;
+        Vector3 oldPos = transform.position;
+
+        transform.rotation = Quaternion.identity;
+        transform.position = Vector3.zero;
+
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        Mesh finalMesh = new Mesh();
+
+        CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+
+        for (int i = 0; i < meshFilters.Length; i++){
+            if(meshFilters[i].transform == transform)
+                continue;
+
+            MeshRenderer currentMeshRenderer = meshFilters[i].GetComponent<MeshRenderer>();
+
+            if(currentMeshRenderer.sharedMaterial != validMaterial)
+                continue;
+
+            combiners[i].subMeshIndex = 0;
+            combiners[i].mesh = meshFilters[i].sharedMesh;
+            combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            combiners[i].lightmapScaleOffset = currentMeshRenderer.lightmapScaleOffset;
+
+            Destroy(meshFilters[i]);
+            Destroy(currentMeshRenderer);
+        }
+
+        finalMesh.CombineMeshes(combiners, true, true, true);
+        MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = finalMesh;
+        MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = validMaterial;
+        meshRenderer.lightmapIndex = 0;
+
+        transform.position = oldPos;
+        transform.rotation = oldRot;
+    }
+
     //Will draw a sphere at the spawn/initial room.
     private void OnDrawGizmos(){
         if(this.depth == 0){
             Gizmos.DrawSphere(transform.position, 1.0f);
+        }
+
+        if(itemSpawnPoint != null){
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(itemSpawnPoint.position, 0.8f);
         }
     }
 }

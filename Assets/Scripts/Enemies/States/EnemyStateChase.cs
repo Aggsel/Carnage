@@ -8,11 +8,11 @@ public class EnemyStateChase : EnemyState
     [Tooltip("Enemy movement speed while chasing the player.")]
     [SerializeField] private float chaseSpeed = 12.0f;
     [Tooltip("What distance from the player that this enemy should stop.")]
-    [SerializeField] private float stoppingDistance = 1.0f;
+    [SerializeField] public float stoppingDistance = 1.0f;
     private float previousStoppingDistance = 0.0f;
     private float previousSpeed = 0.0f;
     
-    public EnemyStateChase(EnemyBehavior behaviourReference) : base(behaviourReference){}
+    public EnemyStateChase() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();
@@ -35,13 +35,9 @@ public class EnemyStateChase : EnemyState
     public override void Update(){
         base.Update();
 
-        Debug.DrawLine(behaviour.transform.position, agent.destination, Color.white);
-        agent.SetDestination(behaviour.GetTargetTransform().position);
+        agent.SetDestination(behavior.GetTargetPosition());
 
-        if(this.timer >= 10.0f)
-            SetState(behaviour.patrolState);
-
-        if(Vector3.Distance(behaviour.transform.position, behaviour.GetTargetTransform().position) <= attackInitiationRange)
-            SetState(behaviour.attackState);
+        if (Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= attackInitiationRange)
+            SetState(behavior.attackState);
     }
 }

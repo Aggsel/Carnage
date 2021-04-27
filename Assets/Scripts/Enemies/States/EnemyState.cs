@@ -9,17 +9,26 @@ public class EnemyState
     [Tooltip("How far from the player the enemy has to be in order to initiate an attack. Keep in mind that this is not the range of the actual attack.")]
     [SerializeField] protected float attackInitiationRange = 4.0f;
 
-    protected EnemyBehavior behaviour;
+    protected EnemyBehavior behavior;
     protected NavMeshAgent agent;
+    protected Animator anim;
     protected float timer = 0.0f;
 
-    public EnemyState(EnemyBehavior behaviourReference){
-        this.behaviour = behaviourReference;
-        this.agent = behaviourReference.GetAgent();
-    }
+    public EnemyState(){}
 
     public virtual void Update(){
         timer += Time.deltaTime;
+
+        if(agent == null)
+            Debug.Log("Agent was null :(");
+
+        anim.SetFloat("speed", agent.velocity.magnitude);
+    }
+
+    public void SetBehaviour(EnemyBehavior behaviorReference){
+        this.behavior = behaviorReference;
+        this.agent = behaviorReference.GetAgent();
+        this.anim = behaviorReference.anim;
     }
 
     public virtual void OnShot(HitObject hit){}
@@ -31,7 +40,7 @@ public class EnemyState
     }
 
     public virtual void SetState(EnemyState newState){
-        behaviour.SetState(newState);
+        behavior.SetState(newState);
     }
 
     protected void SetDebugColor(Color color){

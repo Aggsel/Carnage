@@ -38,7 +38,8 @@ public class Viewbob : MonoBehaviour
 
     private void Bobbing ()
     {
-        float vel = cc.velocity.magnitude;
+        float vel = cc.velocity.magnitude; //Mathf.Sqrt(cc.velocity.x * cc.velocity.x + cc.velocity.z * cc.velocity.z);
+        //Debug.Log(vel);
 
         time = Mathf.PingPong(Time.time * bobSpeed, 2.0f) -1.0f;
         dest = (vel * 2.0f) * new Vector3(0, -Mathf.Sin(time * time * (bobStrength * 0.001f)), Mathf.Sin(time * (bobStrength * 0.001f)));
