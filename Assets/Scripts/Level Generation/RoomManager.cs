@@ -189,5 +189,10 @@ public class RoomManager : MonoBehaviour
         if(this.depth == 0){
             Gizmos.DrawSphere(transform.position, 1.0f);
         }
+
+        if(itemSpawnPoint != null){
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(itemSpawnPoint.position, 0.8f);
+        }
     }
 }

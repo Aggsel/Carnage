@@ -45,7 +45,6 @@ public class EnemyStateAttack : EnemyState
     {
         anim.ResetTrigger("attack");
         SetState(behavior.chaseState);
-        Debug.Log("Reset Trigger");
     }
 
     public void Attack(){

@@ -22,7 +22,6 @@ public class Door : MonoBehaviour
              sentinel = true;
             parentRoom.OnEnterRoom();
         }
-        
     }
 
     void OnTriggerExit(Collider other){

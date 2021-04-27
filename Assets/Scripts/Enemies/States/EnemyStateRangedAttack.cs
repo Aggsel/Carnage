@@ -50,7 +50,6 @@ public class EnemyStateRangedAttack : EnemyState
 
     public void RangedAttack(){
         //Fire projectile towards behaviour.GetTargetPosition()
-        Debug.Log("FIREBALL");
     }
 
     public void StopRangedAttack(){
