@@ -24,8 +24,8 @@ public class MeleeController : MonoBehaviour
     }
     #endregion
 
-    [Tooltip("Dont change this please")]
-    [SerializeField] private GameObject weaponModel = null;
+    [Tooltip("Dont change")]
+    [SerializeField] private Animator anim = null;
     [Tooltip("For programmers, scripts that are disabled while using melee")]
     [SerializeField] private MonoBehaviour[] scripts = null;
     [SerializeField] private MeleeVariables meleeVar = new MeleeVariables();
@@ -71,11 +71,12 @@ public class MeleeController : MonoBehaviour
         }
     }
 
-    private IEnumerator Melee ()
+    public void StartMelee ()
     {
         //raycast here
         float temp = 69.0f;
         Transform hitObj = null;
+        RaycastHit lateHit = new RaycastHit();
 
         for (int i = -meleeVar.rayAmount; i < meleeVar.rayAmount; i++)
         {
@@ -98,31 +99,36 @@ public class MeleeController : MonoBehaviour
                     if(dist < temp)
                     {
                         temp = dist;
+                        lateHit = hit;
                         hitObj = hit.transform;
                         continue;
                     }
                 }
                 else
                 {
-                    Debug.Log("THIS RAY HIT NOTHING");
+                    //Debug.Log("THIS RAY HIT NOTHING");
                 }
             }
         }
 
         if(hitObj != null)
         {
-            Debug.Log("CLOSEST: " + hitObj + ", " + temp);
+            //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
+            if(hitObj.GetComponentInParent<EnemyBehavior>() != null)
+            {
+                HitObject obj = new HitObject(transform.position, lateHit.point, 100.0f, 0.0f); //set high melee damage
+                hitObj.GetComponentInParent<EnemyBehavior>().OnShot(obj);
+            }
         }
+    }
 
-        yield return new WaitForSeconds(meleeVar.rate);
-        weaponModel.SetActive(true);
-
+    public void ResetMelee ()
+    {
         for (int i = 0; i < scripts.Length; i++)
         {
             scripts[i].enabled = true;
         }
 
-        yield return new WaitForSeconds(meleeVar.ratePadding);
         inHit = false;
     }
 
@@ -131,16 +137,13 @@ public class MeleeController : MonoBehaviour
         if (Input.GetKeyDown(meleeKey) && !inHit)
         {
             inHit = true;
-            weaponModel.SetActive(false);
 
             for (int i = 0; i < scripts.Length; i++)
             {
                 scripts[i].enabled = false;
             }
 
-            //Instead of calling the coroutine directly
-            //wait for animation and use animation keys to call the Melee IEnumerator this way we sync the hit animation to the raycast
-            StartCoroutine(Melee());
+            anim.SetTrigger("melee");
         }
     }
 }
