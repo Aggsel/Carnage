@@ -70,6 +70,14 @@ public class EnemyBehavior : MonoBehaviour
         currentState.OnStateEnter();
     }
 
+    public void FireProjectile(GameObject projectile, Transform spawnTransform = null){
+        if(projectile == null)
+            return;
+        if(spawnTransform == null)
+            spawnTransform = transform;
+        Instantiate(projectile, spawnTransform.position, spawnTransform.rotation, transform.parent);
+    }
+
     public virtual void OnShot(HitObject hit){
         if(bloodDecalProjector != null)
             Instantiate(bloodDecalProjector, transform.position, Quaternion.Lerp(Quaternion.LookRotation(hit.shotDirection, Vector3.up), Quaternion.Euler(new Vector3(90, 0, 0)), decalRotation));

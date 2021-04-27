@@ -7,9 +7,11 @@ public class EnemyStateRangedAttack : EnemyState
 {
     [Tooltip("How fast the enemy should rotate toward the player when winding up the attack.")]
     [SerializeField] private float rotationSpeed = 13.0f;
-    [Tooltip("Cooldown before enemy can fire another shot.")]
-    [SerializeField] private float shotCooldown = 0.2f;
+    // [Tooltip("Cooldown before enemy can fire another shot.")]
+    // [SerializeField] private float shotCooldown = 0.2f;
     private float timeOutOfSight = 0.0f;
+    [SerializeField] private GameObject projectilePrefab = null;
+    [SerializeField] private Transform projectileSpawnPosition = null;
 
     public EnemyStateRangedAttack() : base(){}
 
@@ -49,7 +51,7 @@ public class EnemyStateRangedAttack : EnemyState
     }
 
     public void RangedAttack(){
-        
+        behavior.FireProjectile(projectilePrefab, projectileSpawnPosition);
         //Fire projectile towards behaviour.GetTargetPosition()
     }
 
