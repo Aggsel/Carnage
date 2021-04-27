@@ -35,20 +35,12 @@ public class EnemyStateRangedAttack : EnemyState
     public override void Update(){
         base.Update();
 
-        /*if(base.timer >= shotCooldown){
-            base.timer = 0.0f;
-            RangedAttack();
-        }*/
-
         RotateTowardsTarget();
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
         timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
         if(!lineOfSight && timeOutOfSight >= 2.0f)
             SetState(behavior.chaseState);
-
-        //if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) >= attackRange)
-        //    SetState(behavior.chaseState);
     }
 
     private void RotateTowardsTarget(){
@@ -58,28 +50,10 @@ public class EnemyStateRangedAttack : EnemyState
 
     public void RangedAttack(){
         //Fire projectile towards behaviour.GetTargetPosition()
-        Debug.Log("FIREBALL");
     }
 
-    public void StopRangedAttack()
-    {
+    public void StopRangedAttack(){
         anim.ResetTrigger("attack");
-        //anim.SetTrigger("attack");
         SetState(behavior.chaseState);
-        //Debug.Log("Reset Trigger");
     }
-
-    private bool CheckLineOfSight(){
-        RaycastHit hit;
-        if (Physics.Raycast(agent.transform.position, base.behavior.GetTargetPosition() - agent.transform.position, out hit, Mathf.Infinity)){
-            if(hit.collider.GetComponent<MovementController>() != null){
-                return true;
-            }
-            return false;
-        }
-        else{
-            return false;
-        }
-    }
-
 }

@@ -46,7 +46,6 @@ public class RoomManager : MonoBehaviour
     public void OnEnterRoom(){
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
-
         this.parentLevelManager.ActivateNeighbors(this.gridPosition);
     }
 
@@ -189,6 +188,11 @@ public class RoomManager : MonoBehaviour
     private void OnDrawGizmos(){
         if(this.depth == 0){
             Gizmos.DrawSphere(transform.position, 1.0f);
+        }
+
+        if(itemSpawnPoint != null){
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(itemSpawnPoint.position, 0.8f);
         }
     }
 }

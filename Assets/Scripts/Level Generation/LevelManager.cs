@@ -75,6 +75,8 @@ public class LevelManager : MonoBehaviour
     public void ActivateNeighbors(Vector2Int pos){
         for (int y = 0; y < this.grid.GetLength(1); y++){
             for (int x = 0; x < this.grid.GetLength(0); x++){
+                if(x >= pos.x - 1 && x <= pos.x + 1 && y <= pos.y + 1 && y >= pos.y - 1)
+                    continue;
                 this.grid[x,y]?.gameObject.SetActive(false);
             }
         }
@@ -83,7 +85,8 @@ public class LevelManager : MonoBehaviour
             for (int x = -1; x < 2; x++){
                 Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
                 if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
-                    this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
+                    if(this.grid[newCoord.x,newCoord.y] != null && !this.grid[newCoord.x,newCoord.y].gameObject.activeInHierarchy)
+                        this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
                 }
             }
         }
