@@ -24,9 +24,7 @@ public class EnemyState
         timer += Time.deltaTime;
 
         if(agent == null)
-        {
-            Debug.Log(":(");
-        }
+            Debug.Log("Agent was null :(");
 
         anim.SetFloat("speed", agent.velocity.magnitude);
     }
