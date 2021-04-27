@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
 
     private void Start ()
     {
+        Time.timeScale = 1.0f;
+
         version = Application.version;
 
         //useful later
