@@ -11,9 +11,7 @@ public class EnemyStateRangedAttack : EnemyState
     [SerializeField] private float shotCooldown = 0.2f;
     private float timeOutOfSight = 0.0f;
 
-    private float attackRange = 15.0f; //TODO: Remove this.
-
-    public EnemyStateRangedAttack(EnemyBehavior behaviorReference) : base(behaviorReference){}
+    public EnemyStateRangedAttack() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();
@@ -39,8 +37,10 @@ public class EnemyStateRangedAttack : EnemyState
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
         timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
-        if(!lineOfSight && timeOutOfSight >= 2.0f)
+        if(!lineOfSight && timeOutOfSight >= 2.0f){
+            Debug.Log("Stop hiding yo");
             SetState(behavior.chaseState);
+        }
     }
 
     private void RotateTowardsTarget(){
@@ -49,6 +49,7 @@ public class EnemyStateRangedAttack : EnemyState
     }
 
     public void RangedAttack(){
+        
         //Fire projectile towards behaviour.GetTargetPosition()
     }
 
