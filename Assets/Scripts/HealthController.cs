@@ -14,9 +14,10 @@ public class HealthController : MonoBehaviour
 
     private MovementController movementController;
     private FiringController firingController;
+    private RawImage damageIndicator;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
-    [SerializeField] private RawImage damageIndicator;
+    [SerializeField] private GameObject bloodImageGO;
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
@@ -56,7 +57,10 @@ public class HealthController : MonoBehaviour
     }
 
     private void Start() {
-        if(damageIndicator == null)
+        bloodImageGO.SetActive(true);
+        damageIndicator = bloodImageGO.GetComponent<RawImage>();
+
+        if (bloodImageGO == null)
         {
             Debug.LogWarning("Missing damage indicator reference!");
         }

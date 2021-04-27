@@ -8,6 +8,7 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private float projectileSpeed = 20.0f;
     [SerializeField] private float damage = 2.0f;
     [SerializeField] Rigidbody rb = null;
+    [HideInInspector] public GameObject parent;
     Collider col = null;
 
     void OnEnable(){
@@ -22,19 +23,12 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other){
+        if(other.gameObject == parent)
+            return;
         if(other.gameObject.layer == 12){
-            other.gameObject.GetComponent<HealthController>()?.ModifyCurrentHealth(-2.0f);
+            Vector3 shotdir = rb.velocity.normalized;
+            other.gameObject.GetComponent<HealthController>()?.OnShot(new HitObject(shotdir, transform.position, damage));
         }
         Destroy(this.gameObject);
     }
-
-    // private void OnCollisionExit(Collision other) {
-    //     col.enabled = true;
-    // }
-
-    // void OnCollisionEnter(Collision collision){
-    //     if(collision.collider.gameObject.layer == LayerMask.GetMask("Player"))
-    //         GetComponent<HealthController>()?.ModifyCurrentHealth(-2.0f);
-    //     Destroy(this.gameObject);
-    // }
 }
