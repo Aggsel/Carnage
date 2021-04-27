@@ -11,7 +11,7 @@ public class EnemyStatePatrol : EnemyState
     [SerializeField] private float patrolSpeed = 5.0f;
     private float previousSpeed = 0.0f;
 
-    public EnemyStatePatrol(EnemyBehavior behaviourReference) : base(behaviourReference){}
+    public EnemyStatePatrol() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();

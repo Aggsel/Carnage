@@ -65,7 +65,7 @@ public class FiringController : MonoBehaviour
         cases.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         ParticleSystem.MainModule main = cases.main;
 
-        main.startRotationX = (bulletCam.transform.eulerAngles.x + 90.0f + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationX = (bulletCam.transform.eulerAngles.x + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
         main.startRotationY = (bulletCam.transform.eulerAngles.y + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
         main.startRotationZ = bulletCam.transform.eulerAngles.z * Mathf.Deg2Rad;
 
@@ -78,13 +78,7 @@ public class FiringController : MonoBehaviour
         {
             //draw line
             Debug.DrawLine(bulletCam.transform.position, bulletHit.point, Color.green, 1.5f);
-            TargetScript target = bulletHit.transform.GetComponent<TargetScript>();
-
-            if(target != null)
-            {
-                target.TakeDamage(attributeInstance.weaponAttributesResultant.damage);
-            }
-            bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point));
+            bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
             GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
             Destroy(impact, 2f);
         }
