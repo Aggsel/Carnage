@@ -13,7 +13,7 @@ public class EnemyStateRangedAttack : EnemyState
 
     private float attackRange = 15.0f; //TODO: Remove this.
 
-    public EnemyStateRangedAttack(EnemyBehavior behaviorReference) : base(behaviorReference){}
+    public EnemyStateRangedAttack() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();

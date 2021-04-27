@@ -12,7 +12,7 @@ public class EnemyStateChase : EnemyState
     private float previousStoppingDistance = 0.0f;
     private float previousSpeed = 0.0f;
     
-    public EnemyStateChase(EnemyBehavior behaviourReference) : base(behaviourReference){}
+    public EnemyStateChase() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();

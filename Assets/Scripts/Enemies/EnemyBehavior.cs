@@ -14,10 +14,10 @@ public class EnemyBehavior : MonoBehaviour
     [Range(0.0f,1.0f)]
     [SerializeField] private float decalRotation = 0.35f;
 
-    [SerializeField] public EnemyStateChase chaseState;
-    [SerializeField] public EnemyStatePatrol patrolState;
-    [SerializeField] public EnemyStateAttack attackState;
-    [SerializeField] public EnemyStateRangedAttack rangedAttackState;
+    [SerializeField] public EnemyStateChase chaseState = new EnemyStateChase();
+    [SerializeField] public EnemyStatePatrol patrolState = new EnemyStatePatrol();
+    [SerializeField] public EnemyStateAttack attackState = new EnemyStateAttack();
+    [SerializeField] public EnemyStateRangedAttack rangedAttackState = new EnemyStateRangedAttack();
 
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
@@ -33,10 +33,10 @@ public class EnemyBehavior : MonoBehaviour
 
         this.player = GameObject.Find("Player"); //Don't do this.
 
-        chaseState = new EnemyStateChase(this);
-        patrolState = new EnemyStatePatrol(this);
-        attackState = new EnemyStateAttack(this);
-        rangedAttackState = new EnemyStateRangedAttack(this);
+        chaseState.SetBehaviour(this);
+        patrolState.SetBehaviour(this);
+        attackState.SetBehaviour(this);
+        rangedAttackState.SetBehaviour(this);
     }
 
     protected virtual void Update(){
