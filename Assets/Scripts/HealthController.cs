@@ -37,7 +37,7 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
-        //am.PlaySound(am.playerHurt, this.transform.position);
+        am.PlaySound(am.playerHurt);
     }
 
     private void HideDamageIndicator()
