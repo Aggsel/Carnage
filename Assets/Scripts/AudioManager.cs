@@ -41,6 +41,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer patientDeath;
     [SerializeField] public EventContainer patientHurt;
     [SerializeField] public EventContainer patientMelee;
+    [SerializeField] public EventContainer patientFootsteps;
+    [SerializeField] public EventContainer patientSpawn;
 
     public void PlaySound(EventContainer eventContainer){
         eventContainer.Play();

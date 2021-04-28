@@ -61,26 +61,6 @@ public class BloodController : MonoBehaviour
         Vector3 dir = hit - dirPos;
         Quaternion rot = Quaternion.LookRotation(-dir);
 
-        //SpawnBlood(hit);
-        #region decal
-        //decal
-        /*
-        DecalProjector newDecal = Instantiate(decal) as DecalProjector;
-
-        Quaternion decalRot = Quaternion.LookRotation(dir);
-        newDecal.transform.position = hit;
-        newDecal.transform.rotation = decalRot;
-
-        //randomize scale and rotation
-        float ranScale = Random.Range(-0.5f, 3.5f);
-        Vector3 scale = newDecal.size + new Vector3(ranScale, ranScale, 0);
-        newDecal.size = scale;
-
-        float ranRot = Random.Range(-180, 180);
-        newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
-        */
-        #endregion
-
         //particle
         GameObject par = Instantiate(splatEffect) as GameObject;
         par.GetComponentInChildren<BloodParticle>().SetBloodController(this);
