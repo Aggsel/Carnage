@@ -6137,7 +6137,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 3383
+    m_Bits: 11575
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -6467,7 +6467,7 @@ MonoBehaviour:
   hitEffect: {fileID: 6817321594469807644, guid: 267d378f6915a1545b8a2b2ebb418bcf,
     type: 3}
   overheatObject: {fileID: 3027235087629037940}
-  muzzleFlash: {fileID: 5877993609706822722}
+  muzzleFlash: {fileID: 0}
 --- !u!114 &6100689584837751783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6536,8 +6536,6 @@ MonoBehaviour:
   meleeVar:
     showDebug: 0
     range: 2.5
-    rate: 1
-    ratePadding: 0.25
     rayAmount: 3
     raySpread: 1.5
 --- !u!114 &3027235087010105677
@@ -6596,8 +6594,7 @@ MonoBehaviour:
   maxHealth: 10
   viewBob: {fileID: 3027235086763249293}
   weaponSway: {fileID: 3027235087629037938}
-  damageIndicator: {fileID: 0}
-  indicatorDuration: 0.45
+  bloodImageGO: {fileID: 0}
 --- !u!54 &3545908116954248292
 Rigidbody:
   m_ObjectHideFlags: 0
