@@ -210,7 +210,25 @@ public class PauseController : MonoBehaviour
 
         for (int i = 0; i < scripts.Length; i++)
         {
-            scripts[i].enabled = !paused;
+            if(i == 0)
+            {
+                //doesnt work
+                //Debug.Log(scripts[i]);
+
+                MeleeController mc = FindObjectOfType<MeleeController>();
+                if(mc.inHit)
+                {
+                    continue;
+                }
+                else
+                {
+                    scripts[i].enabled = !paused;
+                }
+            }
+            else
+            {
+                scripts[i].enabled = !paused;
+            }
         }
 
         if(paused)

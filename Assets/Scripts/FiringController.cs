@@ -14,11 +14,13 @@ public class FiringController : MonoBehaviour
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
+
     private ProjectileShotController psc;
     private Screenshake ss;
 
     private int bitmask;
     private AttributeController attributeInstance;
+    private AudioManager am;
     private float timeToFire = 0f;
     private bool overheated = false;
 
@@ -29,6 +31,8 @@ public class FiringController : MonoBehaviour
         ss = FindObjectOfType<Screenshake>();
         int playerLayer = 12;
         bitmask = ~(1 << playerLayer);
+        am = AudioManager.Instance;
+
     }
 
     void Update()
@@ -73,6 +77,9 @@ public class FiringController : MonoBehaviour
 
         //recoil
         ss.RecoilCall();
+
+        //play sound
+        am.PlaySound(am.playerShooting);
 
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
         {

@@ -97,6 +97,8 @@ public class EnemyBehavior : MonoBehaviour
     }
     
     private void OnDestroy(){
+        bc.InstantiateDeathBlood(transform.position + new Vector3(0, 2.0f, 0));
+
         if(this != null)    //In order to prevent unwanted behaviour while destroying enemies when exiting the game.
             parentSpawn?.ReportDeath(this);
     }
