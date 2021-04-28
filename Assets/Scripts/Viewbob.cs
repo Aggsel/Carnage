@@ -18,11 +18,14 @@ public class Viewbob : MonoBehaviour
     private Vector3 origin = Vector3.zero;
     private Vector3 dest = Vector3.zero;
     private float time = -1.0f;
+    private bool down = false;
 
+    private AudioManager am = null;
     private CharacterController cc;
 
     private void Start ()
     {
+        am = AudioManager.Instance;
         cc = GetComponentInParent<CharacterController>();
         origin = transform.localPosition;
     }
@@ -45,10 +48,15 @@ public class Viewbob : MonoBehaviour
         dest = (vel * 2.0f) * new Vector3(0, -Mathf.Sin(time * time * (bobStrength * 0.001f)), Mathf.Sin(time * (bobStrength * 0.001f)));
 
         //change to sync with footsteps
-        if(time < 0.0f)
+        if(transform.localPosition.y <= -0.05f && !down)
         {
-            //call footstep sounds here
-            //Debug.Log("NOW");
+            down = true;
+            //am.SetParameterByName(am.playerFootsteps, "surface", 0.5f);
+            am.PlaySound(am.playerFootsteps);
+        }
+        else if (transform.localPosition.y > -0.05f)
+        {
+            down = false;
         }
 
         transform.localPosition = origin + dest;
