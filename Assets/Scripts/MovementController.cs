@@ -94,8 +94,6 @@ public class MovementController : MonoBehaviour
     private float horizontal = 0.0f;
     private Vector3 dir = Vector3.zero;
     private float edgeForce = 2.0f;
-
-    //test
     private MotionBlur globalMotion = null;
     private float startFov = 0.0f;
     private float endFov = 0.0f;
@@ -103,8 +101,12 @@ public class MovementController : MonoBehaviour
     private CapsuleCollider cap = null;
     private Rigidbody rb = null;
 
+    //test
+    private AudioManager am = null;
+
     private void Start ()
     {
+        am = AudioManager.Instance;
         cc = GetComponent<CharacterController>();
         cap = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
@@ -197,6 +199,9 @@ public class MovementController : MonoBehaviour
             //effects: fov & motionblur
             motion.active = true;
             globalMotion = motion;
+
+            //audio
+            am.PlaySound(am.playerDash);
 
             //dash stuff
             if (!Physics.Raycast(ray, out hit, (dashVar.dashLength / 2)))
@@ -361,6 +366,7 @@ public class MovementController : MonoBehaviour
         //jump key
         if (Input.GetKeyDown(jump) && groundedTimer > 0.0f)
         {
+            am.PlaySound(am.playerJump);
             verticalVelocity = movementVar.jumpForce;
         }
 
