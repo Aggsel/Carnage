@@ -41,7 +41,7 @@ MonoBehaviour:
     m_Value: 2
   intensity:
     m_OverrideState: 1
-    m_Value: 16
+    m_Value: 20
     min: 0
   maximumVelocity:
     m_OverrideState: 0
@@ -111,7 +111,7 @@ MonoBehaviour:
     m_Value: {x: 1, y: 1, z: 1, w: 0}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 0.9923907, y: 0.994323, z: 1, w: 0.18676102}
+    m_Value: {x: 0.9923907, y: 0.994323, z: 1, w: 0}
   gain:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0}
@@ -257,7 +257,7 @@ MonoBehaviour:
   - {fileID: -2176426081244441620}
   - {fileID: 6747971895265028430}
   - {fileID: -5518458011200904744}
-  - {fileID: -7580752809825420336}
+  - {fileID: 5169665752681361408}
 --- !u!114 &448115243408767295
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -435,6 +435,28 @@ MonoBehaviour:
   fogType:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &5169665752681361408
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22357d6e935035d40af0c691d55cfc6c, type: 3}
+  m_Name: textureOverlay
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  m_Texture:
+    m_OverrideState: 1
+    m_Value: {fileID: 8400000, guid: 695b04b70ce11074e92a4cad332423e7, type: 2}
+  threshold:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 1
 --- !u!114 &5315503232242033309
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -557,7 +579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9008a067f4d626c4d8bc4bc48f04bb89, type: 3}
   m_Name: AmbientOcclusion
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   m_AdvancedMode: 0
   quality:
     m_OverrideState: 0
@@ -567,7 +589,7 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 2.19
+    m_Value: 2.71
     min: 0
     max: 4
   directLightingStrength:

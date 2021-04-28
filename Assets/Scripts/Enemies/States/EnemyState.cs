@@ -11,15 +11,24 @@ public class EnemyState
 
     protected EnemyBehavior behavior;
     protected NavMeshAgent agent;
+    protected Animator anim;
     protected float timer = 0.0f;
 
-    public EnemyState(EnemyBehavior behaviourReference){
-        this.behavior = behaviourReference;
-        this.agent = behaviourReference.GetAgent();
-    }
+    public EnemyState(){}
 
     public virtual void Update(){
         timer += Time.deltaTime;
+
+        if(agent == null)
+            Debug.Log("Agent was null :(");
+
+        anim.SetFloat("speed", agent.velocity.magnitude);
+    }
+
+    public void SetBehaviour(EnemyBehavior behaviorReference){
+        this.behavior = behaviorReference;
+        this.agent = behaviorReference.GetAgent();
+        this.anim = behaviorReference.anim;
     }
 
     public virtual void OnShot(HitObject hit){}

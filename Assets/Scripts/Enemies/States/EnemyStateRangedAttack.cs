@@ -7,19 +7,21 @@ public class EnemyStateRangedAttack : EnemyState
 {
     [Tooltip("How fast the enemy should rotate toward the player when winding up the attack.")]
     [SerializeField] private float rotationSpeed = 13.0f;
-    [Tooltip("Cooldown before enemy can fire another shot.")]
-    [SerializeField] private float shotCooldown = 0.2f;
+    // [Tooltip("Cooldown before enemy can fire another shot.")]
+    // [SerializeField] private float shotCooldown = 0.2f;
     private float timeOutOfSight = 0.0f;
+    [SerializeField] private GameObject projectilePrefab = null;
+    [SerializeField] private Transform projectileSpawnPosition = null;
 
-    private float attackRange = 30.0f; //TODO: Remove this.
-
-    public EnemyStateRangedAttack(EnemyBehavior behaviorReference) : base(behaviorReference){}
+    public EnemyStateRangedAttack() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();
         
         agent.ResetPath();
         agent.isStopped = true;
+
+        anim.SetTrigger("attack");
 
         SetDebugColor(Color.white);
     }
@@ -33,20 +35,14 @@ public class EnemyStateRangedAttack : EnemyState
     public override void Update(){
         base.Update();
 
-        if(base.timer >= shotCooldown){
-            base.timer = 0.0f;
-            Attack();
-        }
-
         RotateTowardsTarget();
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
         timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
-        if(!lineOfSight && timeOutOfSight >= 2.0f)
+        if(!lineOfSight && timeOutOfSight >= 2.0f){
+            Debug.Log("Stop hiding yo");
             SetState(behavior.chaseState);
-
-        if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) >= attackRange)
-            SetState(behavior.chaseState);
+        }
     }
 
     private void RotateTowardsTarget(){
@@ -54,21 +50,13 @@ public class EnemyStateRangedAttack : EnemyState
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * rotationSpeed);
     }
 
-    private void Attack(){
+    public void RangedAttack(){
+        behavior.FireProjectile(projectilePrefab, projectileSpawnPosition);
         //Fire projectile towards behaviour.GetTargetPosition()
     }
 
-    private bool CheckLineOfSight(){
-        RaycastHit hit;
-        if (Physics.Raycast(agent.transform.position, base.behavior.GetTargetPosition() - agent.transform.position, out hit, Mathf.Infinity)){
-            if(hit.collider.GetComponent<MovementController>() != null){
-                return true;
-            }
-            return false;
-        }
-        else{
-            return false;
-        }
+    public void StopRangedAttack(){
+        anim.ResetTrigger("attack");
+        SetState(behavior.chaseState);
     }
-
 }
