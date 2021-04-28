@@ -7,13 +7,11 @@ public class EnemyStateAttack : EnemyState
 {
     [Tooltip("How fast the enemy should rotate toward the player when winding up the attack.")]
     [SerializeField] private float rotationSpeed = 13.0f;
-    [Tooltip("How long it should take between stopping in attack-range to when the actual attack takes place.")]
-    [SerializeField] private float windupDuration = 0.4f;
     [Tooltip("How far the enemy can reach when attacking.")]
-    [SerializeField] private float attackRange = 5.0f;
+    [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private float damage = 1.0f;
 
-    public EnemyStateAttack(EnemyBehavior behaviourReference) : base(behaviourReference){}
+    public EnemyStateAttack() : base(){}
 
     public override void OnStateEnter(){
         base.OnStateEnter();
