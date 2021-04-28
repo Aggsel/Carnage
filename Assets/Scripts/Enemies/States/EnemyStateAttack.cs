@@ -50,6 +50,7 @@ public class EnemyStateAttack : EnemyState
         if (Physics.Raycast(agent.transform.position, agent.transform.TransformDirection(Vector3.forward), out hit, attackRange)){
             Vector3 dir = agent.transform.position - hit.point;
             hit.collider.GetComponent<HealthController>()?.OnShot(new HitObject(dir, hit.point, damage: 1.0f));
+            behavior.am.PlaySound(ref behavior.am.patientMelee, behavior.transform.position);
         }
     }
 }
