@@ -11,6 +11,7 @@ public struct EventContainer{
     private bool initialized;
     private void Initialize(){
         instance = RuntimeManager.CreateInstance(reference);
+        initialized = true;
     }
     public void Play(){
         if(!initialized)
@@ -42,6 +43,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer patientMelee;
 
     public void PlaySound(EventContainer eventContainer){
+        eventContainer.Play();
+    }
+
+    public void PlaySound(EventContainer eventContainer, Vector3 emitPosition){
+        eventContainer.instance.set3DAttributes(RuntimeUtils.To3DAttributes(emitPosition));
         eventContainer.Play();
     }
 
