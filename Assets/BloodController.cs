@@ -17,20 +17,20 @@ public class BloodController : MonoBehaviour
         }
     }
 
-    public void InstantiateBlood (RaycastHit hit, Vector3 dirPos)
+    public void InstantiateBlood (Vector3 hit, Vector3 dirPos)
     {
         //decal
         DecalProjector newDecal = Instantiate(decal) as DecalProjector;
         newDecal.material = mats[Random.Range(0, mats.Length)];
 
-        Vector3 dir = hit.transform.position - dirPos;
+        Vector3 dir = hit - dirPos;
         Quaternion rot = Quaternion.Euler(dir);
 
-        newDecal.transform.SetPositionAndRotation(hit.transform.position, rot);
+        newDecal.transform.SetPositionAndRotation(hit, rot);
 
         //particle
         GameObject par = Instantiate(splatEffect) as GameObject;
-        par.transform.position = hit.point;
+        par.transform.position = hit;
         par.transform.rotation = rot;
 
         Destroy(par, 5.0f);
