@@ -15,6 +15,7 @@ public class HealthController : MonoBehaviour
     private MovementController movementController;
     private FiringController firingController;
     private RawImage damageIndicator;
+    private AudioManager am;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
     [SerializeField] private GameObject bloodImageGO;
@@ -36,6 +37,7 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
+        //am.PlaySound(am.playerHurt, this.transform.position);
     }
 
     private void HideDamageIndicator()
@@ -57,6 +59,7 @@ public class HealthController : MonoBehaviour
     }
 
     private void Start() {
+        am = AudioManager.Instance;
         bloodImageGO.SetActive(true);
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
 
