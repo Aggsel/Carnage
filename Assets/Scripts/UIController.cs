@@ -12,17 +12,17 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private OverheatScript oc;
 
-    private Slider healthbar;
-    private Slider dashCharges;
-    private Slider overheatbar;
+    [SerializeField] private Slider healthbar;
+    [SerializeField] private Slider dashCharges;
+    [SerializeField] private Slider overheatbar;
 
 
-    void Start()
+    /*void Awake()
     {
         healthbar = GameObject.FindGameObjectWithTag("Healthbar").GetComponent<Slider>();
         dashCharges = GameObject.FindGameObjectWithTag("Dashcharge").GetComponent<Slider>();
         overheatbar = GameObject.FindGameObjectWithTag("Overheatbar").GetComponent<Slider>();
-    }
+    }*/
 
     public void SetMaxHealth(float maxHealth)
     {
