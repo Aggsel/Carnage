@@ -120,6 +120,14 @@ public class AttributeController : MonoBehaviour
                 case "firerate":
                     float firerateDiff = weaponAttributesBase.fireRate * item.increment - weaponAttributesBase.fireRate;
                     weaponAttributesResultant.fireRate += firerateDiff;
+                    if(weaponAttributesResultant.fireRate >= 12.0f)
+                    {
+                        FindObjectOfType<Screenshake>().SetRecoilIncrease(0.01f);
+                    }
+                    else if (weaponAttributesResultant.fireRate < 12.0f)
+                    {
+                        FindObjectOfType<Screenshake>().SetRecoilIncrease(0.05f);
+                    }
                     break;
                 case "heatgeneration":
                     float heatgenerationDiff = weaponAttributesBase.heatGeneration * item.increment - weaponAttributesBase.heatGeneration;
