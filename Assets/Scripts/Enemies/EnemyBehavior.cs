@@ -79,7 +79,10 @@ public class EnemyBehavior : MonoBehaviour
             return;
         if(spawnTransform == null)
             spawnTransform = transform;
-        GameObject instantiatedProjectile = Instantiate(projectile, spawnTransform.position, spawnTransform.rotation, transform.parent);
+        GameObject instantiatedProjectile = Instantiate(projectile) as GameObject;
+        instantiatedProjectile.transform.position = spawnTransform.position;
+        instantiatedProjectile.transform.LookAt(player.transform.position);
+
         instantiatedProjectile.GetComponent<EnemyProjectile>().parent = anim.gameObject;
     }
 
