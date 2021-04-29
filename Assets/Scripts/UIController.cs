@@ -5,24 +5,15 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField]
-    private HealthController hc;
-    [SerializeField]
-    private MovementController mc;
-    [SerializeField]
-    private OverheatScript oc;
+    [Header("Assign: ")]
+    [SerializeField] private Slider healthbar;
+    [SerializeField] private Slider dashCharges;
+    [SerializeField] private Slider overheatbar;
 
-    private Slider healthbar;
-    private Slider dashCharges;
-    private Slider overheatbar;
-
-
-    void Start()
-    {
-        healthbar = GameObject.FindGameObjectWithTag("Healthbar").GetComponent<Slider>();
-        dashCharges = GameObject.FindGameObjectWithTag("Dashcharge").GetComponent<Slider>();
-        overheatbar = GameObject.FindGameObjectWithTag("Overheatbar").GetComponent<Slider>();
-    }
+    [Header("Assign scripts")]
+    [SerializeField] private HealthController hc;
+    [SerializeField] private MovementController mc;
+    [SerializeField] private OverheatScript oc;
 
     public void SetMaxHealth(float maxHealth)
     {

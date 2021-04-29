@@ -10,14 +10,13 @@ using UnityEngine.UI;
 public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
-    private float currentHealth = 0.0f;
+    private float currentHealth = 0.0f; //dont remove
     private MovementController movementController;
     private FiringController firingController;
     private RawImage damageIndicator;
     private AudioManager am;
     private AttributeController attributeInstance;
     private UIController uiController;
-    private Slider healthbarSlider;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
     [SerializeField] private GameObject bloodImageGO;
@@ -51,7 +50,6 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
-        
         am.PlaySound(am.playerHurt);
     }
 
@@ -109,12 +107,13 @@ public class HealthController : MonoBehaviour
         firingController.enabled = false;
         viewBob.enabled = false;
         weaponSway.enabled = false;
-        am.PlaySound(am.playerDeath);
+        //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
+        am.StopSound(ref am.ambManager);
     }
 
     private IEnumerator DeathEffects(){
-        yield return new WaitForSeconds(7.5f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(1);
     }
 }

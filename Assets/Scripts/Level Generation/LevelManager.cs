@@ -42,6 +42,12 @@ public class LevelManager : MonoBehaviour
 
     void Start(){
         GenerateLevel();
+        AudioManager am = AudioManager.Instance;
+        am.PlaySound(ref am.ambManager);
+        float randomTrack = Random.Range(0.0f, 1.0f);
+        randomTrack = Mathf.Round(randomTrack);
+        am.SetParameterByName(ref am.ambManager, "Music Random", randomTrack);
+        Debug.Log(randomTrack);
     }
 
     [ContextMenu("Generate Level")]
