@@ -55,20 +55,7 @@ public class HealthController : MonoBehaviour
 
     private void HideDamageIndicator()
     {
-        StartCoroutine(FadeImage(true));
-    }
-
-    IEnumerator FadeImage(bool fadeAway)
-    {
-        // fade the overlay
-        if (fadeAway)
-        {
-            for (float i = 1.3f; i >= 0.0f; i -= Time.deltaTime)
-            {
-                damageIndicator.color = new Color(damageIndicator.color.r, damageIndicator.color.g, damageIndicator.color.b, i);
-                yield return null;
-            }
-        }
+        uiController.StartCoroutine(uiController.FadeImage(damageIndicator, 1.3f, true));
     }
 
     private void Start() {
