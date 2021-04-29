@@ -23,6 +23,8 @@ public class RoomManager : MonoBehaviour
     private LevelManager parentLevelManager = null;
     private bool hasBeenVisited = false;
     
+    private AudioManager am;
+
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
     [SerializeField] WaveHandler waveHandler;
@@ -37,6 +39,7 @@ public class RoomManager : MonoBehaviour
 
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
+        am = AudioManager.Instance;
     }
 
     void OnDisable(){
@@ -56,8 +59,11 @@ public class RoomManager : MonoBehaviour
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
-        if(enemyCount > 0)
+        if(enemyCount > 0){
             OpenDoors(false);
+            am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
+            am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+        }
 
         hasBeenVisited = true;
     }
@@ -65,7 +71,8 @@ public class RoomManager : MonoBehaviour
     //Is called whenever wavehandler has finished the last wave.
     private void OnCombatComplete(){
         OpenDoors(true);
-        
+        am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
+        am.SetParameterByName(ref am.ambManager, "State", 0.0f);
         SpawnItem();
     }
 
