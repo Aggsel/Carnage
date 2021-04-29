@@ -109,6 +109,7 @@ public class HealthController : MonoBehaviour
         weaponSway.enabled = false;
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
+        am.StopSound(ref am.ambManager);
     }
 
     private IEnumerator DeathEffects(){
