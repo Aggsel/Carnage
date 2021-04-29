@@ -107,7 +107,7 @@ public class SerializeController : MonoBehaviour
         oa.graphicsSlider.value = float.Parse(lines[5]);
         pc.ChangeGraphics(oa.graphicsSlider);
 
-        Debug.Log("Loaded graphics as " + oa.graphicsSlider.value);
+        //Debug.Log("Loaded graphics as " + oa.graphicsSlider.value);
 
         //Keybindings
         for (int i = 6; i < lines.Length; i++)
@@ -141,7 +141,7 @@ public class SerializeController : MonoBehaviour
             ka.melee.ToString() + "\n" +
             ka.action.ToString();
 
-        Debug.Log("Saved graphics as " + oa.graphicsSlider.value.ToString());
+        //Debug.Log("Saved graphics as " + oa.graphicsSlider.value.ToString());
         WriteToPreferences(saveString);
     }
     #endregion

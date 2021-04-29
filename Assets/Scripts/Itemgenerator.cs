@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Itemgenerator : MonoBehaviour
 {
+    [SerializeField] private GameObject tex = null;
+
     private Passive passive;
     private Active active;
     private CooldownController cc;
@@ -11,8 +14,11 @@ public class Itemgenerator : MonoBehaviour
     private Itemholder reference;
     private int randomIndex;
 
+    private GameObject player = null;
+
     void Start()
     {
+        player = FindObjectOfType<MovementController>().transform.gameObject;
         cc = GameObject.Find("Player/ActiveHolder").GetComponent<CooldownController>();
         pc = GameObject.Find("Player/PassiveHolder").GetComponent<PassiveController>();
         reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
@@ -36,6 +42,8 @@ public class Itemgenerator : MonoBehaviour
                 {
                     reference.DepoolItemPassive(randomIndex);
                 }
+
+                tex.GetComponentInChildren<TextMeshPro>().text = passive.passiveName;
             }
         }
         else
@@ -51,8 +59,20 @@ public class Itemgenerator : MonoBehaviour
                 {
                     reference.DepoolItemActive(randomIndex);
                 }
+
+                tex.GetComponentInChildren<TextMeshPro>().text = active.activeName;
             }
         }
+    }
+
+    private void LateUpdate ()
+    {
+        Billboard();
+    }
+    
+    private void Billboard ()
+    {
+        tex.transform.LookAt(player.transform.position);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -70,5 +90,4 @@ public class Itemgenerator : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
 }
