@@ -28,6 +28,7 @@ public class InteractionController : MonoBehaviour
 
     private void LateUpdate ()
     {
+        
         RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
 
@@ -48,6 +49,7 @@ public class InteractionController : MonoBehaviour
         {
             interact = false;
         }
+
     }
 
     private void OnGUI()

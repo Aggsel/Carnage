@@ -33,6 +33,9 @@ public struct OptionAssignments
     [Header("Post processing: ")]
     public TextMeshProUGUI gammaValue;
     public Slider gammaSlider;
+    [Header("Graphics settings: ")]
+    public TextMeshProUGUI graphicsValue;
+    public Slider graphicsSlider;
 }
 
 [Serializable]
@@ -210,13 +213,11 @@ public class PauseController : MonoBehaviour
 
         for (int i = 0; i < scripts.Length; i++)
         {
-            if(i == 0)
+            if(i == 3)
             {
-                //doesnt work
-                //Debug.Log(scripts[i]);
-
                 MeleeController mc = FindObjectOfType<MeleeController>();
-                if(mc.inHit)
+
+                if (mc.inHit && !paused)
                 {
                     continue;
                 }
@@ -516,6 +517,24 @@ public class PauseController : MonoBehaviour
 
         gamma.gamma.value = new Vector4(gamma.gamma.value.x, gamma.gamma.value.y, gamma.gamma.value.z, (slider.value) * 0.25f);
         optionAssignments.gammaValue.text = slider.value.ToString("F2");
+    }
+
+    public void ChangeGraphics(Slider slider)
+    {
+        QualitySettings.SetQualityLevel((int)slider.value, true);
+
+        switch ((int)slider.value)
+        {
+            case 0:
+                optionAssignments.graphicsValue.text = "Low";
+                break;
+            case 1:
+                optionAssignments.graphicsValue.text = "High";
+                break;
+            default:
+                Debug.LogWarning("This should not happen");
+                break;
+        }
     }
 
     public void ChangeInvertedControls ()
