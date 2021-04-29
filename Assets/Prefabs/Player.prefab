@@ -6588,6 +6588,9 @@ MonoBehaviour:
   interactionLayermask:
     serializedVersion: 2
     m_Bits: 2048
+  itemLayermask:
+    serializedVersion: 2
+    m_Bits: 32768
 --- !u!114 &3434799388374709113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6682,7 +6685,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3027235087010105666}
+  attributeInstance: {fileID: 0}
   heatValue: 0
+  recentlyHeated: 0
+  overheated: 0
 --- !u!1 &3090853262015878259
 GameObject:
   m_ObjectHideFlags: 0

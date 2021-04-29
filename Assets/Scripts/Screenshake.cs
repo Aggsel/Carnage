@@ -59,6 +59,11 @@ public class Screenshake : MonoBehaviour
         startRot = shakeOrigin.localEulerAngles;
     }
 
+    public void SetRecoilIncrease(float increment)
+    {
+        recoilVar.reocilIncrease = increment;
+    }
+
     private void Update ()
     {
         if(Input.GetKeyDown(KeyCode.P))
