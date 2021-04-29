@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class Itemgenerator : MonoBehaviour
 {
     [SerializeField] private GameObject tex = null;
+    private GameObject flashImageGO = null;
 
     private Passive passive;
     private Active active;
@@ -13,8 +15,10 @@ public class Itemgenerator : MonoBehaviour
     private PassiveController pc;
     private Itemholder reference;
     private int randomIndex;
-
     private GameObject player = null;
+    private RawImage flashImage;
+    private bool recieved = false;
+
 
     void Start()
     {
@@ -22,6 +26,8 @@ public class Itemgenerator : MonoBehaviour
         cc = GameObject.Find("Player/ActiveHolder").GetComponent<CooldownController>();
         pc = GameObject.Find("Player/PassiveHolder").GetComponent<PassiveController>();
         reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
+        flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
+        recieved = false;
         Generate(); //make it seeded later tbh
     }
 
@@ -77,7 +83,7 @@ public class Itemgenerator : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "Player")
+        if(other.gameObject.name == "Player" && recieved == false)
         {
             if(active != null)
             {
@@ -86,6 +92,34 @@ public class Itemgenerator : MonoBehaviour
             else
             {
                 pc.Initialize(passive, other.gameObject);
+            }
+            
+            
+            if (flashImageGO == null)
+            {
+                Debug.LogWarning("Missing damage indicator reference!");
+            }
+            else
+            {
+                flashImageGO.SetActive(true);
+                flashImage = flashImageGO.GetComponent<RawImage>();
+                flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
+                recieved = true;
+                StartCoroutine(FadeImage(true));
+            }
+            
+        }
+    }
+
+    IEnumerator FadeImage(bool fadeAway)
+    {
+        // fade the overlay
+        if (fadeAway)
+        {
+            for (float i = 1.0f; i >= 0.0f; i -= Time.deltaTime)
+            {
+                flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, i);
+                yield return null;
             }
             Destroy(this.gameObject);
         }
