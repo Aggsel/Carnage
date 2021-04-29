@@ -10,6 +10,7 @@ public class InteractionController : MonoBehaviour
 
     private KeyCode interactionKey = KeyCode.E;
     private bool interact = false;
+    private bool item = false;
 
     private void ReadKeybinds(KeyBindAsignments keys)
     {
@@ -34,20 +35,32 @@ public class InteractionController : MonoBehaviour
 
         //Debug.DrawRay(ray.origin, ray.direction * 1f, Color.green);
 
-        if (Physics.Raycast(ray, out hit, 3.5f, interactionLayermask))
+        if (Physics.Raycast(ray, out hit, 6.0f, interactionLayermask))
         {
-            interact = true;
-
-            if (Input.GetKeyDown(interactionKey))
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.gameObject.name == "Itemspawn")
             {
-                //u can use loadasync perhaps
-                //Debug.Log("Start run");
-                SceneManager.LoadScene("Level1");
+                Debug.Log("starting at item");
+                item = true;
+                interact = false;
+            }
+            else
+            {
+                item = false;
+                interact = true;
+
+                if (Input.GetKeyDown(interactionKey))
+                {
+                    //u can use loadasync perhaps
+                    //Debug.Log("Start run");
+                    SceneManager.LoadScene("Level1");
+                }
             }
         }
         else
         {
             interact = false;
+            item = false;
         }
 
     }
@@ -57,6 +70,11 @@ public class InteractionController : MonoBehaviour
         if(interact)
         {
             GUI.Label(new Rect((Screen.width / 2), (Screen.height / 2), 120, 50), "Press " + interactionKey.ToString() + " to interact");
+        }
+
+        if (item)
+        {
+            GUI.Label(new Rect((Screen.width / 2), (Screen.height / 2), 120, 50), "Item.");
         }
     }
 }
