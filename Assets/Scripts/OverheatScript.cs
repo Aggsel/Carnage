@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class OverheatScript : MonoBehaviour
 {
     [SerializeField] private GameObject player = null;
-    [SerializeField] private AttributeController attributeInstance;
+    private AttributeController attributeInstance;
+    private UIController uiController;
     public float heatValue = 0f;
     private float heatMax = 0f;
     private bool recentlyHeated = false;
@@ -17,12 +18,14 @@ public class OverheatScript : MonoBehaviour
 
     void Start()
     {
+        uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
         attributeInstance = player.GetComponent<AttributeController>();
+        
     }
 
     void Update()
     {
-        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
+        
         if(recentlyHeated == true)
         {
             coolingInitializeRemaining -= Time.deltaTime;
@@ -49,6 +52,7 @@ public class OverheatScript : MonoBehaviour
 
     public void Heat(float heatGeneration)
     {
+        uiController.SetMaxHeat(attributeInstance.weaponAttributesResultant.heatMaximum);
         heatValue += heatGeneration;
         if(heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
         {
@@ -58,6 +62,14 @@ public class OverheatScript : MonoBehaviour
         }
         recentlyHeated = true;
         coolingInitializeRemaining = attributeInstance.weaponAttributesResultant.coolingInitialize;
+    }
+
+    public float HeatValue
+    {
+        get
+        {
+            return heatValue;
+        }
     }
 
     private void OnGUI()

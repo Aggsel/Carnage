@@ -121,26 +121,32 @@ public class RoomManager : MonoBehaviour
     }
 
     private void CalculateDoorMask(){
+        //tempDoors is a HACK! Doorplacers should ALWAYS be a length of four.
         this.doorPlacers = GetComponentsInChildren<DoorPlacer>();
-
+        DoorPlacer[] tempDoors = new DoorPlacer[4];
         for (int i = 0; i < doorPlacers.Length; i++){
             Vector3 doorRelativePos = (doorPlacers[i].transform.position - transform.position).normalized;
             float angle = Mathf.Round(Quaternion.FromToRotation(Vector3.forward, doorRelativePos).eulerAngles.y / 90);
             switch (angle){
                 case 0:
+                    tempDoors[0] = doorPlacers[i];
                     this.doorMask |= 0b1;
                     break;
                 case 1:
+                    tempDoors[1] = doorPlacers[i];
                     this.doorMask |= 0b10;
                     break;
                 case 2:
+                    tempDoors[2] = doorPlacers[i];
                     this.doorMask |= 0b100;
                     break;
                 case 3:
+                    tempDoors[3] = doorPlacers[i];
                     this.doorMask |= 0b1000;
                     break;
             }
         }
+        this.doorPlacers = tempDoors;
     }
 
     public void MergeMeshes(){
