@@ -39,8 +39,7 @@ public class EnemyStateRangedAttack : EnemyState
         bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
         timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
-        if(!lineOfSight && timeOutOfSight >= 2.0f){
-            Debug.Log("Stop hiding yo");
+        if(timeOutOfSight >= 2.0f){
             SetState(behavior.chaseState);
         }
     }
