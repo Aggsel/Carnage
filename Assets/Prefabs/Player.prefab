@@ -6437,12 +6437,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponAttributesBase:
     damage: 20
-    fireRate: 12
-    heatGeneration: 15
+    fireRate: 10
+    heatGeneration: 2
     heatMaximum: 100
     coolingIntialize: 0.5
-    coolingRate: 45
-    accuracy: 0.25
+    coolingRate: 40
+    accuracy: 0.05
     health: 100
   weaponAttributesResultant:
     damage: 0
@@ -6588,9 +6588,8 @@ MonoBehaviour:
   interactionLayermask:
     serializedVersion: 2
     m_Bits: 2048
-  itemLayermask:
-    serializedVersion: 2
-    m_Bits: 32768
+  interactionObj: {fileID: 0}
+  interactText: {fileID: 0}
 --- !u!114 &3434799388374709113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7410,7 +7409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6168320d808999e42b495590bdfd63c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: {fileID: 0}
+  active: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24, type: 2}
   player: {fileID: 3027235087010105666}
 --- !u!1 &5600333829868624959
 GameObject:
