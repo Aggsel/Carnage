@@ -14,11 +14,13 @@ public class FiringController : MonoBehaviour
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
+
     private ProjectileShotController psc;
     private Screenshake ss;
 
     private int bitmask;
     private AttributeController attributeInstance;
+    private AudioManager am;
     private float timeToFire = 0f;
     private bool overheated = false;
 
@@ -29,6 +31,8 @@ public class FiringController : MonoBehaviour
         ss = FindObjectOfType<Screenshake>();
         int playerLayer = 12;
         bitmask = ~(1 << playerLayer);
+        am = AudioManager.Instance;
+
     }
 
     void Update()
@@ -74,11 +78,15 @@ public class FiringController : MonoBehaviour
         //recoil
         ss.RecoilCall();
 
+        //play sound
+        am.PlaySound(am.playerShooting);
+
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
         {
             //draw line
             Debug.DrawLine(bulletCam.transform.position, bulletHit.point, Color.green, 1.5f);
-            bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
+            bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject(transform.position, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
+            //bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
             GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
             Destroy(impact, 2f);
         }

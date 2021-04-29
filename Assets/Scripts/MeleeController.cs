@@ -22,13 +22,22 @@ public class MeleeController : MonoBehaviour
 
     [Tooltip("Dont change")]
     [SerializeField] private Animator anim = null;
+    [SerializeField] private LayerMask lm = new LayerMask();
     [Tooltip("For programmers, scripts that are disabled while using melee")]
     [SerializeField] private MonoBehaviour[] scripts = null;
     [SerializeField] private MeleeVariables meleeVar = new MeleeVariables();
 
-    private bool inHit = false;
     private KeyCode meleeKey = KeyCode.F;
     private Vector3 origin = Vector3.zero;
+    private AudioManager am = null;
+
+    //[HideInInspector]
+    public bool inHit = false;
+
+    private void Start ()
+    {
+        am = AudioManager.Instance;
+    }
 
     //read keybinds
     private void ReadKeybinds(KeyBindAsignments keys)
@@ -83,7 +92,7 @@ public class MeleeController : MonoBehaviour
                 RaycastHit hit;
                 Ray ray = new Ray(origin, dir);
 
-                if (Physics.Raycast(ray, out hit, meleeVar.range))
+                if (Physics.Raycast(ray, out hit, meleeVar.range, lm))
                 {
                     float dist = Vector3.Distance(origin, hit.point);
 
@@ -110,11 +119,12 @@ public class MeleeController : MonoBehaviour
         if(hitObj != null)
         {
             StartCoroutine(GetComponent<Screenshake>().Shake(4f, 0.2f));
+            am.PlaySound(am.playerMelee);
 
             //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
-            if(hitObj.GetComponentInParent<EnemyBehavior>() != null)
+            if (hitObj.GetComponentInParent<EnemyBehavior>() != null)
             {
-                HitObject obj = new HitObject(transform.position, lateHit.point, 100.0f, 0.0f); //set high melee damage
+                HitObject obj = new HitObject(transform.position, lateHit.point, 500.0f, 0.0f); //set high melee damage
                 hitObj.GetComponentInParent<EnemyBehavior>().OnShot(obj);
             }
         }
