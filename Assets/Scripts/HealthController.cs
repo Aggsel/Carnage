@@ -10,14 +10,13 @@ using UnityEngine.UI;
 public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
-    private float currentHealth = 0.0f;
+    private float currentHealth = 0.0f; //dont remove
     private MovementController movementController;
     private FiringController firingController;
     private RawImage damageIndicator;
     private AudioManager am;
     private AttributeController attributeInstance;
     private UIController uiController;
-    private Slider healthbarSlider;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
     [SerializeField] private GameObject bloodImageGO;
@@ -51,26 +50,12 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
-        
         am.PlaySound(am.playerHurt);
     }
 
     private void HideDamageIndicator()
     {
-        StartCoroutine(FadeImage(true));
-    }
-
-    IEnumerator FadeImage(bool fadeAway)
-    {
-        // fade the overlay
-        if (fadeAway)
-        {
-            for (float i = 1.3f; i >= 0.0f; i -= Time.deltaTime)
-            {
-                damageIndicator.color = new Color(damageIndicator.color.r, damageIndicator.color.g, damageIndicator.color.b, i);
-                yield return null;
-            }
-        }
+        uiController.StartCoroutine(uiController.FadeImage(damageIndicator, 1.3f, true));
     }
 
     private void Start() {
@@ -111,6 +96,7 @@ public class HealthController : MonoBehaviour
         weaponSway.enabled = false;
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
+        am.StopSound(ref am.ambManager);
     }
 
     private IEnumerator DeathEffects(){

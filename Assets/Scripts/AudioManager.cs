@@ -35,6 +35,9 @@ public struct EventContainer{
             Initialize();
         instance.setParameterByName(parameter, value);
     }
+    internal void Stop(){
+        instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    }
 }
 
 public class AudioManager : MonoBehaviour
@@ -56,6 +59,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer patientFootsteps;
     [SerializeField] public EventContainer patientSpawn;
 
+    [Header("Music")]
+    [SerializeField] public EventContainer ambManager;
+
     public void PlaySound(EventContainer eventContainer){
         eventContainer.Play();
     }
@@ -70,6 +76,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(ref EventContainer eventContainer, GameObject sourceObject){
         eventContainer.Play(sourceObject);
+    }
+
+    public void StopSound(ref EventContainer eventContainer){
+        eventContainer.Stop();
     }
 
     public void SetParameterByName(ref EventContainer eventContainer, string parameter, float value){
