@@ -23,6 +23,8 @@ public class RoomManager : MonoBehaviour
     private LevelManager parentLevelManager = null;
     private bool hasBeenVisited = false;
     
+    private AudioManager am;
+
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
     [SerializeField] WaveHandler waveHandler;
@@ -37,6 +39,7 @@ public class RoomManager : MonoBehaviour
 
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
+        am = AudioManager.Instance;
     }
 
     void OnDisable(){
@@ -56,8 +59,11 @@ public class RoomManager : MonoBehaviour
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
-        if(enemyCount > 0)
+        if(enemyCount > 0){
             OpenDoors(false);
+            am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
+            am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+        }
 
         hasBeenVisited = true;
     }
@@ -65,7 +71,8 @@ public class RoomManager : MonoBehaviour
     //Is called whenever wavehandler has finished the last wave.
     private void OnCombatComplete(){
         OpenDoors(true);
-        
+        am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
+        am.SetParameterByName(ref am.ambManager, "State", 0.0f);
         SpawnItem();
     }
 
@@ -121,26 +128,32 @@ public class RoomManager : MonoBehaviour
     }
 
     private void CalculateDoorMask(){
+        //tempDoors is a HACK! Doorplacers should ALWAYS be a length of four.
         this.doorPlacers = GetComponentsInChildren<DoorPlacer>();
-
+        DoorPlacer[] tempDoors = new DoorPlacer[4];
         for (int i = 0; i < doorPlacers.Length; i++){
             Vector3 doorRelativePos = (doorPlacers[i].transform.position - transform.position).normalized;
             float angle = Mathf.Round(Quaternion.FromToRotation(Vector3.forward, doorRelativePos).eulerAngles.y / 90);
             switch (angle){
                 case 0:
+                    tempDoors[0] = doorPlacers[i];
                     this.doorMask |= 0b1;
                     break;
                 case 1:
+                    tempDoors[1] = doorPlacers[i];
                     this.doorMask |= 0b10;
                     break;
                 case 2:
+                    tempDoors[2] = doorPlacers[i];
                     this.doorMask |= 0b100;
                     break;
                 case 3:
+                    tempDoors[3] = doorPlacers[i];
                     this.doorMask |= 0b1000;
                     break;
             }
         }
+        this.doorPlacers = tempDoors;
     }
 
     public void MergeMeshes(){

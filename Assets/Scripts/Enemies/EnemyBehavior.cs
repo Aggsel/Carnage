@@ -13,6 +13,7 @@ public class EnemyBehavior : MonoBehaviour
     [Tooltip("A value of 0.0f will set the decals rotation to continue from the shot direction. A value of 1.0f will rotate the decals to face straight down.")]
     [Range(0.0f,1.0f)]
     [SerializeField] private float decalRotation = 0.35f;
+    public AudioManager am;
 
     [SerializeField] public EnemyStateChase chaseState = new EnemyStateChase();
     [SerializeField] public EnemyStatePatrol patrolState = new EnemyStatePatrol();
@@ -21,7 +22,6 @@ public class EnemyBehavior : MonoBehaviour
 
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
-    public AudioManager am = null;
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
@@ -79,7 +79,10 @@ public class EnemyBehavior : MonoBehaviour
             return;
         if(spawnTransform == null)
             spawnTransform = transform;
-        GameObject instantiatedProjectile = Instantiate(projectile, spawnTransform.position, spawnTransform.rotation, transform.parent);
+        GameObject instantiatedProjectile = Instantiate(projectile) as GameObject;
+        instantiatedProjectile.transform.position = spawnTransform.position;
+        instantiatedProjectile.transform.LookAt(player.transform.position);
+
         instantiatedProjectile.GetComponent<EnemyProjectile>().parent = anim.gameObject;
     }
 

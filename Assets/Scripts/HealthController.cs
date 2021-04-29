@@ -10,31 +10,36 @@ using UnityEngine.UI;
 public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
-    private float currentHealth = 0.0f;
+    private float currentHealth = 0.0f; //dont remove
     private MovementController movementController;
     private FiringController firingController;
     private RawImage damageIndicator;
     private AudioManager am;
     private AttributeController attributeInstance;
-    private Slider healthbarSlider;
+    private UIController uiController;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
     [SerializeField] private GameObject bloodImageGO;
-    [SerializeField] private Color highColor;
-    [SerializeField] private Color lowColor;
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
         currentHealth = maxHealth;
-        healthbarSlider.maxValue = maxHealth;
-        healthbarSlider.value = currentHealth;
+        uiController.SetMaxHealth(maxHealth);
+        uiController.UpdateHealthbar();
+    }
+
+    public float Health
+    {
+        get
+        {
+            return currentHealth;
+        }
     }
 
     public void ModifyCurrentHealth(float healthIncrease){
         currentHealth += healthIncrease;
         currentHealth = Mathf.Clamp(currentHealth, -1.0f, maxHealth);
-        healthbarSlider.value = currentHealth;
-        healthbarSlider.fillRect.GetComponentInChildren<Image>().color = Color.Lerp(lowColor, highColor, healthbarSlider.normalizedValue);
+        uiController.UpdateHealthbar();
         CheckDeathCriteria();
     }
 
@@ -45,7 +50,6 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
-        
         am.PlaySound(am.playerHurt);
     }
 
@@ -74,7 +78,7 @@ public class HealthController : MonoBehaviour
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
         movementController = GetComponent<MovementController>();
         firingController = GetComponent<FiringController>();
-        healthbarSlider = GameObject.Find("Slider").GetComponent<Slider>();
+        uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
 
         if (bloodImageGO == null)
         {
@@ -103,16 +107,13 @@ public class HealthController : MonoBehaviour
         firingController.enabled = false;
         viewBob.enabled = false;
         weaponSway.enabled = false;
-        am.PlaySound(am.playerDeath);
+        //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
+        am.StopSound(ref am.ambManager);
     }
 
     private IEnumerator DeathEffects(){
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(1);
-    }
-
-    void OnGUI(){
-        GUI.Label(new Rect(10, 80, 100, 50), currentHealth.ToString("F2"));
     }
 }
