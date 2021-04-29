@@ -51,7 +51,7 @@ public class Viewbob : MonoBehaviour
         if(transform.localPosition.y <= -0.05f && !down)
         {
             down = true;
-            //am.SetParameterByName(am.playerFootsteps, "surface", 0.5f);
+            am.SetParameterByName(ref am.playerFootsteps, "surface", 1.0f);
             am.PlaySound(am.playerFootsteps);
         }
         else if (transform.localPosition.y > -0.05f)

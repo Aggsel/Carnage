@@ -72,7 +72,7 @@ public class AttributeController : MonoBehaviour
     [SerializeField] public WeaponAttributesResultant weaponAttributesResultant = new WeaponAttributesResultant();
     private List<Buff> buffList = new List<Buff>();
 
-    void Start()
+    void Awake()
     {
         Recalculate();
     }
