@@ -11,22 +11,30 @@ public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
     private float currentHealth = 0.0f;
-
     private MovementController movementController;
     private FiringController firingController;
     private RawImage damageIndicator;
     private AudioManager am;
+    private AttributeController attributeInstance;
+    private Slider healthbarSlider;
     [SerializeField] private Viewbob viewBob;
     [SerializeField] private WeaponSway weaponSway;
     [SerializeField] private GameObject bloodImageGO;
+    [SerializeField] private Color highColor;
+    [SerializeField] private Color lowColor;
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
+        currentHealth = maxHealth;
+        healthbarSlider.maxValue = maxHealth;
+        healthbarSlider.value = currentHealth;
     }
 
     public void ModifyCurrentHealth(float healthIncrease){
         currentHealth += healthIncrease;
         currentHealth = Mathf.Clamp(currentHealth, -1.0f, maxHealth);
+        healthbarSlider.value = currentHealth;
+        healthbarSlider.fillRect.GetComponentInChildren<Image>().color = Color.Lerp(lowColor, highColor, healthbarSlider.normalizedValue);
         CheckDeathCriteria();
     }
 
@@ -37,6 +45,7 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
+        
         am.PlaySound(am.playerHurt);
     }
 
@@ -60,8 +69,12 @@ public class HealthController : MonoBehaviour
 
     private void Start() {
         am = AudioManager.Instance;
+        attributeInstance = this.gameObject.GetComponent<AttributeController>();
         bloodImageGO.SetActive(true);
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
+        movementController = GetComponent<MovementController>();
+        firingController = GetComponent<FiringController>();
+        healthbarSlider = GameObject.Find("Slider").GetComponent<Slider>();
 
         if (bloodImageGO == null)
         {
@@ -71,14 +84,12 @@ public class HealthController : MonoBehaviour
         {
             damageIndicator.color = new Color(damageIndicator.color.r, damageIndicator.color.g, damageIndicator.color.b, 0.0f);
         }
-        this.currentHealth = maxHealth;
-        movementController = GetComponent<MovementController>();
-        firingController = GetComponent<FiringController>();
 
         if(viewBob == null)
             viewBob = GetComponentInChildren<Viewbob>();
         if(weaponSway == null)
             weaponSway = GetComponentInChildren<WeaponSway>();
+        SetMaxHealth(attributeInstance.weaponAttributesResultant.health);
     }
 
     private void CheckDeathCriteria(){
@@ -92,6 +103,7 @@ public class HealthController : MonoBehaviour
         firingController.enabled = false;
         viewBob.enabled = false;
         weaponSway.enabled = false;
+        am.PlaySound(am.playerDeath);
         StartCoroutine("DeathEffects");
     }
 

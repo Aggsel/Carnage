@@ -25,9 +25,9 @@ public class EnemyBehavior : MonoBehaviour
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
+    private AudioManager am;
 
     protected virtual void Start(){
-
         bc = FindObjectOfType<BloodController>();
         anim = GetComponentInChildren<Animator>();
         am = AudioManager.Instance;
@@ -41,6 +41,7 @@ public class EnemyBehavior : MonoBehaviour
         patrolState.SetBehaviour(this);
         attackState.SetBehaviour(this);
         rangedAttackState.SetBehaviour(this);
+        am = AudioManager.Instance;
     }
 
     protected virtual void Update(){
