@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class OverheatScript : MonoBehaviour
 {
     [SerializeField] private GameObject player = null;
-    private AttributeController attributeInstance;
+    [SerializeField] private AttributeController attributeInstance;
     private UIController uiController;
     public float heatValue = 0f;
     private float heatMax = 0f;
-    private bool recentlyHeated = false;
-    private bool overheated = false;
+    public bool recentlyHeated = false;
+    public bool overheated = false;
     private float coolingInitializeRemaining = 0f;
     private Buff buffReferenceOne = null;
 
@@ -20,12 +20,10 @@ public class OverheatScript : MonoBehaviour
     {
         uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
         attributeInstance = player.GetComponent<AttributeController>();
-        
     }
 
     void Update()
     {
-        
         if(recentlyHeated == true)
         {
             coolingInitializeRemaining -= Time.deltaTime;
@@ -37,8 +35,7 @@ public class OverheatScript : MonoBehaviour
         else
         {
             heatValue -= attributeInstance.weaponAttributesResultant.coolingRate * Time.deltaTime;
-            heatValue = Mathf.Clamp(heatValue, 0f, heatMax);
-
+            heatValue = Mathf.Clamp(heatValue, 0f, attributeInstance.weaponAttributesResultant.heatMaximum);
 
             if (heatValue == 0 && overheated == true)
             {
