@@ -21,15 +21,17 @@ public class EnemyBehavior : MonoBehaviour
 
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
+    public AudioManager am = null;
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
+    private AudioManager am;
 
     protected virtual void Start(){
-
         bc = FindObjectOfType<BloodController>();
         anim = GetComponentInChildren<Animator>();
-
+        am = AudioManager.Instance;
+        am.PlaySound(ref am.patientSpawn, this.gameObject);
         if(this.agent == null)
             this.agent = GetComponent<NavMeshAgent>();
 
@@ -39,6 +41,7 @@ public class EnemyBehavior : MonoBehaviour
         patrolState.SetBehaviour(this);
         attackState.SetBehaviour(this);
         rangedAttackState.SetBehaviour(this);
+        am = AudioManager.Instance;
     }
 
     protected virtual void Update(){
@@ -87,6 +90,7 @@ public class EnemyBehavior : MonoBehaviour
         {
             bc.InstantiateBlood(hit.hitPosition, hit.shotDirection);
         }
+        am.PlaySound(ref am.patientHurt, transform.position);
         
         //if(bloodDecalProjector != null)
         //    Instantiate(bloodDecalProjector, transform.position, Quaternion.Lerp(Quaternion.LookRotation(hit.shotDirection, Vector3.up), Quaternion.Euler(new Vector3(90, 0, 0)), decalRotation));
@@ -97,6 +101,8 @@ public class EnemyBehavior : MonoBehaviour
     }
     
     private void OnDestroy(){
+        bc.InstantiateDeathBlood(transform.position + new Vector3(0, 2.0f, 0));
+        am.PlaySound(ref am.patientDeath, transform.position);
         if(this != null)    //In order to prevent unwanted behaviour while destroying enemies when exiting the game.
             parentSpawn?.ReportDeath(this);
     }
