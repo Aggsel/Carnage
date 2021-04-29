@@ -6437,12 +6437,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponAttributesBase:
     damage: 20
-    fireRate: 12
-    heatGeneration: 0.5
+    fireRate: 10
+    heatGeneration: 2
     heatMaximum: 100
     coolingIntialize: 0.5
-    coolingRate: 45
-    accuracy: 0.25
+    coolingRate: 40
+    accuracy: 0.05
     health: 100
   weaponAttributesResultant:
     damage: 0
@@ -6472,7 +6472,7 @@ MonoBehaviour:
   hitEffect: {fileID: 6817321594469807644, guid: 267d378f6915a1545b8a2b2ebb418bcf,
     type: 3}
   overheatObject: {fileID: 3027235087629037940}
-  muzzleFlash: {fileID: 0}
+  muzzleFlash: {fileID: 5877993609706822722}
 --- !u!114 &6100689584837751783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6546,6 +6546,7 @@ MonoBehaviour:
     range: 2.5
     rayAmount: 3
     raySpread: 1.5
+  inHit: 0
 --- !u!114 &3027235087010105677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6587,6 +6588,8 @@ MonoBehaviour:
   interactionLayermask:
     serializedVersion: 2
     m_Bits: 2048
+  interactionObj: {fileID: 0}
+  interactText: {fileID: 0}
 --- !u!114 &3434799388374709113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6683,6 +6686,8 @@ MonoBehaviour:
   player: {fileID: 3027235087010105666}
   attributeInstance: {fileID: 0}
   heatValue: 0
+  recentlyHeated: 0
+  overheated: 0
 --- !u!1 &3090853262015878259
 GameObject:
   m_ObjectHideFlags: 0
@@ -7404,7 +7409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6168320d808999e42b495590bdfd63c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: {fileID: 0}
+  active: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24, type: 2}
   player: {fileID: 3027235087010105666}
 --- !u!1 &5600333829868624959
 GameObject:
@@ -8463,15 +8468,15 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: -6289332499230727333, guid: 75f5ea826af8f0c429effef4be034860, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 75f5ea826af8f0c429effef4be034860, type: 3}
---- !u!4 &9065916821613292141 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5654958520832220160, guid: 75f5ea826af8f0c429effef4be034860,
-    type: 3}
-  m_PrefabInstance: {fileID: 3723044781676983917}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &2973637742781596317 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 1940649316566398192, guid: 75f5ea826af8f0c429effef4be034860,
+    type: 3}
+  m_PrefabInstance: {fileID: 3723044781676983917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9065916821613292141 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5654958520832220160, guid: 75f5ea826af8f0c429effef4be034860,
     type: 3}
   m_PrefabInstance: {fileID: 3723044781676983917}
   m_PrefabAsset: {fileID: 0}
@@ -8569,6 +8574,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55f3af48e8f52e34d90b395893845ed4, type: 3}
+--- !u!2083052967 &5877993609706822722 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 457529164563598528, guid: 55f3af48e8f52e34d90b395893845ed4,
+    type: 3}
+  m_PrefabInstance: {fileID: 6326339571548590210}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5877993609706822725 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 457529164563598535, guid: 55f3af48e8f52e34d90b395893845ed4,

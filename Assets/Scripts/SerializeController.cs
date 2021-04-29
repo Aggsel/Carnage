@@ -82,8 +82,8 @@ public class SerializeController : MonoBehaviour
     //kinda disgusting
     private void LoadPreferences (string[] lines)
     {
-        //0            1       2      3    4      5     6        7     8      9      10    11    12     13
-        //sensitivity, sounds, music, fov, gamma, dash, forward, back, pause, right, left, jump, melee, action
+        //0            1       2      3    4      5        6     7        8     9      10      11    12    13     14  
+        //sensitivity, sounds, music, fov, gamma, graphics dash, forward, back, pause, right, left, jump, melee, action,
         //this does not check if the preferences is valid
 
         OptionAssignments oa = pc.GetOptions();
@@ -104,11 +104,16 @@ public class SerializeController : MonoBehaviour
         oa.gammaSlider.value = float.Parse(lines[4]);
         pc.ChangeGamma(oa.gammaSlider);
 
+        oa.graphicsSlider.value = float.Parse(lines[5]);
+        pc.ChangeGraphics(oa.graphicsSlider);
+
+        //Debug.Log("Loaded graphics as " + oa.graphicsSlider.value);
+
         //Keybindings
-        for (int i = 5; i < lines.Length; i++)
+        for (int i = 6; i < lines.Length; i++)
         {
             KeyCode newKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), lines[i]);
-            pc.SetKeyBindings(i - 5, newKey);
+            pc.SetKeyBindings(i - 6, newKey);
         }
     }
 
@@ -123,6 +128,7 @@ public class SerializeController : MonoBehaviour
             oa.musicSlider.value.ToString() + "\n" +
             oa.fovSlider.value.ToString() + "\n" +
             oa.gammaSlider.value.ToString() + "\n" +
+            oa.graphicsSlider.value.ToString() + "\n" +
 
             //keybindings
             ka.moveForward.ToString() + "\n" +
@@ -135,6 +141,7 @@ public class SerializeController : MonoBehaviour
             ka.melee.ToString() + "\n" +
             ka.action.ToString();
 
+        //Debug.Log("Saved graphics as " + oa.graphicsSlider.value.ToString());
         WriteToPreferences(saveString);
     }
     #endregion

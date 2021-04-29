@@ -7,21 +7,36 @@ using FMOD.Studio;
 [System.Serializable]
 public struct EventContainer{
     [FMODUnity.EventRef] public string reference;
-    public EventInstance instance {get;set;}
+    public EventInstance instance;
     private bool initialized;
-    private void Initialize(){
-        instance = RuntimeManager.CreateInstance(reference);
+    public void Initialize(){
+        instance = RuntimeManager.CreateInstance(this.reference);
         initialized = true;
     }
-    public void Play(){
+    internal void Play(){
         if(!initialized)
             Initialize();
         instance.start();
     }
-    public void SetParameterByName(string parameter, float value){
+    internal void Play(Vector3 source){
+        if(!initialized)
+            Initialize();
+        instance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(source));
+        instance.start();
+    }
+    internal void Play(GameObject source){
+        if(!initialized)
+            Initialize();
+        instance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(source));
+        instance.start();
+    }
+    internal void SetParameterByName(string parameter, float value){
         if(!initialized)
             Initialize();
         instance.setParameterByName(parameter, value);
+    }
+    internal void Stop(){
+        instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
 }
 
@@ -44,16 +59,30 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer patientFootsteps;
     [SerializeField] public EventContainer patientSpawn;
 
+    [Header("Music")]
+    [SerializeField] public EventContainer ambManager;
+
     public void PlaySound(EventContainer eventContainer){
         eventContainer.Play();
     }
 
-    public void PlaySound(EventContainer eventContainer, Vector3 emitPosition){
-        eventContainer.instance.set3DAttributes(RuntimeUtils.To3DAttributes(emitPosition));
+    public void PlaySound(ref EventContainer eventContainer){
         eventContainer.Play();
     }
 
-    public void SetParameterByName(EventContainer eventContainer, string parameter, float value){
+    public void PlaySound(ref EventContainer eventContainer, Vector3 sourcePosition){
+        eventContainer.Play(sourcePosition);
+    }
+
+    public void PlaySound(ref EventContainer eventContainer, GameObject sourceObject){
+        eventContainer.Play(sourceObject);
+    }
+
+    public void StopSound(ref EventContainer eventContainer){
+        eventContainer.Stop();
+    }
+
+    public void SetParameterByName(ref EventContainer eventContainer, string parameter, float value){
         eventContainer.SetParameterByName(parameter, value);
     }
 
