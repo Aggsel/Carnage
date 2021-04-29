@@ -125,7 +125,7 @@ NavMeshAgent:
   m_AngularSpeed: 500
   m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1.44
   m_BaseOffset: -0.05
@@ -148,10 +148,11 @@ MonoBehaviour:
   bloodDecalProjector: {fileID: 1099489180470404072, guid: a634fe900566378439449b167688cb5c,
     type: 3}
   decalRotation: 0.35
+  am: {fileID: 0}
   chaseState:
-    attackInitiationRange: 10
+    attackInitiationRange: 0
     chaseSpeed: 5
-    stoppingDistance: 8
+    stoppingDistance: 40
   patrolState:
     attackInitiationRange: 0
     enemyVisionDistance: 0
@@ -170,7 +171,7 @@ MonoBehaviour:
   agent: {fileID: 0}
   player: {fileID: 0}
   anim: {fileID: 0}
-  health: 100
+  health: 120
 --- !u!1 &8397120125445935232
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,6 +15,14 @@ public class EnemySpawnPoint : MonoBehaviour
     //Spawn random enemy and return how much that enemy
     //contributed to the difficulty score of the room.
     public float SpawnRandomEnemy(){
+        StartCoroutine("RandomizeSpawnTiming");
+        //TODO: Return difficulty score.
+        return 1.0f;
+    }
+
+    private IEnumerator RandomizeSpawnTiming()
+    {
+        yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
         int randIndex = Random.Range(0, availableEnemies.Count);
         GameObject randomEnemy = availableEnemies[randIndex];
         randomEnemy = Instantiate(randomEnemy, transform);
@@ -22,9 +30,6 @@ public class EnemySpawnPoint : MonoBehaviour
         EnemyBehavior enemy = randomEnemy.GetComponent<EnemyBehavior>();
         enemy.SetParentSpawn(this);
         spawnedEnemies.Add(enemy);
-
-        //TODO: Return difficulty score.
-        return 1.0f;
     }
 
     public void ReportDeath(EnemyBehavior enemy){

@@ -6438,7 +6438,7 @@ MonoBehaviour:
   weaponAttributesBase:
     damage: 20
     fireRate: 12
-    heatGeneration: 0.5
+    heatGeneration: 15
     heatMaximum: 100
     coolingIntialize: 0.5
     coolingRate: 45
@@ -6546,6 +6546,7 @@ MonoBehaviour:
     range: 2.5
     rayAmount: 3
     raySpread: 1.5
+  inHit: 0
 --- !u!114 &3027235087010105677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6587,6 +6588,9 @@ MonoBehaviour:
   interactionLayermask:
     serializedVersion: 2
     m_Bits: 2048
+  itemLayermask:
+    serializedVersion: 2
+    m_Bits: 32768
 --- !u!114 &3434799388374709113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6603,9 +6607,6 @@ MonoBehaviour:
   viewBob: {fileID: 3027235086763249293}
   weaponSway: {fileID: 3027235087629037938}
   bloodImageGO: {fileID: 0}
-  healthbarSlider: {fileID: 0}
-  highColor: {r: 0.4716981, g: 0, b: 0, a: 0}
-  lowColor: {r: 1, g: 0, b: 0, a: 0}
 --- !u!54 &3545908116954248292
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6686,6 +6687,8 @@ MonoBehaviour:
   player: {fileID: 3027235087010105666}
   attributeInstance: {fileID: 0}
   heatValue: 0
+  recentlyHeated: 0
+  overheated: 0
 --- !u!1 &3090853262015878259
 GameObject:
   m_ObjectHideFlags: 0
