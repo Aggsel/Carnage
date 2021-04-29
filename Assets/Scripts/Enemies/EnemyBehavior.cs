@@ -24,7 +24,6 @@ public class EnemyBehavior : MonoBehaviour
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
-    public AudioManager am;
 
     protected virtual void Start(){
         bc = FindObjectOfType<BloodController>();
