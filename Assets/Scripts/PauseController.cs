@@ -210,14 +210,13 @@ public class PauseController : MonoBehaviour
 
         for (int i = 0; i < scripts.Length; i++)
         {
-            if(i == 0)
+            if(i == 3)
             {
-                //doesnt work
-                //Debug.Log(scripts[i]);
-
                 MeleeController mc = FindObjectOfType<MeleeController>();
-                if(mc.inHit)
+
+                if (mc.inHit && !paused)
                 {
+                    Debug.Log("Skip firing");
                     continue;
                 }
                 else
