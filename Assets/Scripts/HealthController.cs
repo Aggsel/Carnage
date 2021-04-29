@@ -109,12 +109,12 @@ public class HealthController : MonoBehaviour
         firingController.enabled = false;
         viewBob.enabled = false;
         weaponSway.enabled = false;
-        am.PlaySound(am.playerDeath);
+        //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
     }
 
     private IEnumerator DeathEffects(){
-        yield return new WaitForSeconds(7.5f);
+        yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(1);
     }
 }
