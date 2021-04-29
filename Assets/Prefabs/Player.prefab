@@ -6472,7 +6472,7 @@ MonoBehaviour:
   hitEffect: {fileID: 6817321594469807644, guid: 267d378f6915a1545b8a2b2ebb418bcf,
     type: 3}
   overheatObject: {fileID: 3027235087629037940}
-  muzzleFlash: {fileID: 0}
+  muzzleFlash: {fileID: 5877993609706822722}
 --- !u!114 &6100689584837751783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6603,6 +6603,9 @@ MonoBehaviour:
   viewBob: {fileID: 3027235086763249293}
   weaponSway: {fileID: 3027235087629037938}
   bloodImageGO: {fileID: 0}
+  healthbarSlider: {fileID: 0}
+  highColor: {r: 0.4716981, g: 0, b: 0, a: 0}
+  lowColor: {r: 1, g: 0, b: 0, a: 0}
 --- !u!54 &3545908116954248292
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8463,15 +8466,15 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: -6289332499230727333, guid: 75f5ea826af8f0c429effef4be034860, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 75f5ea826af8f0c429effef4be034860, type: 3}
---- !u!4 &9065916821613292141 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5654958520832220160, guid: 75f5ea826af8f0c429effef4be034860,
-    type: 3}
-  m_PrefabInstance: {fileID: 3723044781676983917}
-  m_PrefabAsset: {fileID: 0}
 --- !u!198 &2973637742781596317 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 1940649316566398192, guid: 75f5ea826af8f0c429effef4be034860,
+    type: 3}
+  m_PrefabInstance: {fileID: 3723044781676983917}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9065916821613292141 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5654958520832220160, guid: 75f5ea826af8f0c429effef4be034860,
     type: 3}
   m_PrefabInstance: {fileID: 3723044781676983917}
   m_PrefabAsset: {fileID: 0}
@@ -8569,6 +8572,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55f3af48e8f52e34d90b395893845ed4, type: 3}
+--- !u!2083052967 &5877993609706822722 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 457529164563598528, guid: 55f3af48e8f52e34d90b395893845ed4,
+    type: 3}
+  m_PrefabInstance: {fileID: 6326339571548590210}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5877993609706822725 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 457529164563598535, guid: 55f3af48e8f52e34d90b395893845ed4,
