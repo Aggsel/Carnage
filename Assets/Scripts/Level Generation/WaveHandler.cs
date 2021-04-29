@@ -42,8 +42,7 @@ public class WaveHandler
 
     //Returns how many enemies were spawned.
     public int Start(){
-        int enemiesSpawned = SpawnNewWave();
-        return enemiesSpawned;
+        return SpawnNewWave();
     }
 
     //Returns how many enemies were spawned at this wave.
