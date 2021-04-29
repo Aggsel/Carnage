@@ -458,6 +458,14 @@ public class MovementController : MonoBehaviour
         }
     }
 
+    public float Charge
+    {
+        get
+        {
+            return charge;
+        }
+    }
+
     //DEBUG velocity & FPS
     private void OnGUI ()
     {

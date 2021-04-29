@@ -21,11 +21,9 @@ public class EnemyBehavior : MonoBehaviour
 
     [HideInInspector] public NavMeshAgent agent;
     [SerializeField] private GameObject player;
-    public AudioManager am = null;
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
-    private AudioManager am;
 
     protected virtual void Start(){
         bc = FindObjectOfType<BloodController>();
