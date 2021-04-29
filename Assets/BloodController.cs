@@ -19,6 +19,7 @@ public class BloodController : MonoBehaviour
         }
     }
 
+    //when an enemy dies
     public void InstantiateDeathBlood (Vector3 hit)
     {
         //particle
@@ -33,6 +34,7 @@ public class BloodController : MonoBehaviour
         Destroy(par, 2.0f);
     }
 
+    //spawn a blood decal, is called from particle system in BloodParticle.cs
     public void SpawnBlood (Vector3 hit, GameObject obj)
     {
         DecalProjector newDecal = Instantiate(decal) as DecalProjector;
@@ -55,11 +57,13 @@ public class BloodController : MonoBehaviour
         newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
     }
 
+    //smaller hit effect of blood comming from the enemy
     public void InstantiateBlood (Vector3 hit, Vector3 dirPos)
     {
         //main
         Vector3 dir = hit - dirPos;
-        Quaternion rot = Quaternion.LookRotation(-dir);
+        Vector3 ranRot = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-5.0f, 5.0f), 0);
+        Quaternion rot = Quaternion.LookRotation(-dir + ranRot);
 
         //particle
         GameObject par = Instantiate(splatEffect) as GameObject;
