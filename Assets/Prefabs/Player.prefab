@@ -6506,11 +6506,10 @@ MonoBehaviour:
   profile: {fileID: 11400000, guid: 582adbd84082fdb4faf7cd4beb1ccd14, type: 2}
   fovCamera: {fileID: 1513428943}
   movementVar:
-    alwaysRun: 1
-    defaultSpeed: 0
-    runSpeed: 18
-    jumpForce: 16
-    fallAcceleration: 2.6
+    runSpeed: 12
+    backSpeedDivider: 0.75
+    jumpForce: 11
+    fallAcceleration: 1.8
     jumpLeeway: 0.15
   cameraVar:
     minX: -90
@@ -6535,17 +6534,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf6267234ba2dcc46bb727d2bc43554e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 8670063245809643012}
+  anim: {fileID: 0}
   lm:
     serializedVersion: 2
     m_Bits: 8192
   scripts:
-  - {fileID: 6662323191297907505}
+  - {fileID: 0}
   meleeVar:
     showDebug: 0
     range: 2.5
     rayAmount: 3
-    raySpread: 1.5
+    raySpread: 4.34
   inHit: 0
 --- !u!114 &3027235087010105677
 MonoBehaviour:
