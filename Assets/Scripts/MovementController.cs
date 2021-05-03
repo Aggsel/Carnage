@@ -93,7 +93,7 @@ public class MovementController : MonoBehaviour
     private float vertical = 0.0f;
     private float horizontal = 0.0f;
     private Vector3 dir = Vector3.zero;
-    private float edgeForce = 2.0f;
+    private float edgeForce = 3.0f;
     private MotionBlur globalMotion = null;
     private float startFov = 0.0f;
     private float endFov = 0.0f;
