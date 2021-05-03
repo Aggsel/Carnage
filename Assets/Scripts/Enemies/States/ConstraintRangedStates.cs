@@ -63,7 +63,8 @@ namespace EnemyStates.ConstraintRanged
                 return;
             if(spawnTransform == null)
                 spawnTransform = behavior.transform;
-            GameObject instantiatedProjectile = GameObject.Instantiate(projectile, spawnTransform.position, spawnTransform.rotation, behavior.transform.parent);
+            GameObject instantiatedProjectile = GameObject.Instantiate(projectile, spawnTransform.position, spawnTransform.rotation);
+            instantiatedProjectile.GetComponent<EnemyProjectile>().sourceEnemy = behavior.gameObject;
             instantiatedProjectile.transform.LookAt(behavior.GetTargetPosition());
         }
 
@@ -80,6 +81,10 @@ namespace EnemyStates.ConstraintRanged
         [SerializeField] private float chaseSpeed = 12.0f;
         [Tooltip("What distance from the player that this enemy should stop.")]
         [SerializeField] public float stoppingDistance = 1.0f;
+        [Tooltip("How often the enemy should check if the player is in sight (per second). Lower value increases enemy responsiveness at a slight performance cost.")]
+        [SerializeField] private float lineOfSightCheckFrequency = 0.5f;
+        private float lineOfSightTimer = 0.0f;
+
         private float previousStoppingDistance = 0.0f;
         private float previousSpeed = 0.0f;
 
@@ -103,17 +108,18 @@ namespace EnemyStates.ConstraintRanged
 
         public override void Update(){
             base.Update();
-
             agent.SetDestination(behavior.GetTargetPosition());
 
-            if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= behavior.chaseState.stoppingDistance){
-                RotateTowardsTarget(behavior.GetTargetPosition());
-                if(EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition()))
-                    SetState(behavior.attackState);
-            }
+            lineOfSightTimer += Time.deltaTime;
+            if(lineOfSightTimer > lineOfSightCheckFrequency){
+                lineOfSightTimer = 0.0f;
 
-            if (Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= stoppingDistance)
-                SetState(behavior.attackState);
+                if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= stoppingDistance){
+                    RotateTowardsTarget(behavior.GetTargetPosition());
+                    if(EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition()))
+                        SetState(behavior.attackState);
+                }
+            }
         }
     }
 

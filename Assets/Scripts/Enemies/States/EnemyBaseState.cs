@@ -30,8 +30,4 @@ public class EnemyBaseState
         Vector3 direction = (target - agent.transform.position).normalized;
         agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, Quaternion.LookRotation(direction, Vector3.up), Time.deltaTime * rotationSpeed);
     }
-
-    public virtual EnemyBaseState GetState(){
-        return this;
-    }
 }
