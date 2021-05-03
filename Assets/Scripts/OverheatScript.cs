@@ -69,9 +69,9 @@ public class OverheatScript : MonoBehaviour
         }
     }
 
-    private void OnGUI()
+    /*private void OnGUI()
     {
         GUI.Label(new Rect(10, 60, 100, 50), heatValue.ToString("F0"));
-    }
+    }*/
 
 }
