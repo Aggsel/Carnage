@@ -20,41 +20,40 @@ public class AnimationCaller : MonoBehaviour
     }
 
     //melee fiend
-    public void FiendMeleeAttack ()
+    public void FiendMeleeAttack()
     {
-        //Debug.Log("START ATTACK");
-        EnemyBehavior eb = GetComponentInParent<EnemyBehavior>();
-        eb.attackState.Attack();
+        ConstraintMeleeBehavior eb = GetComponentInParent<ConstraintMeleeBehavior>();
+        eb.AnimHookAttack();
     }
 
-    public void FiendMeleeAttackStop ()
+    public void FiendMeleeAttackStop()
     {
-        EnemyBehavior eb = GetComponentInParent<EnemyBehavior>();
-        eb.attackState.StopAttack();
+        ConstraintMeleeBehavior eb = GetComponentInParent<ConstraintMeleeBehavior>();
+        eb.AnimHookStopAttack();
     }
 
     //Ranged fiend
-    public void FiendRangedAttack ()
+    public void FiendRangedAttack()
     {
-        EnemyBehavior eb = GetComponentInParent<EnemyBehavior>();
-        eb.rangedAttackState.RangedAttack();
+        ConstraintRangedBehavior eb = GetComponentInParent<ConstraintRangedBehavior>();
+        eb.AnimHookAttack();
     }
 
-    public void FiendRangedAttackStop ()
+    public void FiendRangedAttackStop()
     {
-        EnemyBehavior eb = GetComponentInParent<EnemyBehavior>();
-        eb.rangedAttackState.StopRangedAttack();
+        ConstraintRangedBehavior eb = GetComponentInParent<ConstraintRangedBehavior>();
+        eb.AnimHookStopAttack();
     }
     #endregion
 
     //player
-    public void PlayerMeleeStart ()
+    public void PlayerMeleeStart()
     {
         MeleeController mc = GetComponentInParent<MeleeController>();
         mc.StartMelee();
     }
 
-    public void PlayerMeleeReset ()
+    public void PlayerMeleeReset()
     {
         MeleeController mc = GetComponentInParent<MeleeController>();
         mc.ResetMelee();
