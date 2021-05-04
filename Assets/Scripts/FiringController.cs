@@ -26,8 +26,7 @@ public class FiringController : MonoBehaviour
 
     void Start()
     {
-        GameObject player = this.gameObject;
-        attributeInstance = player.GetComponent<AttributeController>();
+        attributeInstance = this.gameObject.GetComponent<AttributeController>();
         ss = FindObjectOfType<Screenshake>();
         int playerLayer = 12;
         bitmask = ~(1 << playerLayer);
