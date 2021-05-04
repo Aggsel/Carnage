@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -29,6 +30,10 @@ public class LevelManager : MonoBehaviour
     [Header("Callback")]
     [Tooltip("Will invoke all of these functions when level generation is complete.")]
     [SerializeField] private UnityEvent OnFinishedGeneration = null;
+
+    [Header("UI References")]
+    [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
+    [SerializeField] private TextMeshProUGUI progressionUIReference = null;
 
     //Debug
     [Header("Debug Variables")]
@@ -64,6 +69,7 @@ public class LevelManager : MonoBehaviour
 
         PopulateLevel();
         ActivateNeighbors(spawnRoomLocation);
+        UpdateProgressionUI();
         OnFinishedGeneration.Invoke();
     }
 
@@ -136,8 +142,18 @@ public class LevelManager : MonoBehaviour
 
     public void IncrementCompletedRooms(){
         completedRooms++;
-        //Update UI
-        Debug.Log(string.Format("{0} / {1}", completedRooms, roomCounter));
+        UpdateProgressionUI();
+    }
+
+    public void ProgressionUISetActive(bool enabled){
+        progressionUIReference.gameObject.SetActive(enabled);
+    }
+
+    private void UpdateProgressionUI(){
+        if(progressionUIReference != null)
+            progressionUIReference.text = string.Format("{0, 2:D2}/{1, 2:D2}", completedRooms, roomCounter);
+        else
+            Debug.LogWarning("UI progression reference not set in the LevelManager", this.gameObject);
     }
 }
 
