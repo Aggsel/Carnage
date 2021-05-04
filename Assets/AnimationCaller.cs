@@ -4,6 +4,21 @@ using UnityEngine;
 
 public class AnimationCaller : MonoBehaviour
 {
+    private AudioManager am = null;
+
+    private void Start()
+    {
+        am = AudioManager.Instance;
+    }
+
+    #region Enemies
+    //main fiend
+    public void FiendFootSteps ()
+    {
+        //am.SetParameterByName(ref am.patientFootsteps, "surface", 1.0f);
+        am.PlaySound(ref am.patientFootsteps, transform.gameObject);
+    }
+
     //melee fiend
     public void FiendMeleeAttack ()
     {
@@ -30,6 +45,7 @@ public class AnimationCaller : MonoBehaviour
         EnemyBehavior eb = GetComponentInParent<EnemyBehavior>();
         eb.rangedAttackState.StopRangedAttack();
     }
+    #endregion
 
     //player
     public void PlayerMeleeStart ()
