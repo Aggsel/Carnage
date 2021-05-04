@@ -101,6 +101,7 @@ public class PauseController : MonoBehaviour
         UpdatePause(false);
         updateKeysFunction.Invoke(keybindAssignments);
         sc = FindObjectOfType<SerializeController>();
+
     }
 
     //Get Sliders for serializing
@@ -492,12 +493,16 @@ public class PauseController : MonoBehaviour
     public void ChangeSound(Slider slider)
     {
         //Do sound change here
+        FMOD.Studio.VCA Master = FMODUnity.RuntimeManager.GetVCA("vca:/Master");
+        Master.setVolume(slider.value);
         optionAssignments.soundValue.text = slider.value.ToString("F1") + "%";
     }
 
     public void ChangeMusic(Slider slider)
     {
         //Do music change here
+        FMOD.Studio.VCA Music = FMODUnity.RuntimeManager.GetVCA("vca:/Music");
+        Music.setVolume(slider.value);
         optionAssignments.musicValue.text = slider.value.ToString("F1") + "%";
     }
 
