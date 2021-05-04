@@ -494,7 +494,7 @@ public class PauseController : MonoBehaviour
     {
         //Do sound change here
         FMOD.Studio.VCA Master = FMODUnity.RuntimeManager.GetVCA("vca:/Master");
-        Master.setVolume(slider.value);
+        Master.setVolume(slider.value * 0.01f);
         optionAssignments.soundValue.text = slider.value.ToString("F1") + "%";
     }
 
@@ -502,7 +502,7 @@ public class PauseController : MonoBehaviour
     {
         //Do music change here
         FMOD.Studio.VCA Music = FMODUnity.RuntimeManager.GetVCA("vca:/Music");
-        Music.setVolume(slider.value);
+        Music.setVolume(slider.value * 0.01f);
         optionAssignments.musicValue.text = slider.value.ToString("F1") + "%";
     }
 
@@ -534,6 +534,9 @@ public class PauseController : MonoBehaviour
                 optionAssignments.graphicsValue.text = "Low";
                 break;
             case 1:
+                optionAssignments.graphicsValue.text = "Medium";
+                break;
+            case 2:
                 optionAssignments.graphicsValue.text = "High";
                 break;
             default:
