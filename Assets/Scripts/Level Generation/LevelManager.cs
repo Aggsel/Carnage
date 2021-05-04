@@ -34,6 +34,8 @@ public class LevelManager : MonoBehaviour
     [Header("Debug Variables")]
     [SerializeField] private float itterationOffset = 1.0f;
 
+    private GameObject playerReference = null;
+
     //Hidden variables
     [HideInInspector] [SerializeField] private List<RoomManager> instantiatedRooms = new List<RoomManager>();
     [HideInInspector] [SerializeField] private MazeGenerator maze;
@@ -126,7 +128,9 @@ public class LevelManager : MonoBehaviour
 
         newRoom.SetDoors(doorMask);
         newRoom.SetRoomAsset(roomAsset);
-        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this);
+        if(playerReference == null)
+            playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference);
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
