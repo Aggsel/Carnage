@@ -67,6 +67,7 @@ public class RoomManager : MonoBehaviour
             OpenDoors(false);
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+            parentLevelManager?.ProgressionUISetActive(false);
         }
 
         hasBeenVisited = true;
@@ -78,6 +79,7 @@ public class RoomManager : MonoBehaviour
         am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
         parentLevelManager?.IncrementCompletedRooms();
+        parentLevelManager?.ProgressionUISetActive(true);
         SpawnItem();
     }
 
