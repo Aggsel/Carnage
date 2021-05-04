@@ -7,6 +7,12 @@ public class TimeChallenge : MonoBehaviour
 {
     private float timer = 0.0f;
     private bool isActive = true;
+    private UIController uic;
+
+    void Start()
+    {
+        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
+    }
 
     void Update(){
         if(isActive)
@@ -21,6 +27,7 @@ public class TimeChallenge : MonoBehaviour
 
     void OnTriggerEnter(Collider other){
         isActive = false;
+        uic.SetWinText("You completed the timed challenge in: " + timer.ToString("F1") + " seconds! Congratulations!", true);
         StartCoroutine("GoToHub");
     }
 
