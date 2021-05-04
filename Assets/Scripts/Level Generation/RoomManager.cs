@@ -77,6 +77,7 @@ public class RoomManager : MonoBehaviour
         OpenDoors(true);
         am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
+        parentLevelManager?.IncrementCompletedRooms();
         SpawnItem();
     }
 

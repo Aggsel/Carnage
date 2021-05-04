@@ -22,6 +22,8 @@ public class WaveHandler
         this.player = playerReference;
 
         for (int i = 0; i < spawnPoints.Count; i++){
+            if(spawnPoints[i] == null)
+                continue;
             spawnPoints[i].SetWaveHandler(this);
         }
     }
@@ -45,7 +47,10 @@ public class WaveHandler
 
     //Returns how many enemies were spawned.
     public int Start(){
-        return SpawnNewWave();
+        int enemyCount = SpawnNewWave();
+        if(enemyCount == 0)
+            onCombatComplete.Invoke();
+        return enemyCount;
     }
 
     //Returns how many enemies were spawned at this wave.

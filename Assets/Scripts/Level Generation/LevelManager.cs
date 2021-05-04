@@ -40,16 +40,14 @@ public class LevelManager : MonoBehaviour
     [HideInInspector] [SerializeField] private List<RoomManager> instantiatedRooms = new List<RoomManager>();
     [HideInInspector] [SerializeField] private MazeGenerator maze;
     private int roomCounter = 0;
+    private int completedRooms = 0;
     private RoomManager[,] grid;
 
     void Start(){
         GenerateLevel();
         AudioManager am = AudioManager.Instance;
         am.PlaySound(ref am.ambManager);
-        float randomTrack = Random.Range(0.0f, 1.0f);
-        randomTrack = Mathf.Round(randomTrack);
-        am.SetParameterByName(ref am.ambManager, "Music Random", randomTrack);
-        Debug.Log(randomTrack);
+        am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
     }
 
     [ContextMenu("Generate Level")]
@@ -134,6 +132,12 @@ public class LevelManager : MonoBehaviour
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
+    }
+
+    public void IncrementCompletedRooms(){
+        completedRooms++;
+        //Update UI
+        Debug.Log(string.Format("{0} / {1}", completedRooms, roomCounter));
     }
 }
 
