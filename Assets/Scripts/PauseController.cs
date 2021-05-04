@@ -534,6 +534,9 @@ public class PauseController : MonoBehaviour
                 optionAssignments.graphicsValue.text = "Low";
                 break;
             case 1:
+                optionAssignments.graphicsValue.text = "Medium";
+                break;
+            case 2:
                 optionAssignments.graphicsValue.text = "High";
                 break;
             default:
