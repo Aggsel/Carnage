@@ -49,9 +49,8 @@ public class EnemyBehavior : MonoBehaviour
                 return true;
             return false;
         }
-        else{
+        else
             return false;
-        }
     }
 
     public void SetState(EnemyBaseState newState){

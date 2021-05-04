@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace EnemyStates.ConstraintRanged
 {
@@ -25,6 +26,7 @@ namespace EnemyStates.ConstraintRanged
         private float timeOutOfSight = 0.0f;
         [SerializeField] private GameObject projectilePrefab = null;
         [SerializeField] private Transform projectileSpawnPosition = null;
+        [SerializeField] private VisualEffect chargeEffect = null;
 
         public ConstraintRangedAttack() : base(){}
 
@@ -34,11 +36,14 @@ namespace EnemyStates.ConstraintRanged
             agent.ResetPath();
             agent.isStopped = true;
 
+            chargeEffect.Play();
+
             anim.SetTrigger("attack");
         }
 
         public override void OnStateExit(){
             base.OnStateExit();
+            chargeEffect.Stop();
             agent.isStopped = false;
         }
 
@@ -70,6 +75,7 @@ namespace EnemyStates.ConstraintRanged
 
         public void StopAttack(){
             anim.ResetTrigger("attack");
+            chargeEffect.Stop();
             SetState(behavior.chaseState);
         }
     }
@@ -113,7 +119,6 @@ namespace EnemyStates.ConstraintRanged
             lineOfSightTimer += Time.deltaTime;
             if(lineOfSightTimer > lineOfSightCheckFrequency){
                 lineOfSightTimer = 0.0f;
-
                 if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= stoppingDistance){
                     RotateTowardsTarget(behavior.GetTargetPosition());
                     if(EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition()))
