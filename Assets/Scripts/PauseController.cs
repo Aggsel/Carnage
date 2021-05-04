@@ -470,6 +470,11 @@ public class PauseController : MonoBehaviour
         UpdateUi(3);
         //Application.Quit();
     }
+
+    public void ButtonCredits ()
+    {
+        UpdateUi(4);
+    }
     
     public void ButtonOptions ()
     {

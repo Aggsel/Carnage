@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -30,24 +31,28 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Will invoke all of these functions when level generation is complete.")]
     [SerializeField] private UnityEvent OnFinishedGeneration = null;
 
+    [Header("UI References")]
+    [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
+    [SerializeField] private TextMeshProUGUI progressionUIReference = null;
+
     //Debug
     [Header("Debug Variables")]
     [SerializeField] private float itterationOffset = 1.0f;
+
+    private GameObject playerReference = null;
 
     //Hidden variables
     [HideInInspector] [SerializeField] private List<RoomManager> instantiatedRooms = new List<RoomManager>();
     [HideInInspector] [SerializeField] private MazeGenerator maze;
     private int roomCounter = 0;
+    private int completedRooms = 0;
     private RoomManager[,] grid;
 
     void Start(){
         GenerateLevel();
         AudioManager am = AudioManager.Instance;
         am.PlaySound(ref am.ambManager);
-        float randomTrack = Random.Range(0.0f, 1.0f);
-        randomTrack = Mathf.Round(randomTrack);
-        am.SetParameterByName(ref am.ambManager, "Music Random", randomTrack);
-        Debug.Log(randomTrack);
+        am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
     }
 
     [ContextMenu("Generate Level")]
@@ -64,6 +69,7 @@ public class LevelManager : MonoBehaviour
 
         PopulateLevel();
         ActivateNeighbors(spawnRoomLocation);
+        UpdateProgressionUI();
         OnFinishedGeneration.Invoke();
     }
 
@@ -126,10 +132,28 @@ public class LevelManager : MonoBehaviour
 
         newRoom.SetDoors(doorMask);
         newRoom.SetRoomAsset(roomAsset);
-        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this);
+        if(playerReference == null)
+            playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference);
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
+    }
+
+    public void IncrementCompletedRooms(){
+        completedRooms++;
+        UpdateProgressionUI();
+    }
+
+    public void ProgressionUISetActive(bool enabled){
+        progressionUIReference.gameObject.SetActive(enabled);
+    }
+
+    private void UpdateProgressionUI(){
+        if(progressionUIReference != null)
+            progressionUIReference.text = string.Format("{0, 2:D2}/{1, 2:D2}", completedRooms, roomCounter);
+        else
+            Debug.LogWarning("UI progression reference not set in the LevelManager", this.gameObject);
     }
 }
 
