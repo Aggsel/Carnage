@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cf1dab834d4ec34195b920ea7bbf9ec, type: 3}
-  m_Name: HDRP High
+  m_Name: HDRP Medium
   m_EditorClassIdentifier: 
   m_Version: 14
   m_ObsoleteFrameSettings:
@@ -190,10 +190,10 @@ MonoBehaviour:
   m_RenderPipelineSettings:
     supportShadowMask: 1
     supportSSR: 0
-    supportSSAO: 1
-    supportSubsurfaceScattering: 1
+    supportSSAO: 0
+    supportSubsurfaceScattering: 0
     increaseSssSampleCount: 0
-    supportVolumetrics: 1
+    supportVolumetrics: 0
     increaseResolutionOfVolumetrics: 0
     supportLightLayers: 0
     lightLayerName0: Light Layer default
@@ -205,7 +205,7 @@ MonoBehaviour:
     lightLayerName6: Light Layer 6
     lightLayerName7: Light Layer 7
     supportDistortion: 1
-    supportTransparentBackface: 0
+    supportTransparentBackface: 1
     supportTransparentDepthPrepass: 1
     supportTransparentDepthPostpass: 1
     colorBufferFormat: 48
@@ -220,62 +220,62 @@ MonoBehaviour:
     supportTerrainHole: 0
     supportRayTracing: 0
     lightLoopSettings:
-      cookieAtlasSize: 2048
+      cookieAtlasSize: 64
       cookieFormat: 74
       pointCookieSize: 128
       cubeCookieTexArraySize: 16
       cookieAtlasLastValidMip: 0
       cookieTexArraySize: 1
-      planarReflectionAtlasSize: 1024
-      reflectionProbeCacheSize: 64
-      reflectionCubemapSize: 256
+      planarReflectionAtlasSize: 256
+      reflectionProbeCacheSize: 32
+      reflectionCubemapSize: 128
       reflectionCacheCompressed: 0
       planarReflectionCacheCompressed: 0
-      skyReflectionSize: 256
+      skyReflectionSize: 128
       skyLightingOverrideLayerMask:
         serializedVersion: 2
         m_Bits: 0
       supportFabricConvolution: 0
-      maxDirectionalLightsOnScreen: 16
-      maxPunctualLightsOnScreen: 512
-      maxAreaLightsOnScreen: 64
-      maxEnvLightsOnScreen: 64
-      maxDecalsOnScreen: 5
-      maxPlanarReflectionOnScreen: 16
+      maxDirectionalLightsOnScreen: 8
+      maxPunctualLightsOnScreen: 256
+      maxAreaLightsOnScreen: 32
+      maxEnvLightsOnScreen: 32
+      maxDecalsOnScreen: 10
+      maxPlanarReflectionOnScreen: 8
     hdShadowInitParams:
-      maxShadowRequests: 128
+      maxShadowRequests: 64
       directionalShadowsDepthBits: 32
       shadowFilteringQuality: 1
       punctualLightShadowAtlas:
-        shadowAtlasResolution: 4096
-        shadowAtlasDepthBits: 32
+        shadowAtlasResolution: 256
+        shadowAtlasDepthBits: 16
         useDynamicViewportRescale: 1
       areaLightShadowAtlas:
-        shadowAtlasResolution: 4096
-        shadowAtlasDepthBits: 32
+        shadowAtlasResolution: 256
+        shadowAtlasDepthBits: 16
         useDynamicViewportRescale: 1
       shadowResolutionDirectional:
-        m_Values: 00010000000200000004000000080000
+        m_Values: 80000000000100000002000000040000
         m_SchemaId:
           m_Id: With4Levels
       shadowResolutionPunctual:
-        m_Values: 00010000000200000004000000080000
+        m_Values: 80000000000100000002000000040000
         m_SchemaId:
           m_Id: With4Levels
       shadowResolutionArea:
-        m_Values: 00010000000200000004000000080000
+        m_Values: 80000000000100000002000000040000
         m_SchemaId:
           m_Id: With4Levels
-      maxDirectionalShadowMapResolution: 2048
-      maxPunctualShadowMapResolution: 2048
-      maxAreaShadowMapResolution: 2048
+      maxDirectionalShadowMapResolution: 128
+      maxPunctualShadowMapResolution: 512
+      maxAreaShadowMapResolution: 512
       supportScreenSpaceShadows: 0
       maxScreenSpaceShadowSlots: 4
       screenSpaceShadowBufferFormat: 48
     decalSettings:
-      drawDistance: 1000
-      atlasWidth: 64
-      atlasHeight: 64
+      drawDistance: 500
+      atlasWidth: 32
+      atlasHeight: 32
       perChannelMask: 0
     postProcessSettings:
       m_LutSize: 32
@@ -284,7 +284,7 @@ MonoBehaviour:
     dynamicResolutionSettings:
       enabled: 1
       maxPercentage: 100
-      minPercentage: 80
+      minPercentage: 50
       dynResType: 1
       upsampleFilter: 1
       forceResolution: 0
@@ -298,22 +298,22 @@ MonoBehaviour:
       occlusionMesh: 1
       cameraJitter: 0
     postProcessQualitySettings:
-      NearBlurSampleCount: 030000000500000008000000
+      NearBlurSampleCount: 050000000500000005000000
       NearBlurMaxRadius:
-      - 2
       - 4
-      - 7
-      FarBlurSampleCount: 04000000070000000e000000
+      - 4
+      - 4
+      FarBlurSampleCount: 070000000700000007000000
       FarBlurMaxRadius:
-      - 5
       - 8
-      - 13
-      DoFResolution: 040000000200000001000000
-      DoFHighQualityFiltering: 000101
-      MotionBlurSampleCount: 0c0000000c0000000c000000
+      - 8
+      - 8
+      DoFResolution: 040000000200000002000000
+      DoFHighQualityFiltering: 010101
+      MotionBlurSampleCount: 040000000400000004000000
       BloomRes: 020000000200000002000000
-      BloomHighQualityFiltering: 010101
-      ChromaticAberrationMaxSamples: 0c0000000c0000000c000000
+      BloomHighQualityFiltering: 000000
+      ChromaticAberrationMaxSamples: 060000000600000006000000
     lightSettings:
       useContactShadow:
         m_Values: 000000
@@ -331,13 +331,13 @@ MonoBehaviour:
       m_SchemaId:
         m_Id: With3Levels
     lightingQualitySettings:
-      AOStepCount: 040000000600000010000000
-      AOFullRes: 000001
-      AOMaximumRadiusPixels: 200000002800000050000000
-      AOBilateralUpsample: 000101
-      AODirectionCount: 010000000200000004000000
-      ContactShadowSampleCount: 060000000a00000010000000
-      SSRMaxRaySteps: 100000002000000040000000
+      AOStepCount: 060000000600000006000000
+      AOFullRes: 000000
+      AOMaximumRadiusPixels: 280000002800000028000000
+      AOBilateralUpsample: 010101
+      AODirectionCount: 020000000200000002000000
+      ContactShadowSampleCount: 0a0000000a0000000a000000
+      SSRMaxRaySteps: 200000002000000020000000
   allowShaderVariantStripping: 1
   enableSRPBatcher: 1
   shaderVariantLogLevel: 0
