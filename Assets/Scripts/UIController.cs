@@ -9,6 +9,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider healthbar;
     [SerializeField] private Slider dashCharges;
     [SerializeField] private Slider overheatbar;
+    [SerializeField] private GameObject winText;
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc;
@@ -33,6 +34,12 @@ public class UIController : MonoBehaviour
     public void SetMaxHeat(float maxHeat)
     {
         overheatbar.maxValue = maxHeat;
+    }
+
+    public void SetWinText(string text, bool state)
+    {
+        winText.SetActive(state);
+        winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
     }
 
     void Update()
