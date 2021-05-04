@@ -10101,9 +10101,13 @@ MonoBehaviour:
   dashCharges: {fileID: 3702371033396695059}
   overheatbar: {fileID: 7452579363451857819}
   winText: {fileID: 4751952032206258064}
+  targetRenderer: {fileID: 2946635931448002956}
   hc: {fileID: 1593905204345922780}
   mc: {fileID: 1420478635511701222}
   oc: {fileID: 1337534659609313068}
+  baseEmissiveColor: {r: 1, g: 0.39831328, b: 0, a: 1}
+  emissionIntensity: 0
+  MaxIntensity: 11.5
 --- !u!1 &4158066617491031159
 GameObject:
   m_ObjectHideFlags: 0
@@ -13722,6 +13726,11 @@ PrefabInstance:
         type: 3}
       propertyPath: movementVar.backSpeedMultiplier
       value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3027235087010105667, guid: ee42cd0995687dc41b167485bca81841,
+        type: 3}
+      propertyPath: movementVar.runSpeed
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3202284222324870443, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
