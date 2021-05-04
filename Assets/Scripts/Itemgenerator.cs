@@ -8,7 +8,7 @@ public class Itemgenerator : MonoBehaviour
 {
     [SerializeField] private GameObject tex = null;
     private GameObject flashImageGO = null;
-
+    private UIController uic;
     private Passive passive;
     private Active active;
     private CooldownController cc;
@@ -23,9 +23,10 @@ public class Itemgenerator : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<MovementController>().transform.gameObject;
-        cc = GameObject.Find("Player/ActiveHolder").GetComponent<CooldownController>();
-        pc = GameObject.Find("Player/PassiveHolder").GetComponent<PassiveController>();
+        cc = player.GetComponentInChildren<CooldownController>();
+        pc = player.GetComponentInChildren<PassiveController>();
         reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
+        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
         Generate(); //make it seeded later tbh
@@ -105,23 +106,10 @@ public class Itemgenerator : MonoBehaviour
                 flashImage = flashImageGO.GetComponent<RawImage>();
                 flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
                 recieved = true;
-                StartCoroutine(FadeImage(true));
+                uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
+                Destroy(this.gameObject);
             }
             
-        }
-    }
-
-    IEnumerator FadeImage(bool fadeAway)
-    {
-        // fade the overlay
-        if (fadeAway)
-        {
-            for (float i = 1.0f; i >= 0.0f; i -= Time.deltaTime)
-            {
-                flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, i);
-                yield return null;
-            }
-            Destroy(this.gameObject);
         }
     }
 }
