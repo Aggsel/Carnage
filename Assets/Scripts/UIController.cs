@@ -9,11 +9,23 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider healthbar;
     [SerializeField] private Slider dashCharges;
     [SerializeField] private Slider overheatbar;
+    [SerializeField] private GameObject winText;
+    [SerializeField] private Renderer targetRenderer;
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc;
     [SerializeField] private MovementController mc;
     [SerializeField] private OverheatScript oc;
+
+    public Color baseEmissiveColor;
+    public float emissionIntensity;
+    public float MaxIntensity;
+    private MaterialPropertyBlock _propBlock;
+
+    private void OnEnable()
+    {
+        _propBlock = new MaterialPropertyBlock();
+    }
 
     public void SetMaxHealth(float maxHealth)
     {
@@ -35,10 +47,19 @@ public class UIController : MonoBehaviour
         overheatbar.maxValue = maxHeat;
     }
 
+    public void SetWinText(string text, bool state)
+    {
+        winText.SetActive(state);
+        winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
+    }
+
     void Update()
     {
         dashCharges.value = mc.Charge;
         overheatbar.value = oc.HeatValue;
+        targetRenderer.GetPropertyBlock(_propBlock, 0);
+        _propBlock.SetColor("_EmissiveColor", baseEmissiveColor * Mathf.Lerp(0.0f, MaxIntensity, oc.HeatPercentage));
+        targetRenderer.SetPropertyBlock(_propBlock, 0);
     }
 
     public IEnumerator FadeImage(RawImage image, float fadeTime, bool fadeAway)
