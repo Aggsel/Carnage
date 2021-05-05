@@ -22,6 +22,7 @@ public class BloodController : MonoBehaviour
     //when an enemy dies
     public void InstantiateDeathBlood (Vector3 hit)
     {
+        //Debug.Log("DEATH BLOOD");
         //particle
         GameObject par = Instantiate(dieEffect) as GameObject;
         par.GetComponentInChildren<BloodParticle>().SetBloodController(this);
@@ -60,6 +61,7 @@ public class BloodController : MonoBehaviour
     //smaller hit effect of blood comming from the enemy
     public void InstantiateBlood (Vector3 hit, Vector3 dirPos)
     {
+        //Debug.Log("NORMAL BLOOD");
         //main
         Vector3 dir = hit - dirPos;
         Vector3 ranRot = new Vector3(Random.Range(-5.0f, 5.0f), Random.Range(-5.0f, 5.0f), 0);
