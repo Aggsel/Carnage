@@ -8,7 +8,7 @@ public class EnemyProjectile : MonoBehaviour
     [SerializeField] private float projectileSpeed = 20.0f;
     [SerializeField] private float damage = 2.0f;
     [SerializeField] Rigidbody rb = null;
-    [HideInInspector] public GameObject parent;
+    [HideInInspector] public GameObject sourceEnemy;
     Collider col = null;
 
     void OnEnable(){
@@ -23,7 +23,7 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other){
-        if(other.gameObject == parent)
+        if(other.transform.parent.gameObject == sourceEnemy)
             return;
         if(other.gameObject.layer == 12){
             Vector3 shotdir = rb.velocity.normalized;
