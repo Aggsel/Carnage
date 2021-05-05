@@ -113,4 +113,19 @@ public class CooldownController : MonoBehaviour
             readyTime = cooldownDuration + Time.time;
         }
     }
+
+    private void OnGUI ()
+    {
+        if (active != null)
+        {
+            if (activeActuated)
+            {
+                GUI.Label(new Rect(700, 480, 125, 50), "Active Actuated: " + activeActuationTimeLeft.ToString("F0"));
+            }
+            else
+            {
+                GUI.Label(new Rect(700, 480, 125, 50), "Active Cooldown: " + cooldownTimeLeft.ToString("F0"));
+            }
+        } 
+    }
 }
