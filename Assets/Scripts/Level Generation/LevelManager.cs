@@ -13,17 +13,14 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Will ignore the seed above if active.")]
     [SerializeField] private bool randomizeSeed = false;
     [Tooltip("What prefabs CAN be placed during generation.")]
-    [SerializeField] private LevelAsset level = null;
-    [Tooltip("How far away from the start room any room is allowed, e.g. 4 Max Depth means no room is allowed further away than 4 rooms from the start room.")]
-    [SerializeField] private int maxDepth = 5;
-    [Tooltip("How many iterations the random door placement should run. More iterations = more doors between branches.")]
-    [SerializeField] private int randomDoorIterations = 10;
+    [SerializeField] private LevelAsset[] levels = null;
+
+    [Tooltip("How much the difficulty should increase for each new level (in percent points). ")]
+    [SerializeField] private float difficultyMultiplier = 1.0f;
 
     [Header("Grid Settings")]
     [Tooltip("Room size in world units.")]
     [SerializeField] private Vector2 roomSize = new Vector2(10, 10);
-    [Tooltip("How large the underlying grid for the generation should be. No room is placed outside this grid.")]
-    [SerializeField] private Vector2Int desiredLevelGridSize = new Vector2Int(10, 10);
     [Tooltip("Where in the grid the initial room should spawn.")]
     [SerializeField] private Vector2Int spawnRoomLocation = new Vector2Int(0, 0);
 
@@ -35,24 +32,49 @@ public class LevelManager : MonoBehaviour
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
     [SerializeField] private TextMeshProUGUI progressionUIReference = null;
 
-    //Debug
-    [Header("Debug Variables")]
-    [SerializeField] private float itterationOffset = 1.0f;
-
     private GameObject playerReference = null;
+    private AudioManager am = null;
+    private UIController uic = null;
 
     //Hidden variables
     [HideInInspector] [SerializeField] private List<RoomManager> instantiatedRooms = new List<RoomManager>();
     [HideInInspector] [SerializeField] private MazeGenerator maze;
     private int roomCounter = 0;
     private int completedRooms = 0;
+    private int currentLevel = 0;
+    private float currentLevelDifficultyMultiplier = 1.0f;
     private RoomManager[,] grid;
 
     void Start(){
         GenerateLevel();
-        AudioManager am = AudioManager.Instance;
-        am.PlaySound(ref am.ambManager);
-        am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
+        this.am = AudioManager.Instance;
+        this.am.PlaySound(ref am.ambManager);
+        this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
+
+        uic = FindObjectOfType<UIController>();
+    }
+
+    //Called by other object whenever level should progress.
+    public void GoToNextLevel(){
+        roomCounter = 0;
+        completedRooms = 0;
+
+        currentLevel++;
+        currentLevelDifficultyMultiplier += difficultyMultiplier;
+
+        if(currentLevel == levels.Length){
+            EndOfFinalLevel();
+            return;
+        }
+
+        this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
+        GenerateLevel();
+        this.gameObject.transform.position = playerReference.transform.position; //Teleport level to player instead of player to level lol.
+        uic.UIAlertText("Going to next level!", 1.0f);
+    }
+
+    private void EndOfFinalLevel(){
+        uic.UIAlertText("End of final level!", 2.0f);
     }
 
     [ContextMenu("Generate Level")]
@@ -61,11 +83,11 @@ public class LevelManager : MonoBehaviour
         if(this.maze != null)
             DeleteLevel();
 
-        roomCounter = 0;
-        
         int seed = randomizeSeed ? System.Environment.TickCount : this.seed;
-        this.maze = new MazeGenerator(desiredLevelGridSize, seed, maxDepth, spawnRoomLocation, randomDoorIterations);
-        this.grid = new RoomManager[desiredLevelGridSize.x, desiredLevelGridSize.y];
+
+        Vector2Int desiredGridSize = levels[currentLevel].GetDesiredLevelGridSize();
+        this.maze = new MazeGenerator(desiredGridSize, seed, levels[currentLevel].GetMaxDepth(), spawnRoomLocation, levels[currentLevel].GetRandomDoorIterations());
+        this.grid = new RoomManager[desiredGridSize.x, desiredGridSize.y];
 
         PopulateLevel();
         ActivateNeighbors(spawnRoomLocation);
@@ -77,7 +99,7 @@ public class LevelManager : MonoBehaviour
     private void DeleteLevel(){
         for (int i = 0; i < instantiatedRooms.Count; i++){
             if(instantiatedRooms[i] != null)
-                DestroyImmediate(instantiatedRooms[i].gameObject);
+                Destroy(instantiatedRooms[i].gameObject);
         }
         instantiatedRooms = new List<RoomManager>();
 
@@ -123,8 +145,8 @@ public class LevelManager : MonoBehaviour
     private void PlaceRoom(Vector2Int pos, int depth, int doorMask){
         float normalizedDepth = depth / (float)this.maze.maxDepthReached;
         
-        Vector3 offset = new Vector3(pos.x * roomSize.x, this.maze.grid[pos.x, pos.y].roomCounter * itterationOffset, pos.y * roomSize.y);
-        RoomAsset roomAsset = level.GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask, this.maze.grid[pos.x, pos.y].type);
+        Vector3 offset = new Vector3(pos.x * roomSize.x, 0, pos.y * roomSize.y);
+        RoomAsset roomAsset = levels[currentLevel].GetRandomRoom(this.maze.grid[pos.x, pos.y].doorMask, this.maze.grid[pos.x, pos.y].type);
         GameObject roomPrefab = roomAsset.GetRoom();
         GameObject newRoomObject = Instantiate(roomPrefab, transform.position + offset, transform.rotation, transform);
         RoomManager newRoom = newRoomObject.GetComponent<RoomManager>();
@@ -134,7 +156,7 @@ public class LevelManager : MonoBehaviour
         newRoom.SetRoomAsset(roomAsset);
         if(playerReference == null)
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
-        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference);
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, currentLevelDifficultyMultiplier);
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;

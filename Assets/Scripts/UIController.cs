@@ -3,6 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class AlertMessage{
+    string message;
+    float timer;
+    public AlertMessage(string message, float timer){
+        this.message = message;
+        this.timer = timer;
+    }
+    public string GetMessage(){
+        return message;
+    }
+    public float GetTimer(){
+        return timer;
+    }
+}
+
 public class UIController : MonoBehaviour
 {
     [Header("Assign: ")]
@@ -15,6 +30,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private HealthController hc;
     [SerializeField] private MovementController mc;
     [SerializeField] private OverheatScript oc;
+
+    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
+    private bool alertActive = false;
 
     public void SetMaxHealth(float maxHealth)
     {
@@ -41,6 +59,23 @@ public class UIController : MonoBehaviour
         winText.SetActive(state);
         winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
     }
+
+    public void UIAlertText(string text, float duration){
+        alertQueue.Enqueue(new AlertMessage(text, duration));
+        if(!alertActive)
+            StartCoroutine("DisplayNextAlert");
+    }
+
+    private IEnumerator DisplayNextAlert(){
+        alertActive = true;
+        while(alertQueue.Count > 0){
+            AlertMessage currentAlert = alertQueue.Dequeue();
+            SetWinText(currentAlert.GetMessage(), true);
+            yield return new WaitForSeconds(currentAlert.GetTimer());
+            SetWinText("", true);
+        }
+        alertActive = false;
+    } 
 
     void Update()
     {
