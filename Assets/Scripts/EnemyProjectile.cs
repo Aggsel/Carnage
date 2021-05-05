@@ -23,6 +23,8 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other){
+        if(other.transform.parent == null)
+            return;
         if(other.transform.parent.gameObject == sourceEnemy)
             return;
         if(other.gameObject.layer == 12){
