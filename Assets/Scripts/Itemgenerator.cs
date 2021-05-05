@@ -23,10 +23,10 @@ public class Itemgenerator : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<MovementController>().transform.gameObject;
-        cc = GameObject.Find("Player/ActiveHolder").GetComponent<CooldownController>();
-        pc = GameObject.Find("Player/PassiveHolder").GetComponent<PassiveController>();
+        cc = player.GetComponentInChildren<CooldownController>();
+        pc = player.GetComponentInChildren<PassiveController>();
         reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
-        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>(); ;
+        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
         Generate(); //make it seeded later tbh
