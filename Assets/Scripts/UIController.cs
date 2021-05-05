@@ -13,9 +13,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Renderer targetRenderer;
 
     [Header("Assign scripts")]
-    [SerializeField] private HealthController hc;
-    [SerializeField] private MovementController mc;
-    [SerializeField] private OverheatScript oc;
+    [SerializeField] private HealthController hc = null;
+    [SerializeField] private MovementController mc = null;
+    [SerializeField] private OverheatScript oc = null;
 
     public Color baseEmissiveColor;
     public float emissionIntensity;
