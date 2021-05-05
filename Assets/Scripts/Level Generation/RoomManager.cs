@@ -23,7 +23,9 @@ public class RoomManager : MonoBehaviour
     private LevelManager parentLevelManager = null;
     private bool hasBeenVisited = false;
     private GameObject playerReference = null;
+    private float difficultyMultiplier = 1.0f;
     
+    private UIController uic;
     private AudioManager am;
 
     [Header("Enemy Spawning")]
@@ -41,6 +43,8 @@ public class RoomManager : MonoBehaviour
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
         am = AudioManager.Instance;
+        if(uic == null) 
+            uic = FindObjectOfType<UIController>();
     }
 
     void OnDisable(){
@@ -56,6 +60,7 @@ public class RoomManager : MonoBehaviour
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
+        difficulty = difficulty * difficultyMultiplier;
         //playerReference should NEVER be null here, but just to be sure.
         if(playerReference == null)
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
@@ -80,6 +85,7 @@ public class RoomManager : MonoBehaviour
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
         parentLevelManager?.IncrementCompletedRooms();
         parentLevelManager?.ProgressionUISetActive(true);
+        uic?.UIAlertText("Combat complete!", 1.5f);
         SpawnItem();
     }
 
@@ -98,13 +104,14 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null, GameObject playerReference = null){
+    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
         this.parentLevelManager = newManager;
         this.playerReference = playerReference;
+        this.difficultyMultiplier = difficultyMultiplier;
         MergeMeshes();
     }
 
