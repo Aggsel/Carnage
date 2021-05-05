@@ -146,7 +146,7 @@ public class LevelManager : MonoBehaviour
     }
 
     public void ProgressionUISetActive(bool enabled){
-        progressionUIReference.gameObject.SetActive(enabled);
+        progressionUIReference?.gameObject.SetActive(enabled);
     }
 
     private void UpdateProgressionUI(){
