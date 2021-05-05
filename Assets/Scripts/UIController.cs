@@ -6,15 +6,26 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [Header("Assign: ")]
-    [SerializeField] private Slider healthbar = null;
-    [SerializeField] private Slider dashCharges = null;
-    [SerializeField] private Slider overheatbar = null;
-    [SerializeField] private GameObject winText = null;
+    [SerializeField] private Slider healthbar;
+    [SerializeField] private Slider dashCharges;
+    [SerializeField] private Slider overheatbar;
+    [SerializeField] private GameObject winText;
+    [SerializeField] private Renderer targetRenderer;
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc = null;
     [SerializeField] private MovementController mc = null;
     [SerializeField] private OverheatScript oc = null;
+
+    public Color baseEmissiveColor;
+    public float emissionIntensity;
+    public float MaxIntensity;
+    private MaterialPropertyBlock _propBlock;
+
+    private void OnEnable()
+    {
+        _propBlock = new MaterialPropertyBlock();
+    }
 
     public void SetMaxHealth(float maxHealth)
     {
@@ -46,6 +57,9 @@ public class UIController : MonoBehaviour
     {
         dashCharges.value = mc.Charge;
         overheatbar.value = oc.HeatValue;
+        targetRenderer.GetPropertyBlock(_propBlock, 0);
+        _propBlock.SetColor("_EmissiveColor", baseEmissiveColor * Mathf.Lerp(0.0f, MaxIntensity, oc.HeatPercentage));
+        targetRenderer.SetPropertyBlock(_propBlock, 0);
     }
 
     public IEnumerator FadeImage(RawImage image, float fadeTime, bool fadeAway)
