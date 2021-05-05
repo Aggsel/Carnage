@@ -20,6 +20,7 @@ public class OverheatScript : MonoBehaviour
     {
         uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
         attributeInstance = player.GetComponent<AttributeController>();
+        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
     }
 
     void Update()
@@ -50,6 +51,7 @@ public class OverheatScript : MonoBehaviour
     public void Heat(float heatGeneration)
     {
         uiController.SetMaxHeat(attributeInstance.weaponAttributesResultant.heatMaximum);
+        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
         heatValue += heatGeneration;
         if(heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
         {
@@ -66,6 +68,14 @@ public class OverheatScript : MonoBehaviour
         get
         {
             return heatValue;
+        }
+    }
+
+    public float HeatPercentage
+    {
+        get
+        {
+            return heatValue / heatMax;
         }
     }
 

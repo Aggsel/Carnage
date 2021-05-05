@@ -6473,6 +6473,12 @@ MonoBehaviour:
     type: 3}
   overheatObject: {fileID: 3027235087629037940}
   muzzleFlash: {fileID: 5877993609706822722}
+  shotLayerMask:
+    serializedVersion: 2
+    m_Bits: 61239
+  hitEffectLayerMask:
+    serializedVersion: 2
+    m_Bits: 50999
 --- !u!114 &6100689584837751783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6506,11 +6512,10 @@ MonoBehaviour:
   profile: {fileID: 11400000, guid: 582adbd84082fdb4faf7cd4beb1ccd14, type: 2}
   fovCamera: {fileID: 1513428943}
   movementVar:
-    alwaysRun: 1
-    defaultSpeed: 0
-    runSpeed: 18
-    jumpForce: 16
-    fallAcceleration: 2.6
+    runSpeed: 12
+    backSpeedMultiplier: 0
+    jumpForce: 11
+    fallAcceleration: 1.8
     jumpLeeway: 0.15
   cameraVar:
     minX: -90
@@ -6545,7 +6550,7 @@ MonoBehaviour:
     showDebug: 0
     range: 2.5
     rayAmount: 3
-    raySpread: 1.5
+    raySpread: 4.34
   inHit: 0
 --- !u!114 &3027235087010105677
 MonoBehaviour:

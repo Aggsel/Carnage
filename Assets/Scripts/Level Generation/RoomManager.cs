@@ -22,6 +22,7 @@ public class RoomManager : MonoBehaviour
     private int doorMask = 0;
     private LevelManager parentLevelManager = null;
     private bool hasBeenVisited = false;
+    private GameObject playerReference = null;
     
     private AudioManager am;
 
@@ -55,7 +56,10 @@ public class RoomManager : MonoBehaviour
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
-        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount());
+        //playerReference should NEVER be null here, but just to be sure.
+        if(playerReference == null)
+            playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount(), playerReference);
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
@@ -63,6 +67,7 @@ public class RoomManager : MonoBehaviour
             OpenDoors(false);
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+            parentLevelManager?.ProgressionUISetActive(false);
         }
 
         hasBeenVisited = true;
@@ -73,6 +78,8 @@ public class RoomManager : MonoBehaviour
         OpenDoors(true);
         am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
+        parentLevelManager?.IncrementCompletedRooms();
+        parentLevelManager?.ProgressionUISetActive(true);
         SpawnItem();
     }
 
@@ -91,12 +98,13 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null){
+    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null, GameObject playerReference = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
         this.parentLevelManager = newManager;
+        this.playerReference = playerReference;
         MergeMeshes();
     }
 
