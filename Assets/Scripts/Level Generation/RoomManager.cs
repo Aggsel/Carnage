@@ -11,10 +11,10 @@ public enum RoomType{
 
 public class RoomManager : MonoBehaviour
 {
-    [HideInInspector] private Vector2Int gridPosition;
-    [HideInInspector] private int roomID = -1; //Serial number for the room. In generation order. 
-    [HideInInspector] private int depth = -1; //How far from the initial room this room is.
-    [HideInInspector] private float normalizedDepth = 0.0f;
+    private Vector2Int gridPosition;
+    private int roomID = -1; //Serial number for the room. In generation order. 
+    private int depth = -1; //How far from the initial room this room is.
+    private float normalizedDepth = 0.0f;
     [HideInInspector] [SerializeField] private DoorPlacer[] doorPlacers = new DoorPlacer[4];
     [HideInInspector] [SerializeField] private List<Door> doors = new List<Door>();
     [HideInInspector] [SerializeField] private RoomAsset roomAsset;
@@ -182,6 +182,7 @@ public class RoomManager : MonoBehaviour
         Mesh finalMesh = new Mesh();
 
         CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+        int meshCount = 0;
 
         for (int i = 0; i < meshFilters.Length; i++){
             if(meshFilters[i].transform == transform)
@@ -196,12 +197,21 @@ public class RoomManager : MonoBehaviour
             combiners[i].mesh = meshFilters[i].sharedMesh;
             combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
             combiners[i].lightmapScaleOffset = currentMeshRenderer.lightmapScaleOffset;
+            meshCount++;
 
             Destroy(meshFilters[i]);
             Destroy(currentMeshRenderer);
         }
+        CombineInstance[] newCombiners = new CombineInstance[meshCount];
+        meshCount = 0;
+        for (int i = 0; i < combiners.Length; i++){
+            if(combiners[i].mesh != null){
+                newCombiners[meshCount] = combiners[i];
+                meshCount++;
+            }
+        }
 
-        finalMesh.CombineMeshes(combiners, true, true, true);
+        finalMesh.CombineMeshes(newCombiners, true, true, true);
         MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = finalMesh;
         MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
