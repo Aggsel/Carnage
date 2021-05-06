@@ -15,7 +15,6 @@ public class OverheatScript : MonoBehaviour
     private float coolingInitializeRemaining = 0f;
     private Buff buffReferenceOne = null;
 
-
     void Start()
     {
         uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
