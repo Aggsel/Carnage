@@ -30,7 +30,7 @@ public class EnemySpawnPoint : MonoBehaviour
         while(enemySpawnQueue.Count > 0){
             yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
             GameObject newEnemy = enemySpawnQueue.Dequeue();
-            Instantiate(newEnemy, transform);
+            newEnemy = Instantiate(newEnemy, transform);
             EnemyBehavior enemy = newEnemy.GetComponent<EnemyBehavior>();
             enemy.SetParentSpawn(this);
             spawnedEnemies.Add(enemy);
