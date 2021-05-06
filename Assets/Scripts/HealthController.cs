@@ -10,13 +10,10 @@ using UnityEngine.UI;
 public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
-    [SerializeField] private Viewbob viewBob = null;
-    [SerializeField] private WeaponSway weaponSway = null;
+    [SerializeField] private MonoBehaviour[] deathDisableScripts = null;
     [SerializeField] private GameObject bloodImageGO = null;
 
     private float currentHealth = 0.0f; //dont remove
-    private MovementController movementController = null;
-    private FiringController firingController = null;
     private RawImage damageIndicator = null;
     private AudioManager am = null;
     private AttributeController attributeInstance = null;
@@ -64,8 +61,6 @@ public class HealthController : MonoBehaviour
         attributeInstance = this.gameObject.GetComponent<AttributeController>();
         bloodImageGO.SetActive(true);
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
-        movementController = GetComponent<MovementController>();
-        firingController = GetComponent<FiringController>();
         uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
 
         if (bloodImageGO == null)
@@ -77,10 +72,6 @@ public class HealthController : MonoBehaviour
             damageIndicator.color = new Color(damageIndicator.color.r, damageIndicator.color.g, damageIndicator.color.b, 0.0f);
         }
 
-        if(viewBob == null)
-            viewBob = GetComponentInChildren<Viewbob>();
-        if(weaponSway == null)
-            weaponSway = GetComponentInChildren<WeaponSway>();
         SetMaxHealth(attributeInstance.weaponAttributesResultant.health);
     }
 
@@ -91,10 +82,12 @@ public class HealthController : MonoBehaviour
     }
 
     private void Die(){
-        movementController.enabled = false;
-        firingController.enabled = false;
-        viewBob.enabled = false;
-        weaponSway.enabled = false;
+
+        for (int i = 0; i < deathDisableScripts.Length; i++)
+        {
+            deathDisableScripts[i].enabled = false;
+        }
+
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
         am.StopSound(ref am.ambManager);
