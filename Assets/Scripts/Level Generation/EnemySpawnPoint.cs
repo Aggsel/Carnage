@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EnemySpawnPoint : MonoBehaviour
 {
-    [Tooltip("Enemy prefab")]
-    [SerializeField] private List<GameObject> availableEnemies = new List<GameObject>();
+    [Tooltip("A asset describing which enemies can spawn on this")]
+    [SerializeField] private EnemySpawnPointAsset spawnPointData = null;
     private List<EnemyBehavior> spawnedEnemies = new List<EnemyBehavior>();
     private WaveHandler waveHandler;
 
@@ -15,21 +15,23 @@ public class EnemySpawnPoint : MonoBehaviour
     //Spawn random enemy and return how much that enemy
     //contributed to the difficulty score of the room.
     public float SpawnRandomEnemy(){
-        StartCoroutine("RandomizeSpawnTiming");
+        // StartCoroutine("RandomizeSpawnTiming");
         //TODO: Return difficulty score.
-        return 1.0f;
+        GameObject randomEnemy = spawnPointData?.GetRandomEnemy(waveHandler.GetNormalizedDepth(), waveHandler.GetDifficulty());
+        if(randomEnemy != null){
+            randomEnemy = Instantiate(randomEnemy, transform);
+            EnemyBehavior enemy = randomEnemy.GetComponent<EnemyBehavior>();
+            enemy.SetParentSpawn(this);
+            spawnedEnemies.Add(enemy);
+            return enemy.GetDifficulty();
+        }
+        return 0.0f;
     }
 
     private IEnumerator RandomizeSpawnTiming()
     {
         yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
-        int randIndex = Random.Range(0, availableEnemies.Count);
-        GameObject randomEnemy = availableEnemies[randIndex];
-        randomEnemy = Instantiate(randomEnemy, transform);
-
-        EnemyBehavior enemy = randomEnemy.GetComponent<EnemyBehavior>();
-        enemy.SetParentSpawn(this);
-        spawnedEnemies.Add(enemy);
+        
     }
 
     public void ReportDeath(EnemyBehavior enemy){
@@ -37,7 +39,6 @@ public class EnemySpawnPoint : MonoBehaviour
         if(AreAllEnemiesDead()){
             waveHandler.ReportDeath(this);
         }
-
     }
 
     public void SetWaveHandler(WaveHandler waveHandler){

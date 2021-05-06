@@ -38,7 +38,7 @@ public class RoomManager : MonoBehaviour
     [Header("Mesh Merging")]
     [Tooltip(@"When merging the meshes the final combined mesh will just have one material. 
     The merging process will therefore only combine meshes from objects with this material on them.")]
-    [SerializeField] private Material validMaterial;
+    [SerializeField] private Material validMaterial = null;
 
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
@@ -64,7 +64,7 @@ public class RoomManager : MonoBehaviour
         //playerReference should NEVER be null here, but just to be sure.
         if(playerReference == null)
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
-        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount(), playerReference);
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount(), playerReference, normalizedDepth);
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
