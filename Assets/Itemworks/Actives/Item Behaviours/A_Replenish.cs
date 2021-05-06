@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class A_Replenish : Active
 {
-    [Tooltip("Choose between Heat or Health values to replenish.")]
+    //gives warnings but isnt used
+    /*[Tooltip("Choose between Heat or Health values to replenish.")]
     [SerializeField] private string toReplenish = "health";
     [Tooltip("The amount of health to be replenished.")]
     [SerializeField] private float replenishAmount = 0f;
+    */
 
     private AttributeController ac;
 

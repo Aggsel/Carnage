@@ -10,16 +10,17 @@ using UnityEngine.UI;
 public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
+    [SerializeField] private Viewbob viewBob = null;
+    [SerializeField] private WeaponSway weaponSway = null;
+    [SerializeField] private GameObject bloodImageGO = null;
+
     private float currentHealth = 0.0f; //dont remove
-    private MovementController movementController;
-    private FiringController firingController;
-    private RawImage damageIndicator;
-    private AudioManager am;
-    private AttributeController attributeInstance;
-    private UIController uiController;
-    [SerializeField] private Viewbob viewBob;
-    [SerializeField] private WeaponSway weaponSway;
-    [SerializeField] private GameObject bloodImageGO;
+    private MovementController movementController = null;
+    private FiringController firingController = null;
+    private RawImage damageIndicator = null;
+    private AudioManager am = null;
+    private AttributeController attributeInstance = null;
+    private UIController uiController = null;
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
