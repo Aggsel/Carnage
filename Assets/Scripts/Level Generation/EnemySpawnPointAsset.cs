@@ -20,7 +20,7 @@ public class EnemySpawnPointAsset : ScriptableObject
     public GameObject GetRandomEnemy(float normalizedDepth = 0.0f, float difficulty = -1.0f){
         List<int> potentialEnemies = new List<int>();
         for (int i = 0; i < availableEnemies.Count; i++){
-            if(normalizedDepthThreshold[i] < normalizedDepth)
+            if(normalizedDepthThreshold[i] - 0.00001f > normalizedDepth)
                 continue;
             if(difficultyThreshold[i] < difficulty && difficultyThreshold[i] > 0.0f)
                 continue;

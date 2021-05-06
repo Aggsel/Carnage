@@ -8,6 +8,7 @@ public class EnemySpawnPoint : MonoBehaviour
     [SerializeField] private EnemySpawnPointAsset spawnPointData = null;
     private List<EnemyBehavior> spawnedEnemies = new List<EnemyBehavior>();
     private WaveHandler waveHandler;
+    private Queue<GameObject> enemySpawnQueue = new Queue<GameObject>();
 
     [Tooltip("Will guarantee that this enemy spawns upon entering the room. The difficulty that this enemy adds to the room will not be taken into account.")]
     [SerializeField] private bool guaranteedSpawn = false;
@@ -15,23 +16,25 @@ public class EnemySpawnPoint : MonoBehaviour
     //Spawn random enemy and return how much that enemy
     //contributed to the difficulty score of the room.
     public float SpawnRandomEnemy(){
-        // StartCoroutine("RandomizeSpawnTiming");
-        //TODO: Return difficulty score.
         GameObject randomEnemy = spawnPointData?.GetRandomEnemy(waveHandler.GetNormalizedDepth(), waveHandler.GetDifficulty());
         if(randomEnemy != null){
-            randomEnemy = Instantiate(randomEnemy, transform);
+            enemySpawnQueue.Enqueue(randomEnemy);
             EnemyBehavior enemy = randomEnemy.GetComponent<EnemyBehavior>();
-            enemy.SetParentSpawn(this);
-            spawnedEnemies.Add(enemy);
+            StartCoroutine(RandomizeSpawnTiming());
             return enemy.GetDifficulty();
         }
         return 0.0f;
     }
 
-    private IEnumerator RandomizeSpawnTiming()
-    {
-        yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
-        
+    private IEnumerator RandomizeSpawnTiming(){
+        while(enemySpawnQueue.Count > 0){
+            yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
+            GameObject newEnemy = enemySpawnQueue.Dequeue();
+            Instantiate(newEnemy, transform);
+            EnemyBehavior enemy = newEnemy.GetComponent<EnemyBehavior>();
+            enemy.SetParentSpawn(this);
+            spawnedEnemies.Add(enemy);
+        }
     }
 
     public void ReportDeath(EnemyBehavior enemy){
