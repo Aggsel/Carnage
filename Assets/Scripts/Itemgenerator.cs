@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Itemgenerator : MonoBehaviour
 {
     [SerializeField] private GameObject tex = null;
+    [SerializeField] private GameObject model = null;
     private GameObject flashImageGO = null;
     private UIController uic;
     private Passive passive;
@@ -19,9 +20,11 @@ public class Itemgenerator : MonoBehaviour
     private RawImage flashImage;
     private bool recieved = false;
 
+    private Vector3 startPos = Vector3.zero;
 
     void Start()
     {
+        startPos = model.transform.position;
         player = FindObjectOfType<MovementController>().transform.gameObject;
         cc = player.GetComponentInChildren<CooldownController>();
         pc = player.GetComponentInChildren<PassiveController>();
@@ -75,6 +78,13 @@ public class Itemgenerator : MonoBehaviour
     private void LateUpdate ()
     {
         Billboard();
+        Bobbing();
+    }
+
+    private void Bobbing ()
+    {
+        float step = Mathf.Cos(Time.time) * 0.12f;
+        model.transform.position = startPos + new Vector3(0, step, 0);
     }
     
     private void Billboard ()
