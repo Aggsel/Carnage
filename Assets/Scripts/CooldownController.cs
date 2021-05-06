@@ -120,11 +120,11 @@ public class CooldownController : MonoBehaviour
         {
             if (activeActuated)
             {
-                GUI.Label(new Rect(700, 480, 125, 50), "Active Actuated: " + activeActuationTimeLeft.ToString("F0"));
+                GUI.Label(new Rect(Screen.width - 125, Screen.height - 50, 125, 50), "Active Actuated: " + activeActuationTimeLeft.ToString("F0"));
             }
             else
             {
-                GUI.Label(new Rect(700, 480, 125, 50), "Active Cooldown: " + cooldownTimeLeft.ToString("F0"));
+                GUI.Label(new Rect(Screen.width - 125, Screen.height - 50, 125, 50), "Active Cooldown: " + cooldownTimeLeft.ToString("F0"));
             }
         } 
     }

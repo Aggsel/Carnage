@@ -13,13 +13,15 @@ public class WaveHandler
     private int remainingWaves = 0;
     private GameObject player = null;
     private float spawnSafeZoneRadius = 8.0f;
+    private float normalizedDepth = 0.0f;
 
-    public WaveHandler(UnityEvent onCombatComplete, List<EnemySpawnPoint> spawnPoints, float difficulty, int numberOfWaves, GameObject playerReference){
+    public WaveHandler(UnityEvent onCombatComplete, List<EnemySpawnPoint> spawnPoints, float difficulty, int numberOfWaves, GameObject playerReference, float normalizedDepth){
         this.onCombatComplete = onCombatComplete;
         this.spawnPoints = spawnPoints;
         this.roomDifficulty = difficulty;
         this.remainingWaves = numberOfWaves;
         this.player = playerReference;
+        this.normalizedDepth = normalizedDepth;
 
         for (int i = 0; i < spawnPoints.Count; i++){
             if(spawnPoints[i] == null)
@@ -48,8 +50,6 @@ public class WaveHandler
     //Returns how many enemies were spawned.
     public int Start(){
         int enemyCount = SpawnNewWave();
-        if(enemyCount == 0)
-            onCombatComplete.Invoke();
         return enemyCount;
     }
 
@@ -81,8 +81,12 @@ public class WaveHandler
 
             if(Vector3.Distance(player.transform.position, shuffledPoints[i].transform.position) < spawnSafeZoneRadius)
                 continue;
+            
+            float difficultyGained = shuffledPoints[i].SpawnRandomEnemy();
+            if(difficultyGained < 0.0001f)
+                continue;
                 
-            accumulatedDifficulty += shuffledPoints[i].SpawnRandomEnemy();
+            accumulatedDifficulty += difficultyGained;
             activeSpawnPoints.Add(shuffledPoints[i]);
             naturalEnemyCount++;
         }
@@ -99,6 +103,14 @@ public class WaveHandler
             originalSpawnPoints.RemoveAt(randIndex);
         }
         return shuffledPoints;
+    }
+
+    public float GetDifficulty(){
+        return this.roomDifficulty;
+    }
+
+    public float GetNormalizedDepth(){
+        return this.normalizedDepth;
     }
 
     public static float CalculateDifficulty(float normalizedDepth, Vector2 randomRange, float randomness){
