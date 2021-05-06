@@ -90,7 +90,7 @@ public class LevelManager : MonoBehaviour
         this.grid = new RoomManager[desiredGridSize.x, desiredGridSize.y];
 
         PopulateLevel();
-        ActivateNeighbors(spawnRoomLocation);
+        InitialRoomDeactivation(spawnRoomLocation);
         UpdateProgressionUI();
         OnFinishedGeneration.Invoke();
     }
@@ -106,22 +106,28 @@ public class LevelManager : MonoBehaviour
         this.maze = null;
     }
 
-    public void ActivateNeighbors(Vector2Int pos){
-        for (int y = 0; y < this.grid.GetLength(1); y++){
-            for (int x = 0; x < this.grid.GetLength(0); x++){
-                if(x >= pos.x - 1 && x <= pos.x + 1 && y <= pos.y + 1 && y >= pos.y - 1)
-                    continue;
-                this.grid[x,y]?.gameObject.SetActive(false);
+    private void InitialRoomDeactivation(Vector2Int pos){
+        for (int y = 0; y < this.maze.actualGridSize.y; y++){
+            for (int x = 0; x < this.maze.actualGridSize.x; x++){
+                if(Mathf.Abs(this.maze.grid[x,y].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
+                    this.grid[x,y]?.gameObject.SetActive(false);
+                else
+                    this.grid[x,y]?.gameObject.SetActive(true);
             }
         }
+    }
 
-        for (int y = -1; y < 2; y++){
-            for (int x = -1; x < 2; x++){
-                Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
-                if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
-                    if(this.grid[newCoord.x,newCoord.y] != null && !this.grid[newCoord.x,newCoord.y].gameObject.activeInHierarchy)
-                        this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
-                }
+    public void ActivateNeighbors(Vector2Int pos){
+        for (int y = -2; y <= 2; y++){
+            for (int x = -2; x <= 2; x++){
+                int posX = pos.x + x;
+                int posY = pos.y + y;
+                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                    continue;
+                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
+                    this.grid[posX,posY]?.gameObject.SetActive(false);
+                else
+                    this.grid[posX,posY]?.gameObject.SetActive(true);
             }
         }
     }
