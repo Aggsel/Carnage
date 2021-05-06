@@ -48,8 +48,8 @@ public class WaveHandler
     //Returns how many enemies were spawned.
     public int Start(){
         int enemyCount = SpawnNewWave();
-        if(enemyCount == 0)
-            onCombatComplete.Invoke();
+        // if(enemyCount == 0)
+        //     onCombatComplete.Invoke();
         return enemyCount;
     }
 
