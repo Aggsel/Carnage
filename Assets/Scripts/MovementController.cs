@@ -461,12 +461,4 @@ public class MovementController : MonoBehaviour
             return charge;
         }
     }
-
-    //DEBUG velocity & FPS
-    private void OnGUI ()
-    {
-        //GUI.Label(new Rect(10, 30, 100, 50), charge.ToString("F2"));
-        //GUI.Label(new Rect(10, 10, 100, 50), cc.velocity.magnitude.ToString());
-        GUI.Label(new Rect(Screen.width - 40, 30, 70, 50), (1.0f / Time.smoothDeltaTime).ToString("F2"));
-    }
 }
