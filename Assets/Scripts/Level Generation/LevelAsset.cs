@@ -16,7 +16,7 @@ public class LevelAsset : ScriptableObject
 
     [Header("Generation Settings")]
     [Tooltip("How large the underlying grid for the generation should be. No room is placed outside this grid.")]
-    [SerializeField] private Vector2Int desiredLevelGridSize;
+    [SerializeField] private Vector2Int desiredLevelGridSize = new Vector2Int(2,2);
     [Tooltip("How far away from the start room any room is allowed, e.g. 4 Max Depth means no room is allowed further away than 4 rooms from the start room.")]
     [SerializeField] private int maxDepth = 20;
     [Tooltip("How many iterations the random door placement should run. More iterations = more doors between branches.")]

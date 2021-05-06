@@ -21,11 +21,11 @@ public class AlertMessage{
 public class UIController : MonoBehaviour
 {
     [Header("Assign: ")]
-    [SerializeField] private Slider healthbar;
-    [SerializeField] private Slider dashCharges;
-    [SerializeField] private Slider overheatbar;
-    [SerializeField] private GameObject winText;
-    [SerializeField] private Renderer targetRenderer;
+    [SerializeField] private Slider healthbar = null;
+    [SerializeField] private Slider dashCharges = null;
+    [SerializeField] private Slider overheatbar = null;
+    [SerializeField] private GameObject winText = null;
+    [SerializeField] private Renderer targetRenderer = null;
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc = null;

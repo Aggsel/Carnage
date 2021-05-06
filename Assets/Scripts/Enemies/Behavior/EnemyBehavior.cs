@@ -8,6 +8,7 @@ public class EnemyBehavior : MonoBehaviour
 {
     private EnemySpawnPoint parentSpawn;
     [SerializeField] protected float health = 10.0f;
+    [SerializeField] protected float difficulty = 1.0f;
 
     [HideInInspector] protected EnemyBaseState currentState = null;
     [HideInInspector] public AudioManager am;
@@ -81,6 +82,10 @@ public class EnemyBehavior : MonoBehaviour
 
     public void SetParentSpawn(EnemySpawnPoint newSpawn){
         this.parentSpawn = newSpawn;
+    }
+
+    public float GetDifficulty(){
+        return this.difficulty;
     }
 
     protected virtual void OnDeath(){
