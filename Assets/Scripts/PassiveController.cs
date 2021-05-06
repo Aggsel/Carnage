@@ -13,6 +13,7 @@ public class PassiveController : MonoBehaviour
         addedPassive.Initialize(player);   
     }
 
+    //maybe lateupdate?
     void Update()
     {
         for (int i = 0; i < passiveList.Count; i++)
