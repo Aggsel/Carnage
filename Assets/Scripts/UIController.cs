@@ -81,7 +81,7 @@ public class UIController : MonoBehaviour
     public void UIAlertText(string text, float duration){
         alertQueue.Enqueue(new AlertMessage(text, duration));
         if(!alertActive)
-            StartCoroutine("DisplayNextAlert");
+            StartCoroutine(DisplayNextAlert());
     }
 
     private IEnumerator DisplayNextAlert(){
