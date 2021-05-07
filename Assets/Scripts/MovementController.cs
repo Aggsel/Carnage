@@ -84,7 +84,7 @@ public class MovementController : MonoBehaviour
     private float nextDash = 0f;
     private List<Vector3> positioningList = new List<Vector3>();
     private float fallForce = 1.5f;
-    private float charge = 3.0f;
+    public float charge = 3.0f;
     private Vector3 upMovement = Vector3.zero;
     private bool invertedControls = false;
     private float groundedTimer = 0.0f;
