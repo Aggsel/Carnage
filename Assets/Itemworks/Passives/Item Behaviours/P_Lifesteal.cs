@@ -30,6 +30,7 @@ public class P_Lifesteal : PassiveEvent
     }
 
     protected override void OnEvent(){
+        Debug.Log("Lifesteal triggered");
         if(Random.Range(0.0f, 1.0f) < lifestealChance)
             return;
 
