@@ -63,6 +63,8 @@ public class WaveHandler
 
         //First spawn all garanteed spawns.
         for (int i = 0; i < shuffledPoints.Count; i++){
+            if(shuffledPoints[i] == null)
+                continue;
             if(shuffledPoints[i].IsGuaranteedSpawn()){
                 shuffledPoints[i].SpawnRandomEnemy();
                 activeSpawnPoints.Add(shuffledPoints[i]);
@@ -72,6 +74,8 @@ public class WaveHandler
 
         //Then randomize the rest.
         for (int i = 0; i < shuffledPoints.Count; i++){
+            if(shuffledPoints[i] == null)
+                continue;
             //We've already spawned this one.
             if(shuffledPoints[i].IsGuaranteedSpawn())
                 continue;
