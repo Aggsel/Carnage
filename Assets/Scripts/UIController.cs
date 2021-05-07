@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class AlertMessage{
     string message;
@@ -21,6 +22,7 @@ public class AlertMessage{
 public class UIController : MonoBehaviour
 {
     [Header("Assign: ")]
+    [SerializeField] private TextMeshProUGUI fpsText = null;
     [SerializeField] private Slider healthbar = null;
     [SerializeField] private Slider dashCharges = null;
     [SerializeField] private Slider overheatbar = null;
@@ -44,6 +46,11 @@ public class UIController : MonoBehaviour
 
     private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
     private bool alertActive = false;
+
+    private void Start ()
+    {
+        StartCoroutine(Counter());
+    }
 
     public void SetMaxHealth(float maxHealth)
     {
@@ -74,7 +81,7 @@ public class UIController : MonoBehaviour
     public void UIAlertText(string text, float duration){
         alertQueue.Enqueue(new AlertMessage(text, duration));
         if(!alertActive)
-            StartCoroutine("DisplayNextAlert");
+            StartCoroutine(DisplayNextAlert());
     }
 
     private IEnumerator DisplayNextAlert(){
@@ -108,6 +115,21 @@ public class UIController : MonoBehaviour
                 yield return null;
             }
         }
-        
+    }
+
+    //Carls andra försök på fps counter :(
+    private IEnumerator Counter ()
+    {
+        for(; ; ) //while true
+        {
+            int lastFrameCount = Time.frameCount;
+            float lastTime = Time.realtimeSinceStartup;
+            yield return new WaitForSeconds(0.5f);
+            float timeSpan = Time.realtimeSinceStartup - lastTime;
+            float frameCount = Time.frameCount - lastFrameCount;
+
+            string displayText = Mathf.Ceil(frameCount / timeSpan).ToString();
+            fpsText.text = displayText;
+        }
     }
 }

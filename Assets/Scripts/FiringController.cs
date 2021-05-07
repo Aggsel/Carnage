@@ -14,12 +14,12 @@ public class FiringController : MonoBehaviour
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
-    [SerializeField] private LayerMask shotLayerMask;
-    [SerializeField] private LayerMask hitEffectLayerMask;
+    [SerializeField] private LayerMask shotLayerMask = 0;
+    [SerializeField] private LayerMask hitEffectLayerMask = 0;
     //private ProjectileShotController psc;
-    private Screenshake ss;
-    private AttributeController attributeInstance;
-    private AudioManager am;
+    private Screenshake ss = null;
+    private AttributeController attributeInstance = null;
+    private AudioManager am = null;
     private float timeToFire = 0f;
     private bool overheated = false;
 

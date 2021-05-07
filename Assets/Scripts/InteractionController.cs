@@ -9,7 +9,7 @@ public class InteractionController : MonoBehaviour
 {
     [Tooltip("Which layermasks the objects need to be able to be interacted with by the player")]
     [SerializeField] private LayerMask interactionLayermask = 0;
-    [SerializeField] private GameObject interactionObj = null;
+    //[SerializeField] private GameObject interactionObj = null;
     [SerializeField] private TextMeshProUGUI interactText = null;
 
     private KeyCode interactionKey = KeyCode.E;

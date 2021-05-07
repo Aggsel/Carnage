@@ -66,10 +66,10 @@ public class Screenshake : MonoBehaviour
 
     private void Update ()
     {
-        if(Input.GetKeyDown(KeyCode.P))
+        /*if(Input.GetMouseButtonDown(0))
         {
             StartCoroutine(Shake(shakeVar.shakeAmount, shakeVar.shakeTime));
-        }
+        }*/
 
         Recoil();
     }
@@ -107,8 +107,7 @@ public class Screenshake : MonoBehaviour
             mainOrigin.transform.localRotation = Quaternion.Slerp(mainOrigin.transform.localRotation, Quaternion.Euler(startRot), Time.deltaTime * recoilVar.recoilSpeed * 10.0f);
         }
     }
-
-    #region screenshake
+    
     public IEnumerator Shake (float shakeAmount, float shakeTime)
     {
         float time = 0.0f;
@@ -148,7 +147,6 @@ public class Screenshake : MonoBehaviour
         shakeOrigin.localEulerAngles = startRot;
         StartCoroutine(ReturnHome(step, motion));
     }
-    #endregion
 
     //smooth the return to startPos, infinite loop lol
     private IEnumerator ReturnHome (float step, MotionBlur motion)
