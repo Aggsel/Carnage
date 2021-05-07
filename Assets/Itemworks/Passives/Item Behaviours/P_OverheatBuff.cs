@@ -6,7 +6,7 @@ using UnityEngine;
 public class P_OverheatBuff : Passive {
     [Header("Custom Parameters")]
     [Tooltip("Which attribute to affect.")]
-    [SerializeField] private string attribute;
+    [SerializeField] private string attribute = "";
     [Tooltip("How much to affect the specified attribute (percent).")]
     [SerializeField] private float amount = 0.0f;
     [Tooltip("Min and max values for when this buff should be applied. x = 0.3, y = 0.7 means this buff will be active while overheat is between 30% and 70%.")]

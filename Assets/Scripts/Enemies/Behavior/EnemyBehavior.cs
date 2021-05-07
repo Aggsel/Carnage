@@ -6,8 +6,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehavior : MonoBehaviour
 {
-    [SerializeField] GameEvent onDeath;
-    [SerializeField] GameEvent onDamage;
+    [SerializeField] GameEvent onDeath = null;
+    [SerializeField] GameEvent onDamage = null;
 
     private EnemySpawnPoint parentSpawn;
     [SerializeField] protected float health = 10.0f;
