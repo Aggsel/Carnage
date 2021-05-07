@@ -251,7 +251,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34bbf24e344be674fb3ad11614964dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onDeath: {fileID: 11400000, guid: 7b4b931a11ff28348b90e989d754b3a6, type: 2}
+  onDamage: {fileID: 11400000, guid: 65683f2abc0daf945888a3d53be198dd, type: 2}
   health: 80
+  difficulty: 1
   am: {fileID: 0}
   anim: {fileID: 0}
   chaseState:
@@ -263,7 +266,6 @@ MonoBehaviour:
     enemyVisionDistance: 30
     patrolSpeed: 5
   attackState:
-    rotationSpeed: 13
     rotationSpeed: 13
     attackRange: 1.5
     damage: 15
