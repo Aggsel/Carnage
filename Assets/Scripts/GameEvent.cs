@@ -6,10 +6,12 @@ using UnityEngine.Events;
 [CreateAssetMenu(fileName = "New Event", menuName = "Event", order = 1)]
 public class GameEvent : ScriptableObject
 {
-    private UnityEvent unityEvent;
+    private UnityEvent unityEvent = new UnityEvent();
 
     [ContextMenu("Trigger event")]
     public void Invoke(){
+        if(unityEvent == null)
+            unityEvent = new UnityEvent();
         unityEvent.Invoke();
     }
 

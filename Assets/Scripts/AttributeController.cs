@@ -45,6 +45,7 @@ public struct WeaponAttributesResultant
     public float health;
 }
 
+[System.Serializable]
 public class Buff
 {
     public string stat;
@@ -57,12 +58,19 @@ public class Buff
         stat = theStat;
         increment = value;
     }
+
     public Buff(string firstStat, string secondStat, float firstValue, float secondValue)
     {
         stat = firstStat;
         statTwo = secondStat;
         increment = firstValue;
         incrementTwo = secondValue;
+    }
+
+    public Buff(Buff buffToApply)
+    {
+        stat = buffToApply.stat;
+        increment = buffToApply.increment;
     }
 }
 

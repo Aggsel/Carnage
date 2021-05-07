@@ -97,7 +97,7 @@ public class UIController : MonoBehaviour
 
     void Update()
     {
-        dashCharges.value = mc.Charge;
+        dashCharges.value = Mathf.Floor(mc.Charge);
         overheatbar.value = oc.HeatValue;
         targetRenderer.GetPropertyBlock(_propBlock, 0);
         _propBlock.SetColor("_EmissiveColor", baseEmissiveColor * Mathf.Lerp(0.0f, MaxIntensity, oc.HeatPercentage));
