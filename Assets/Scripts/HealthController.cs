@@ -18,6 +18,7 @@ public class HealthController : MonoBehaviour
     private AudioManager am = null;
     private AttributeController attributeInstance = null;
     private UIController uiController = null;
+    private Screenshake ss = null;
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
@@ -48,6 +49,7 @@ public class HealthController : MonoBehaviour
     public void OnShot(HitObject hit){
         ModifyCurrentHealth(-hit.damage);
         HideDamageIndicator();
+        StartCoroutine(ss.Shake(1.8f, 0.15f));
         am.PlaySound(am.playerHurt);
     }
 
@@ -58,6 +60,7 @@ public class HealthController : MonoBehaviour
 
     private void Start() {
         am = AudioManager.Instance;
+        ss = GetComponent<Screenshake>();
         attributeInstance = this.gameObject.GetComponent<AttributeController>();
         bloodImageGO.SetActive(true);
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
