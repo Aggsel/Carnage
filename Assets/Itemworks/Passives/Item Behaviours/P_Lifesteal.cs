@@ -5,7 +5,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Passives/Lifesteal")]
 public class P_Lifesteal : PassiveEvent
 {
-        [Tooltip(@"* Absolute - Player will always receive a fixed amount of health.
+    enum Type{
+        Absolute,
+        PercentOfDamage,
+        PercentOfMaxHealth
+    }
+    [Header("Custom Parameters")]
+    [Tooltip(@"* Absolute - Player will always receive a fixed amount of health.
 * Percent Of Damage - The amount of health received is a percentage of the current players damage.
 * Percent Of MaxHealth - The amount of health received is a percentage of the current players max health.")]
     [SerializeField] private Type type;
@@ -45,10 +51,4 @@ public class P_Lifesteal : PassiveEvent
                 break;
         }
     }
-}
-
-internal enum Type{
-    Absolute,
-    PercentOfDamage,
-    PercentOfMaxHealth
 }
