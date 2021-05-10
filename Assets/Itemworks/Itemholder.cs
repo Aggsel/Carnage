@@ -8,7 +8,15 @@ public class Itemholder : MonoBehaviour
 
     void Awake()
     {
-        itemholder = Resources.Load<Itemhold>("Itemhold");
+        itemholder = Resources.Load<Itemhold>("Itemhold");  //säkert asfult och tungt vid load time men om det fungerar så BRYR JAG MIG INTE HAHAH SUG PÅ DEN CARL! jk actually bad fixa sen 
+        foreach(Active i in itemholder.actives)
+        {
+            i.dontSpawn = false;
+        }
+        foreach (Passive i in itemholder.passives)
+        {
+            i.dontSpawn = false;
+        }
     }
 
     public void DepoolItemActive(int itemIndex)
