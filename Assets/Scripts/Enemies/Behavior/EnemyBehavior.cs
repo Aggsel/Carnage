@@ -8,6 +8,7 @@ public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField] GameEvent onDeath = null;
     [SerializeField] GameEvent onDamage = null;
+    [SerializeField] GameEvent onMeleeKill = null;
 
     private EnemySpawnPoint parentSpawn;
     [SerializeField] protected float health = 10.0f;
@@ -76,8 +77,11 @@ public class EnemyBehavior : MonoBehaviour
         this.agent.transform.position += new Vector3(hit.shotDirection.x, 0.0f, hit.shotDirection.z).normalized * hit.knockback;
         this.health -= hit.damage;
 
-        if(CheckDeathCriteria())
+        if(CheckDeathCriteria()){
+            if(hit.type == HitType.Melee)
+                onMeleeKill?.Invoke();
             OnDeath();
+        }
     }
 
     protected virtual bool CheckDeathCriteria(){
