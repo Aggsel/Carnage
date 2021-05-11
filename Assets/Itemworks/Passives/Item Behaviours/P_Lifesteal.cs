@@ -14,7 +14,7 @@ public class P_Lifesteal : PassiveEvent
     [Tooltip(@"* Absolute - Player will always receive a fixed amount of health.
 * Percent Of Damage - The amount of health received is a percentage of the current players damage.
 * Percent Of MaxHealth - The amount of health received is a percentage of the current players max health.")]
-    [SerializeField] private Type type;
+    [SerializeField] private Type type = Type.Absolute;
 
     [Tooltip(@"How much health the player should receive, dependant on what type of lifesteal.
 * Absolute - How many HP the player should receive.

@@ -6,9 +6,11 @@ public class EnemySpawnPoint : MonoBehaviour
 {
     [Tooltip("A asset describing which enemies can spawn on this")]
     [SerializeField] private EnemySpawnPointAsset spawnPointData = null;
+    [SerializeField] private float spawnSafeZoneRadius = 8.0f;
     private List<EnemyBehavior> spawnedEnemies = new List<EnemyBehavior>();
     private WaveHandler waveHandler;
     private Queue<GameObject> enemySpawnQueue = new Queue<GameObject>();
+    private GameObject player = null;
 
     [Tooltip("Will guarantee that this enemy spawns upon entering the room. The difficulty that this enemy adds to the room will not be taken into account.")]
     [SerializeField] private bool guaranteedSpawn = false;
@@ -29,6 +31,9 @@ public class EnemySpawnPoint : MonoBehaviour
     private IEnumerator RandomizeSpawnTiming(){
         while(enemySpawnQueue.Count > 0){
             yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
+            while(Vector3.Distance(this.transform.position, player.transform.position) <= spawnSafeZoneRadius){
+                yield return new WaitForSeconds(Random.Range(0.5f, 1.0f));
+            }
             GameObject newEnemy = enemySpawnQueue.Dequeue();
             newEnemy = Instantiate(newEnemy, transform);
             EnemyBehavior enemy = newEnemy.GetComponent<EnemyBehavior>();
@@ -46,6 +51,10 @@ public class EnemySpawnPoint : MonoBehaviour
 
     public void SetWaveHandler(WaveHandler waveHandler){
         this.waveHandler = waveHandler;
+    }
+
+    public void SetPlayerReference(GameObject player){
+        this.player = player;
     }
 
     public bool IsGuaranteedSpawn(){

@@ -12,7 +12,6 @@ public class WaveHandler
     private float roomDifficulty = 0.0f;
     private int remainingWaves = 0;
     private GameObject player = null;
-    private float spawnSafeZoneRadius = 8.0f;
     private float normalizedDepth = 0.0f;
 
     public WaveHandler(UnityEvent onCombatComplete, List<EnemySpawnPoint> spawnPoints, float difficulty, int numberOfWaves, GameObject playerReference, float normalizedDepth){
@@ -27,6 +26,7 @@ public class WaveHandler
             if(spawnPoints[i] == null)
                 continue;
             spawnPoints[i].SetWaveHandler(this);
+            spawnPoints[i].SetPlayerReference(player);
         }
     }
     
@@ -44,7 +44,9 @@ public class WaveHandler
         if(remainingWaves <= 0)
             onCombatComplete.Invoke();
         else
-            SpawnNewWave();
+            if(SpawnNewWave() <= 0) //If by any chance the wave didn't manage to spawn any enemies, just continue to the next wave.
+                NextWave();
+
     }
 
     //Returns how many enemies were spawned.
@@ -82,9 +84,6 @@ public class WaveHandler
 
             if(accumulatedDifficulty >= roomDifficulty)
                 break;
-
-            if(Vector3.Distance(player.transform.position, shuffledPoints[i].transform.position) < spawnSafeZoneRadius)
-                continue;
             
             float difficultyGained = shuffledPoints[i].SpawnRandomEnemy();
             if(difficultyGained < 0.0001f)
