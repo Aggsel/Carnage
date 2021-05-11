@@ -12,6 +12,8 @@ public abstract class Active : ScriptableObject
     [SerializeField] public float buffTime = 0f;
     [Tooltip("Whether or not the item will depool after being spawned once, preventing further spawns of the item.")]
     [SerializeField] public bool depool;
+    [Tooltip("Sprite used for UI-elements.")]
+    [SerializeField] public Sprite sprite;
     public bool dontSpawn = false;
 
     //Intialize the active, create any needed references in here
