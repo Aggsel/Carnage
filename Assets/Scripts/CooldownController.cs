@@ -46,11 +46,17 @@ public class CooldownController : MonoBehaviour
         active = selectedActive;
         if(active != null)
         {
+            activeImage.enabled = true;
+            activeImage.sprite = active.sprite;
             cooldownDuration = active.cooldown;
             activeActuationTime = active.buffTime;
             activeActuationTimeLeft = activeActuationTime;
             cooldownTimeLeft = cooldownDuration;
             active.Initialize(player);
+        }
+        else
+        {
+            activeImage.enabled = false;
         }
         ActiveReady();
     }
@@ -109,7 +115,7 @@ public class CooldownController : MonoBehaviour
         cooldownTimeLeft -= Time.deltaTime;
         float roundedFloat = Mathf.Round(cooldownTimeLeft);
         activeImage.fillAmount = 1.0f - (cooldownTimeLeft / cooldownDuration);
-        activeImage.color = new Color32(100, 100, 100, 100);
+        activeImage.color = new Color32(100, 100, 100, 255);
         //write to UI... probably...
     }
 
