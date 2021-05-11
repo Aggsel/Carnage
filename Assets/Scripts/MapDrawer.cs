@@ -32,6 +32,10 @@ public class MapDrawer : MonoBehaviour
     }
 
     private void InitializeUIElements(){
+        foreach (Transform child in transform) {
+            GameObject.Destroy(child.gameObject);
+        }
+
         if(player == null){
             player = FindObjectOfType<MovementController>().gameObject;
             Debug.LogWarning("Player reference was not set in MapDrawer, trying to fetch during runtime intead.", this);
