@@ -449,6 +449,23 @@ public class PauseController : MonoBehaviour
     #endregion
 
     #region button calls / options
+    //Tutorial
+    public void ButtonTutorialQuestion ()
+    {
+        Debug.Log("What");
+        UpdateUi(5);
+    }
+
+    public void ButtonTutorialYes ()
+    {
+
+    }
+
+    public void ButtonTutorialNo ()
+    {
+
+    }
+
     //main pause
     public void ButtonYes () //exit confirm
     {
