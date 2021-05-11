@@ -32,19 +32,19 @@ public class Itemgenerator : MonoBehaviour
         uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
-        Generate(); //make it seeded later tbh
+        correctGenerate(); //make it seeded later tbh
     }
 
-    private void Generate()
+    private void correctGenerate()
     {
-        randomIndex = Random.Range(0, (reference.itemholder.actives.Length + reference.itemholder.passives.Length));
-        if (randomIndex > (reference.itemholder.actives.Length - 1))
+        randomIndex = Random.Range(0, (reference.itemholder.actives.Length + reference.itemholder.passives.Length) - 1);
+        if(randomIndex >= reference.itemholder.actives.Length)  //if index landed outside of active length, spawn a passive
         {
-            randomIndex -= (reference.itemholder.actives.Length); 
-            if(reference.itemholder.passives[randomIndex].dontSpawn == true)
+            randomIndex -= (reference.itemholder.actives.Length);
+            if (reference.itemholder.passives[randomIndex].dontSpawn == true)
             {
-                Generate();
-            } 
+                correctGenerate();
+            }
             else
             {
                 passive = reference.itemholder.passives[randomIndex];
@@ -56,20 +56,20 @@ public class Itemgenerator : MonoBehaviour
                 tex.GetComponentInChildren<TextMeshPro>().text = passive.passiveName;
             }
         }
-        else
+        else if(randomIndex < reference.itemholder.actives.Length)  //if index landed inside of active length, spawn an active
         {
-            if(reference.itemholder.actives[randomIndex].dontSpawn == true)
+            if (reference.itemholder.actives[randomIndex].dontSpawn == true)
             {
-                Generate();
+                correctGenerate();
             }
             else
             {
+                Debug.Log(reference.itemholder.actives[randomIndex].depool);
                 active = reference.itemholder.actives[randomIndex];
                 if (reference.itemholder.actives[randomIndex].depool == true)
                 {
                     reference.DepoolItemActive(randomIndex);
                 }
-
                 tex.GetComponentInChildren<TextMeshPro>().text = active.activeName;
             }
         }

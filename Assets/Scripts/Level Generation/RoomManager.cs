@@ -25,6 +25,9 @@ public class RoomManager : MonoBehaviour
     private GameObject playerReference = null;
     private float difficultyMultiplier = 1.0f;
     
+    private GameEvent onRoomEnterFirstGameEvent;
+    private GameEvent onCombatCompleteGameEvent;
+
     private UIController uic;
     private AudioManager am;
 
@@ -74,7 +77,7 @@ public class RoomManager : MonoBehaviour
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
             parentLevelManager?.ProgressionUISetActive(false);
         }
-
+        onRoomEnterFirstGameEvent?.Invoke();
         hasBeenVisited = true;
     }
 
@@ -87,6 +90,7 @@ public class RoomManager : MonoBehaviour
         parentLevelManager?.ProgressionUISetActive(true);
         uic?.UIAlertText("Combat complete!", 1.5f);
         SpawnItem();
+        onCombatCompleteGameEvent?.Invoke();
     }
 
     private void SpawnItem(){
@@ -104,7 +108,9 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f){
+    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, 
+    LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f,
+    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
@@ -112,6 +118,8 @@ public class RoomManager : MonoBehaviour
         this.parentLevelManager = newManager;
         this.playerReference = playerReference;
         this.difficultyMultiplier = difficultyMultiplier;
+        this.onRoomEnterFirstGameEvent = onRoomEnterFirstTime;
+        this.onCombatCompleteGameEvent = onCombatComplete;
         MergeMeshes();
     }
 
