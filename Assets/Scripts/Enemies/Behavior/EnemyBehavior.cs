@@ -6,6 +6,9 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehavior : MonoBehaviour
 {
+    [SerializeField] GameEvent onDeath;
+    [SerializeField] GameEvent onDamage;
+
     private EnemySpawnPoint parentSpawn;
     [SerializeField] protected float health = 10.0f;
     [SerializeField] protected float difficulty = 1.0f;
@@ -62,6 +65,7 @@ public class EnemyBehavior : MonoBehaviour
 
     public virtual void OnShot(HitObject hit){
         currentState.OnShot(hit);
+        onDamage?.Invoke();
 
         if(bc != null){
             bc.InstantiateBlood(hit.hitPosition, hit.shotDirection);
@@ -92,6 +96,7 @@ public class EnemyBehavior : MonoBehaviour
         bc.InstantiateDeathBlood(transform.position + new Vector3(0, 1.0f, 0));
         am.PlaySound(ref am.patientDeath, transform.position);
         parentSpawn?.ReportDeath(this);
+        onDeath?.Invoke();
         Destroy(this.gameObject);
     }
 }

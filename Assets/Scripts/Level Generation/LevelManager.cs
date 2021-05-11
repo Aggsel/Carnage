@@ -27,6 +27,10 @@ public class LevelManager : MonoBehaviour
     [Header("Callback")]
     [Tooltip("Will invoke all of these functions when level generation is complete.")]
     [SerializeField] private UnityEvent OnFinishedGeneration = null;
+    [Tooltip("What event should be invoked when the player enters a room for the first time.")]
+    [SerializeField] private GameEvent onRoomEnterFirst = null;
+    [Tooltip("What event should be invoked when the player clears a room and the combat is complete.")]
+    [SerializeField] private GameEvent onCombatComplete = null;
 
     [Header("UI References")]
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
@@ -44,6 +48,7 @@ public class LevelManager : MonoBehaviour
     private int currentLevel = 0;
     private float currentLevelDifficultyMultiplier = 1.0f;
     private RoomManager[,] grid;
+
 
     void Start(){
         GenerateLevel();
@@ -162,7 +167,7 @@ public class LevelManager : MonoBehaviour
         newRoom.SetRoomAsset(roomAsset);
         if(playerReference == null)
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
-        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, currentLevelDifficultyMultiplier);
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete);
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
