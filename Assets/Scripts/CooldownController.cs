@@ -46,11 +46,17 @@ public class CooldownController : MonoBehaviour
         active = selectedActive;
         if(active != null)
         {
+            activeImage.enabled = true;
+            activeImage.sprite = active.sprite;
             cooldownDuration = active.cooldown;
             activeActuationTime = active.buffTime;
             activeActuationTimeLeft = activeActuationTime;
             cooldownTimeLeft = cooldownDuration;
             active.Initialize(player);
+        }
+        else
+        {
+            activeImage.enabled = false;
         }
         ActiveReady();
     }
