@@ -85,6 +85,7 @@ public class PauseController : MonoBehaviour
     private int menuStage = 0; //nothing, pause, options, exitConfirm
     //private MovementController mc = null;
     private SerializeController sc = null; //use unityActions instead
+    private TutorialController tc = null;
 
     private bool changingKey = false;
     private int changingKeyIndex = 0;
@@ -98,10 +99,11 @@ public class PauseController : MonoBehaviour
 
     private void Start ()
     {
-        UpdatePause(false);
+        //UpdatePause(false);
+        //UpdateUi(0);
         updateKeysFunction.Invoke(keybindAssignments);
+        tc = GetComponent<TutorialController>();
         sc = FindObjectOfType<SerializeController>();
-
     }
 
     //Get Sliders for serializing
@@ -165,6 +167,7 @@ public class PauseController : MonoBehaviour
         if(Input.GetKeyDown(keybindAssignments.pause) && !paused) //change to escape later just for testing
         {
             UpdatePause(true);
+            UpdateUi(1);
         }
 
         //change keys for shift
@@ -233,14 +236,14 @@ public class PauseController : MonoBehaviour
             }
         }
 
-        if(paused)
+        /*if(paused)
         {
             UpdateUi(1);
         }
         else
         {
             UpdateUi(0);
-        }
+        }*/
 
         Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
         LockCursor(paused);
@@ -452,18 +455,22 @@ public class PauseController : MonoBehaviour
     //Tutorial
     public void ButtonTutorialQuestion ()
     {
-        Debug.Log("What");
+        UpdatePause(true);
         UpdateUi(5);
     }
 
     public void ButtonTutorialYes ()
     {
-
+        tc.TriggerTutorial();
+        UpdatePause(false);
+        UpdateUi(0);
     }
 
     public void ButtonTutorialNo ()
     {
-
+        UpdatePause(false);
+        UpdateUi(0);
+        tc.TriggerNoTutorial();
     }
 
     //main pause
@@ -480,6 +487,7 @@ public class PauseController : MonoBehaviour
     public void ButtonResume ()
     {
         UpdatePause(false);
+        UpdateUi(0);
     }
 
     public void ButtonMenu()
