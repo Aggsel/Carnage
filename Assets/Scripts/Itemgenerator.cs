@@ -56,7 +56,7 @@ public class Itemgenerator : MonoBehaviour
                 tex.GetComponentInChildren<TextMeshPro>().text = passive.passiveName;
             }
         }
-        else if(randomIndex < reference.itemholder.actives.Length)
+        else if(randomIndex < reference.itemholder.actives.Length)  //if index landed inside of active length, spawn an active
         {
             if (reference.itemholder.actives[randomIndex].dontSpawn == true)
             {

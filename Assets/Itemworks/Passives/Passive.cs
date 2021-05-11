@@ -8,6 +8,8 @@ public abstract class Passive : ScriptableObject
     [SerializeField] public string passiveName = "New passive";
     [Tooltip("Wether or not the item will depool after being spawned once, preventing more spawns of the item.")]
     [SerializeField] public bool depool;
+    [Tooltip("Sprite used for UI-elements.")]
+    [SerializeField] public Sprite sprite;
     public bool dontSpawn = false;
 
     //Every passive needs to be initialized, in here any necessary references are made and variables pre-defined before use
