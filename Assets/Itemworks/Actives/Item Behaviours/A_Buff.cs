@@ -6,9 +6,9 @@ using UnityEngine;
 public class A_Buff : Active
 {
     [Tooltip("The array of all buffs you want this item to apply.")]
-    [SerializeField] private Buff[] buffs;
+    [SerializeField] private Buff[] buffs = null;
     private Buff[] references = null;
-    private AttributeController ac;
+    private AttributeController ac = null;
 
     public override void Initialize(GameObject obj)
     {

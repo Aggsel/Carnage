@@ -64,7 +64,7 @@ public class Itemgenerator : MonoBehaviour
             }
             else
             {
-                Debug.Log(reference.itemholder.actives[randomIndex].depool);
+                //Debug.Log(reference.itemholder.actives[randomIndex].depool);
                 active = reference.itemholder.actives[randomIndex];
                 if (reference.itemholder.actives[randomIndex].depool == true)
                 {
