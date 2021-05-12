@@ -7,7 +7,7 @@ public class CooldownController : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private Image activeImage = null;
-    [SerializeField] private Image frameImage = null;
+    //[SerializeField] private Image frameImage = null;
 
     [Header("Other stuff?")]
     public Active active;
