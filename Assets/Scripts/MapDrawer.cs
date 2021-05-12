@@ -10,7 +10,9 @@ public class MapDrawer : MonoBehaviour
     [SerializeField] private Color unvisitedColor = Color.black;
     [SerializeField] private Color visitedColor = Color.white;
     [SerializeField] private Color currentColor = Color.red;
+    [SerializeField] private Color finalColor = Color.yellow;
     [SerializeField] private GameObject player = null;
+    [SerializeField] private Image marker = null;
 
     private MazeCell[,] grid = new MazeCell[0,0];
     private Image[,] imageGrid = new Image[0,0];
@@ -32,6 +34,7 @@ public class MapDrawer : MonoBehaviour
     }
 
     private void InitializeUIElements(){
+        marker.rectTransform.SetParent(transform.parent);
         foreach (Transform child in transform) {
             GameObject.Destroy(child.gameObject);
         }
@@ -52,6 +55,9 @@ public class MapDrawer : MonoBehaviour
                     imageGrid[x,y] = CreateNewRoom(x,y);
                     imageGrid[x,y].sprite = this.sprites[grid[x,y].doorMask];
                     imageGrid[x,y].color = unvisitedColor;
+
+                    if(grid[x,y].type == RoomType.FINAL)
+                        imageGrid[x,y].color = finalColor;
                 }
                 else{
                     Image newImage = CreateNewRoom(x,y);
@@ -60,7 +66,7 @@ public class MapDrawer : MonoBehaviour
             }
         }
 
-        SetRoomAsVisited(currentRoom);
+        SetCurrentRoom(currentRoom);
     }
 
     // void Update(){
@@ -76,14 +82,16 @@ public class MapDrawer : MonoBehaviour
         return newImage;
     }
 
-    public void SetRoomAsVisited(Vector2Int coord){
-        imageGrid[coord.x,coord.y].color = visitedColor;
-        CurrentRoom(coord);
+    public void SetCurrentRoom(Vector2Int coord){
+        marker.rectTransform.SetParent(imageGrid[currentRoom.x, currentRoom.y].transform);
+        marker.rectTransform.localPosition = new Vector3(0,0,0);        
+
+        
     }
 
-    private void CurrentRoom(Vector2Int coord){
-        imageGrid[currentRoom.x, currentRoom.y].color = visitedColor;
+    public void SetRoomAsVisited(Vector2Int coord){
+        imageGrid[coord.x,coord.y].color = visitedColor;
+        // imageGrid[currentRoom.x, currentRoom.y].color = visitedColor;
         currentRoom = coord;
-        imageGrid[currentRoom.x, currentRoom.y].color = currentColor;
     }
 }
