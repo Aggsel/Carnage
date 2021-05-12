@@ -38,6 +38,7 @@ public class RoomManager : MonoBehaviour
 
     [Header("Item Spawn Points")]
     [SerializeField] private Transform itemSpawnPoint = null;
+    [SerializeField] private GameObject trailPrefab = null;
 
     [Header("Mesh Merging")]
     [Tooltip(@"When merging the meshes the final combined mesh will just have one material. 
@@ -96,10 +97,18 @@ public class RoomManager : MonoBehaviour
     }
 
     private void SpawnItem(){
-        if(itemSpawnPoint != null){
+        if(itemSpawnPoint != null) {
             GameObject spawnPrefab = roomAsset.GetItemSpawnPrefab();
-            if(spawnPrefab != null)
-                Instantiate(spawnPrefab, itemSpawnPoint);
+
+            if(spawnPrefab != null) {
+                GameObject newItem = Instantiate(spawnPrefab) as GameObject;
+                newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+
+                //trail stuff
+                newItem.SetActive(false);
+                GameObject newTrail = Instantiate(trailPrefab, playerReference.transform.position, Quaternion.identity);
+                newTrail.GetComponent<ItemTrail>().SetItem(newItem);
+            }
         }
     }
 
