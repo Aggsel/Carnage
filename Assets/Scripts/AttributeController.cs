@@ -79,10 +79,12 @@ public class AttributeController : MonoBehaviour
     [SerializeField] private WeaponAttributes weaponAttributesBase = new WeaponAttributes();
     [SerializeField] public WeaponAttributesResultant weaponAttributesResultant = new WeaponAttributesResultant();
     private List<Buff> buffList = new List<Buff>();
+    private HealthController hc = null;
 
     void Awake()
     {
         Recalculate();
+        hc = this.gameObject.GetComponent<HealthController>();
     }
 
     public Buff AddBuff(string stat, float increment)
@@ -160,6 +162,7 @@ public class AttributeController : MonoBehaviour
                 case "health":
                     float healthDiff = weaponAttributesBase.health * item.increment - weaponAttributesBase.health;
                     weaponAttributesResultant.health += healthDiff;
+                    hc.IncreaseMaxHealth();
                     break;
 
             }
