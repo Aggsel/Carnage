@@ -22,7 +22,9 @@ public class MapController : MonoBehaviour
     void Update(){
         if(Input.GetKeyDown(KeyCode.M)){
             mapActive = !mapActive;
-            mapReference.SetActive(mapActive);
+            foreach (Transform child in transform){
+                child.gameObject.SetActive(mapActive);
+            }
         }
     }
 }
