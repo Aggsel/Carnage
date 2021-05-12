@@ -124,7 +124,7 @@ public class MeleeController : MonoBehaviour
             //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
             if (hitObj.GetComponentInParent<EnemyBehavior>() != null)
             {
-                HitObject obj = new HitObject(transform.position, lateHit.point, 500.0f, 0.0f); //set high melee damage
+                HitObject obj = new HitObject(transform.position, lateHit.point, 500.0f, 0.0f, type: HitType.Melee); //set high melee damage
                 hitObj.GetComponentInParent<EnemyBehavior>().OnShot(obj);
             }
         }

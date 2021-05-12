@@ -30,6 +30,7 @@ public class RoomManager : MonoBehaviour
 
     private UIController uic;
     private AudioManager am;
+    private MapDrawer mapReference;
 
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -37,6 +38,7 @@ public class RoomManager : MonoBehaviour
 
     [Header("Item Spawn Points")]
     [SerializeField] private Transform itemSpawnPoint = null;
+    [SerializeField] private GameObject trailPrefab = null;
 
     [Header("Mesh Merging")]
     [Tooltip(@"When merging the meshes the final combined mesh will just have one material. 
@@ -78,6 +80,7 @@ public class RoomManager : MonoBehaviour
             parentLevelManager?.ProgressionUISetActive(false);
         }
         onRoomEnterFirstGameEvent?.Invoke();
+        mapReference?.SetRoomAsVisited(this.gridPosition);
         hasBeenVisited = true;
     }
 
@@ -94,10 +97,18 @@ public class RoomManager : MonoBehaviour
     }
 
     private void SpawnItem(){
-        if(itemSpawnPoint != null){
+        if(itemSpawnPoint != null) {
             GameObject spawnPrefab = roomAsset.GetItemSpawnPrefab();
-            if(spawnPrefab != null)
-                Instantiate(spawnPrefab, itemSpawnPoint);
+
+            if(spawnPrefab != null) {
+                GameObject newItem = Instantiate(spawnPrefab) as GameObject;
+                newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+
+                //trail stuff
+                newItem.SetActive(false);
+                GameObject newTrail = Instantiate(trailPrefab, playerReference.transform.position, Quaternion.identity);
+                newTrail.GetComponent<ItemTrail>().SetItem(newItem);
+            }
         }
     }
 
@@ -110,7 +121,7 @@ public class RoomManager : MonoBehaviour
 
     public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, 
     LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f,
-    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null){
+    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, MapDrawer mapReference = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
@@ -120,6 +131,7 @@ public class RoomManager : MonoBehaviour
         this.difficultyMultiplier = difficultyMultiplier;
         this.onRoomEnterFirstGameEvent = onRoomEnterFirstTime;
         this.onCombatCompleteGameEvent = onCombatComplete;
+        this.mapReference = mapReference;
         MergeMeshes();
     }
 

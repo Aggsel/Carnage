@@ -20,7 +20,7 @@ public class LevelManager : MonoBehaviour
 
     [Header("Grid Settings")]
     [Tooltip("Room size in world units.")]
-    [SerializeField] private Vector2 roomSize = new Vector2(10, 10);
+    [SerializeField] private Vector2 roomSize = new Vector2(44, 44);
     [Tooltip("Where in the grid the initial room should spawn.")]
     [SerializeField] private Vector2Int spawnRoomLocation = new Vector2Int(0, 0);
 
@@ -35,6 +35,7 @@ public class LevelManager : MonoBehaviour
     [Header("UI References")]
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
     [SerializeField] private TextMeshProUGUI progressionUIReference = null;
+    [SerializeField] private MapDrawer mapReference = null;
 
     private GameObject playerReference = null;
     private AudioManager am = null;
@@ -57,6 +58,16 @@ public class LevelManager : MonoBehaviour
         this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
 
         uic = FindObjectOfType<UIController>();
+
+        //Ideally these should be referenced while still in editor. If not, as a last resort; try to find them.
+        if(mapReference == null){
+            mapReference = FindObjectOfType<MapDrawer>();
+            Debug.Log("Map reference is empty. Please attach a reference to the map object.", this);
+        }
+        if(progressionUIReference == null){
+            progressionUIReference = GameObject.Find("Level Progression").GetComponent<TextMeshProUGUI>();
+            Debug.Log("Progression UI reference is empty. Please attach a reference to the progression UI.", this);
+        }
     }
 
     //Called by other object whenever level should progress.
@@ -97,6 +108,7 @@ public class LevelManager : MonoBehaviour
         PopulateLevel();
         InitialRoomDeactivation(spawnRoomLocation);
         UpdateProgressionUI();
+        mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
         OnFinishedGeneration.Invoke();
     }
 
@@ -167,7 +179,10 @@ public class LevelManager : MonoBehaviour
         newRoom.SetRoomAsset(roomAsset);
         if(playerReference == null)
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
-        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete);
+
+        newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, 
+        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, mapReference);
+
         instantiatedRooms.Add(newRoom);
         
         roomCounter++;
@@ -190,22 +205,22 @@ public class LevelManager : MonoBehaviour
     }
 }
 
-internal struct MazeCell{
-    internal int doorMask;
-    internal bool visited;
-    internal int depth;
-    internal int roomCounter;
-    internal RoomType type;
+public struct MazeCell{
+    public int doorMask;
+    public bool visited;
+    public int depth;
+    public int roomCounter;
+    public RoomType type;
 }
 
 //Recursive backtracker for maze generation.
-internal class MazeGenerator{
+public class MazeGenerator{
     
-    internal MazeCell[,] grid;
-    internal Vector2Int desiredGridSize;  //How large of an area the algorithm is allowed to explore.
-    internal Vector2Int actualGridSize;  //After generation, this will be how large the level actually is.
+    public MazeCell[,] grid;
+    public Vector2Int desiredGridSize;  //How large of an area the algorithm is allowed to explore.
+    public Vector2Int actualGridSize;  //After generation, this will be how large the level actually is.
     private Vector2Int initPosition;
-    internal int maxDepthReached = 0;
+    public int maxDepthReached = 0;
     private int seed = 0;
     private int maxDepth = 0;
     private int roomCount = 0;
