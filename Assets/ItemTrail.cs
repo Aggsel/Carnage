@@ -41,7 +41,7 @@ public class ItemTrail : MonoBehaviour
 
             float dist = Vector3.Distance(transform.position, itemObj.transform.position);
 
-            if(dist < 2.0f)
+            if(dist < 0.5f)
             {
                 GameObject spawn = Instantiate(spawnParticle) as GameObject;
                 spawn.transform.SetPositionAndRotation(itemObj.transform.position, Quaternion.identity);
