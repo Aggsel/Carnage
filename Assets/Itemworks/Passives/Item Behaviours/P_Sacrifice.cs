@@ -12,8 +12,8 @@ public class P_Sacrifice : Passive {
     [Tooltip("How much HP to sacrifice upon pickup for another buff.")]
     [SerializeField] private float hpSacrificeAmount = 0.2f;
 
-    [SerializeField] private string attribute;
-    [SerializeField] private float amount;
+    [SerializeField] private string attribute = "";
+    [SerializeField] private float amount = 0.0f;
 
     public override void Initialize(GameObject obj){
         attributeController = obj.GetComponent<AttributeController>();

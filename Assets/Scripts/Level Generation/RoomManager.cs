@@ -30,6 +30,7 @@ public class RoomManager : MonoBehaviour
 
     private UIController uic;
     private AudioManager am;
+    private MapDrawer mapReference;
 
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -78,6 +79,7 @@ public class RoomManager : MonoBehaviour
             parentLevelManager?.ProgressionUISetActive(false);
         }
         onRoomEnterFirstGameEvent?.Invoke();
+        mapReference?.SetRoomAsVisited(this.gridPosition);
         hasBeenVisited = true;
     }
 
@@ -110,7 +112,7 @@ public class RoomManager : MonoBehaviour
 
     public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, 
     LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f,
-    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null){
+    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, MapDrawer mapReference = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
@@ -120,6 +122,7 @@ public class RoomManager : MonoBehaviour
         this.difficultyMultiplier = difficultyMultiplier;
         this.onRoomEnterFirstGameEvent = onRoomEnterFirstTime;
         this.onCombatCompleteGameEvent = onCombatComplete;
+        this.mapReference = mapReference;
         MergeMeshes();
     }
 

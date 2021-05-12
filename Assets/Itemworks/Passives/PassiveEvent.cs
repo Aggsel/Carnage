@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PassiveEvent : Passive
 {
-    [Tooltip("Which event should trigger this lifesteal.")]
-    [SerializeField] private GameEvent triggerEvent;
+    [Tooltip("Which event should trigger this passive behaviour.")]
+    [SerializeField] private GameEvent triggerEvent = null;
 
     public override void Initialize(GameObject obj){
-        triggerEvent.Subscribe(OnEvent);
+        triggerEvent?.Subscribe(OnEvent);
     }
 
     protected virtual void OnEvent(){}
