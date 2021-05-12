@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class MissileBehaviour : MonoBehaviour
 {
-    [SerializeField] public GameObject player;
-    [SerializeField] private float blastRadius;
-    [SerializeField] private GameObject explosionVFX;
-    [SerializeField] private float explosionDamage;
+    public GameObject player;
+
+    [SerializeField] private float blastRadius = 0.0f;
+    [SerializeField] private GameObject explosionVFX = null;
+    [SerializeField] private float explosionDamage = 0.0f;
 
     void OnCollisionEnter(Collision other)
     {
