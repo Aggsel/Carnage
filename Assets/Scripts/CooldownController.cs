@@ -51,7 +51,10 @@ public class CooldownController : MonoBehaviour
             cooldownDuration = active.cooldown;
             activeActuationTime = active.buffTime;
             activeActuationTimeLeft = activeActuationTime;
-            cooldownTimeLeft = cooldownDuration;
+            cooldownTimeLeft = 0.0f;
+            activeActuated = false;
+            readyTime = 0.0f;
+            activeImage.fillAmount = 1.0f - (cooldownTimeLeft / cooldownDuration);
             active.Initialize(player);
         }
         else
