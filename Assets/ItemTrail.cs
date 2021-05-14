@@ -8,6 +8,8 @@ public class ItemTrail : MonoBehaviour
     [SerializeField] private float speed = 0.0f;
     [SerializeField] private GameObject spawnParticle = null;
 
+    [SerializeField] private float dist = 0.0f;
+
     private Vector3 startPos = Vector3.zero;
     private ParticleSystem par = null;
     private GameObject itemObj = null;
@@ -39,9 +41,9 @@ public class ItemTrail : MonoBehaviour
         {
             agent.SetDestination(itemObj.transform.position);
 
-            float dist = Vector3.Distance(transform.position, itemObj.transform.position);
+            dist = Vector3.Distance(transform.position, itemObj.transform.position);
 
-            if(dist < 0.5f)
+            if(dist < 1.0f)
             {
                 GameObject spawn = Instantiate(spawnParticle) as GameObject;
                 spawn.transform.SetPositionAndRotation(itemObj.transform.position, Quaternion.identity);

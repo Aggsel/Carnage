@@ -7,7 +7,7 @@ public class CooldownController : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private Image activeImage = null;
-    [SerializeField] private Image frameImage = null;
+    //[SerializeField] private Image frameImage = null;
 
     [Header("Other stuff?")]
     public Active active;
@@ -51,7 +51,10 @@ public class CooldownController : MonoBehaviour
             cooldownDuration = active.cooldown;
             activeActuationTime = active.buffTime;
             activeActuationTimeLeft = activeActuationTime;
-            cooldownTimeLeft = cooldownDuration;
+            cooldownTimeLeft = 0.0f;
+            activeActuated = false;
+            readyTime = 0.0f;
+            activeImage.fillAmount = 1.0f - (cooldownTimeLeft / cooldownDuration);
             active.Initialize(player);
         }
         else

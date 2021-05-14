@@ -60,6 +60,8 @@ public class RoomManager : MonoBehaviour
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
         this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+        mapReference?.SetRoomAsVisited(this.gridPosition);
+        mapReference?.SetCurrentRoom(this.gridPosition);
     }
 
     //Is called whenever a room is entered for the first time.
@@ -77,10 +79,10 @@ public class RoomManager : MonoBehaviour
             OpenDoors(false);
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
-            parentLevelManager?.ProgressionUISetActive(false);
+        }else{  //No enemies were spawned, consider the room completed.
+            parentLevelManager?.IncrementCompletedRooms();
         }
         onRoomEnterFirstGameEvent?.Invoke();
-        mapReference?.SetRoomAsVisited(this.gridPosition);
         hasBeenVisited = true;
     }
 
@@ -90,7 +92,7 @@ public class RoomManager : MonoBehaviour
         am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
         parentLevelManager?.IncrementCompletedRooms();
-        parentLevelManager?.ProgressionUISetActive(true);
+        // parentLevelManager?.ProgressionUISetActive(true);
         uic?.UIAlertText("Combat complete!", 1.5f);
         SpawnItem();
         onCombatCompleteGameEvent?.Invoke();

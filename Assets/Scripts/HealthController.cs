@@ -27,6 +27,13 @@ public class HealthController : MonoBehaviour
         uiController.UpdateHealthbar();
     }
 
+    public void IncreaseMaxHealth()
+    {
+        maxHealth = attributeInstance.weaponAttributesResultant.health;
+        uiController.SetMaxHealth(maxHealth);
+        uiController.UpdateHealthbar();
+    }
+
     public float Health
     {
         get

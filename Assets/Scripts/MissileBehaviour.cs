@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class MissileBehaviour : MonoBehaviour
 {
-    [SerializeField] public GameObject player;
-    [SerializeField] private float blastRadius;
-    [SerializeField] private GameObject explosionVFX;
-    [SerializeField] private float explosionDamage;
+    public GameObject player;
+
+    [SerializeField] private float blastRadius = 0.0f;
+    [SerializeField] private GameObject explosionVFX = null;
+    [SerializeField] private float explosionDamage = 0.0f;
 
     void OnCollisionEnter(Collision other)
     {
@@ -19,7 +20,8 @@ public class MissileBehaviour : MonoBehaviour
         foreach (Collider obj in colliders){
             if(obj.name == "Player")
             {
-                obj.GetComponent<HealthController>().ModifyCurrentHealth(-explosionDamage);
+                HealthController hc = obj.GetComponent<HealthController>();
+                hc.OnShot(new HitObject(transform.position - obj.transform.position, transform.position - obj.transform.position, explosionDamage, 1.0f));
             }
             else
             {

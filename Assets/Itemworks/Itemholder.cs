@@ -15,7 +15,14 @@ public class Itemholder : MonoBehaviour
         }
         foreach (Passive i in itemholder.passives)
         {
-            i.dontSpawn = false;
+            if(i == null)
+            {
+                Debug.LogWarning("Item index bug currently not fixed, this message will remain until it is fixed!");
+            }
+            else
+            {
+                i.dontSpawn = false;
+            }
         }
     }
 
