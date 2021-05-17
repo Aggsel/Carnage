@@ -6,6 +6,8 @@ public abstract class Passive : ScriptableObject
 {
     [Tooltip("The name of the passive, currently not used anywhere.")]
     [SerializeField] public string passiveName = "New passive";
+    [Tooltip("The short description that will appear when a player picks up this item.")]
+    [SerializeField] public string passiveDescription;
     [Tooltip("Wether or not the item will depool after being spawned once, preventing more spawns of the item.")]
     [SerializeField] public bool depool;
     [Tooltip("Sprite used for UI-elements.")]
