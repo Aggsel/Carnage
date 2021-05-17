@@ -10,18 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce2383920b3f19248ae9d0d36e084854, type: 3}
-  m_Name: P_Firerate+_Damage-
+  m_Name: P_Single_Shot
   m_EditorClassIdentifier: 
-  passiveName: Firerate+ Damage-
+  passiveName: Single_Shot
   depool: 0
   sprite: {fileID: 21300000, guid: 43572877a538cf24eb391174abeb5923, type: 3}
   dontSpawn: 0
   buffs:
   - stat: firerate
-    increment: 3
+    increment: 0.2
     statTwo: damage
-    incrementTwo: 0.5
-  - stat: heatgeneration
-    increment: 0.5
-    statTwo: 
-    incrementTwo: 0
+    incrementTwo: 5
