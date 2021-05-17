@@ -64,7 +64,6 @@ public class Itemgenerator : MonoBehaviour
             }
             else
             {
-                //Debug.Log(reference.itemholder.actives[randomIndex].depool);
                 active = reference.itemholder.actives[randomIndex];
                 if (reference.itemholder.actives[randomIndex].depool == true)
                 {
@@ -98,10 +97,12 @@ public class Itemgenerator : MonoBehaviour
         {
             if(active != null)
             {
+                uic.UIAlertText(active.activeDescription, 3.0f);
                 cc.Initialize(active, other.gameObject);
             }
             else
             {
+                uic.UIAlertText(passive.passiveDescription, 3.0f);
                 pc.Initialize(passive, other.gameObject);
             }
             
@@ -118,6 +119,7 @@ public class Itemgenerator : MonoBehaviour
                 recieved = true;
                 uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
                 Destroy(this.gameObject);
+
             }
             
         }
