@@ -82,8 +82,8 @@ public class SerializeController : MonoBehaviour
     //kinda disgusting
     private void LoadPreferences (string[] lines)
     {
-        //0            1       2      3    4      5        6     7        8     9      10      11    12    13     14  
-        //sensitivity, sounds, music, fov, gamma, graphics dash, forward, back, pause, right, left, jump, melee, action,
+        //0            1       2      3    4      5        6     7        8     9      10      11    12    13     14      15
+        //sensitivity, sounds, music, fov, gamma, graphics dash, forward, back, pause, right, left, jump, melee, action, status
         //this does not check if the preferences is valid
 
         OptionAssignments oa = pc.GetOptions();
@@ -139,7 +139,8 @@ public class SerializeController : MonoBehaviour
             ka.pause.ToString() + "\n" +
             ka.jump.ToString() + "\n" +
             ka.melee.ToString() + "\n" +
-            ka.action.ToString();
+            ka.action.ToString() + "\n" +
+            ka.status.ToString();
 
         //Debug.Log("Saved graphics as " + oa.graphicsSlider.value.ToString());
         WriteToPreferences(saveString);

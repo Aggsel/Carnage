@@ -10,7 +10,7 @@ public class PassiveController : MonoBehaviour
     public void Initialize(Passive addedPassive, GameObject player)
     {
         passiveList.Add(addedPassive);
-        addedPassive.Initialize(player);   
+        addedPassive.Initialize(player);
     }
 
     //maybe lateupdate?
