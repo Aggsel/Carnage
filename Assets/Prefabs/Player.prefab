@@ -6436,9 +6436,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponAttributesBase:
-    damage: 20
-    fireRate: 10
-    heatGeneration: 2
+    damage: 25
+    fireRate: 5
+    heatGeneration: 7
     heatMaximum: 100
     coolingIntialize: 0.5
     coolingRate: 40
@@ -6528,6 +6528,7 @@ MonoBehaviour:
     dashRechargeRate: 3
     dashFov: 15
   cc: {fileID: 0}
+  charge: 3
 --- !u!114 &3027235087010105676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6593,7 +6594,6 @@ MonoBehaviour:
   interactionLayermask:
     serializedVersion: 2
     m_Bits: 2048
-  interactionObj: {fileID: 0}
   interactText: {fileID: 0}
 --- !u!114 &3434799388374709113
 MonoBehaviour:
@@ -6608,8 +6608,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
-  viewBob: {fileID: 3027235086763249293}
-  weaponSway: {fileID: 3027235087629037938}
+  deathDisableScripts: []
   bloodImageGO: {fileID: 0}
 --- !u!54 &3545908116954248292
 Rigidbody:
@@ -7414,6 +7413,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6168320d808999e42b495590bdfd63c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  activeImage: {fileID: 0}
+  frameImage: {fileID: 0}
   active: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24, type: 2}
   player: {fileID: 3027235087010105666}
 --- !u!1 &5600333829868624959
