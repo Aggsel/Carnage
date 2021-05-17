@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce2383920b3f19248ae9d0d36e084854, type: 3}
-  m_Name: P_Damage+
+  m_Name: P_SacrificeForFirerate
   m_EditorClassIdentifier: 
-  passiveName: Damage+
-  passiveDescription: Increased damage. Simple.
+  passiveName: Sacrifice For Firerate
+  passiveDescription: Health down, more firerate!
   depool: 0
-  sprite: {fileID: 21300000, guid: b619f384f814f4d4b9484ffddd51d45e, type: 3}
+  sprite: {fileID: 21300000, guid: c79275839de87164abf56a00ceced306, type: 3}
   dontSpawn: 0
   buffs:
-  - stat: damage
-    increment: 1.25
-    statTwo: 
-    incrementTwo: 0
+  - stat: health
+    increment: 0.85
+    statTwo: firerate
+    incrementTwo: 1.3
