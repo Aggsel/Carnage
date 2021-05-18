@@ -41,7 +41,8 @@ public class ItemTrail : MonoBehaviour
 
     private void Update()
     {
-        destroyTimer += Time.time;
+        destroyTimer += Time.deltaTime;
+        Debug.Log(destroyTimer);
 
         if(destroyTimer > 20.0f)
         {
@@ -54,7 +55,7 @@ public class ItemTrail : MonoBehaviour
 
     private void MoveToItem()
     {
-        if(itemObj != null)
+        if(itemObj != null && agent != null)
         {
             if(path.status != NavMeshPathStatus.PathInvalid || path.status != NavMeshPathStatus.PathPartial)
             {
@@ -67,7 +68,7 @@ public class ItemTrail : MonoBehaviour
 
             dist = Vector3.Distance(transform.position, itemObj.transform.position);
 
-            if(dist < 1.0f && destroyTimer < 20.0f)
+            if(dist < 1.0f)
             {
                 SpawnItem();
             }
