@@ -51,6 +51,7 @@ public struct KeyBindAsignments
     public KeyCode jump; //6
     public KeyCode melee; //7
     public KeyCode action; //8
+    public KeyCode status; //9
 }
 
 [Serializable]
@@ -65,6 +66,7 @@ public struct KeybindTexts
     public TextMeshProUGUI jumpText; //6
     public TextMeshProUGUI meleeText; //7
     public TextMeshProUGUI actionText; //8
+    public TextMeshProUGUI statusText; //9
 }
 #endregion
 
@@ -157,9 +159,18 @@ public class PauseController : MonoBehaviour
                 keybindAssignments.action = key;
                 keybindTexts.actionText.text = key.ToString();
                 break;
+            case 9: //status
+                keybindAssignments.status = key;
+                keybindTexts.statusText.text = key.ToString();
+                break;
             default:
                 break;
         }
+    }
+
+    public bool GetPaused ()
+    {
+        return paused;
     }
 
     private void Update ()
@@ -309,6 +320,9 @@ public class PauseController : MonoBehaviour
             case 8: //action
                 keybindAssignments.action = key;
                 break;
+            case 9: //status
+                keybindAssignments.status = key;
+                break;
             default:
                 break;
         }
@@ -447,6 +461,20 @@ public class PauseController : MonoBehaviour
 
             changingKey = true;
             changingKeyIndex = 8;
+        }
+    }
+
+    public void ChangeButton_Status(TextMeshProUGUI text)
+    {
+        if (!changingKey)
+        {
+            LockCursor(false);
+
+            changingKeyText = text;
+            changingKeyText.text = "None";
+
+            changingKey = true;
+            changingKeyIndex = 9;
         }
     }
     #endregion
