@@ -202,6 +202,7 @@ public class AttributeController : MonoBehaviour
                     case "health":
                         float healthDiff = weaponAttributesBase.health * item.incrementTwo - weaponAttributesBase.health;
                         weaponAttributesResultant.health += healthDiff;
+                        hc.IncreaseMaxHealth();
                         break;
 
                 }
