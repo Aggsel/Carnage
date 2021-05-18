@@ -109,7 +109,7 @@ public class RoomManager : MonoBehaviour
                 //trail stuff
                 newItem.SetActive(false);
                 GameObject newTrail = Instantiate(trailPrefab, playerReference.transform.position, Quaternion.identity);
-                newTrail.GetComponent<ItemTrail>().SetStuff(newItem);
+                newTrail.GetComponent<ItemTrail>().SetItem(newItem);
             }
         }
     }

@@ -32,11 +32,6 @@ public class HealthController : MonoBehaviour
         maxHealth = attributeInstance.weaponAttributesResultant.health;
         uiController.SetMaxHealth(maxHealth);
         uiController.UpdateHealthbar();
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-            CheckDeathCriteria();
-        }
     }
 
     public float Health

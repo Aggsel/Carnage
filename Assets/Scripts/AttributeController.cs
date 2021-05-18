@@ -126,17 +126,22 @@ public class AttributeController : MonoBehaviour
                 case "damage":
                     float damageDiff = weaponAttributesBase.damage * item.increment - weaponAttributesBase.damage;
                     weaponAttributesResultant.damage += damageDiff;
-                    weaponAttributesResultant.damage = Mathf.Clamp(weaponAttributesResultant.damage, 5.0f, 100.0f);
                     break;
                 case "firerate":
                     float firerateDiff = weaponAttributesBase.fireRate * item.increment - weaponAttributesBase.fireRate;
                     weaponAttributesResultant.fireRate += firerateDiff;
-                    weaponAttributesResultant.fireRate = Mathf.Clamp(weaponAttributesResultant.fireRate, 1.0f, 20.0f);
+                    /*if(weaponAttributesResultant.fireRate >= 12.0f)
+                    {
+                        FindObjectOfType<Screenshake>().SetRecoilIncrease(0.01f);
+                    }
+                    else if (weaponAttributesResultant.fireRate < 12.0f)
+                    {
+                        FindObjectOfType<Screenshake>().SetRecoilIncrease(0.05f);
+                    }*/
                     break;
                 case "heatgeneration":
                     float heatgenerationDiff = weaponAttributesBase.heatGeneration * item.increment - weaponAttributesBase.heatGeneration;
                     weaponAttributesResultant.heatGeneration += heatgenerationDiff;
-                    weaponAttributesResultant.heatGeneration = Mathf.Clamp(weaponAttributesResultant.heatGeneration, 1.0f, 25.0f);
                     break;
                 case "heatmaximum":
                     float heatmaximumDiff = weaponAttributesBase.heatMaximum * item.increment - weaponAttributesBase.heatMaximum;
@@ -157,7 +162,6 @@ public class AttributeController : MonoBehaviour
                 case "health":
                     float healthDiff = weaponAttributesBase.health * item.increment - weaponAttributesBase.health;
                     weaponAttributesResultant.health += healthDiff;
-                    weaponAttributesResultant.health = Mathf.Clamp(weaponAttributesResultant.health, 0.0f, 400.0f);
                     hc.IncreaseMaxHealth();
                     break;
 
@@ -170,17 +174,14 @@ public class AttributeController : MonoBehaviour
                     case "damage":
                         float damageDiff = weaponAttributesBase.damage * item.incrementTwo - weaponAttributesBase.damage;
                         weaponAttributesResultant.damage += damageDiff;
-                        weaponAttributesResultant.damage = Mathf.Clamp(weaponAttributesResultant.damage, 5.0f, 100.0f);
                         break;
                     case "firerate":
                         float firerateDiff = weaponAttributesBase.fireRate * item.incrementTwo - weaponAttributesBase.fireRate;
                         weaponAttributesResultant.fireRate += firerateDiff;
-                        weaponAttributesResultant.fireRate = Mathf.Clamp(weaponAttributesResultant.fireRate, 1.0f, 20.0f);
                         break;
                     case "heatgeneration":
                         float heatgenerationDiff = weaponAttributesBase.heatGeneration * item.incrementTwo - weaponAttributesBase.heatGeneration;
                         weaponAttributesResultant.heatGeneration += heatgenerationDiff;
-                        weaponAttributesResultant.heatGeneration = Mathf.Clamp(weaponAttributesResultant.heatGeneration, 1.0f, 25.0f);
                         break;
                     case "heatmaximum":
                         float heatmaximumDiff = weaponAttributesBase.heatMaximum * item.incrementTwo - weaponAttributesBase.heatMaximum;
@@ -201,7 +202,6 @@ public class AttributeController : MonoBehaviour
                     case "health":
                         float healthDiff = weaponAttributesBase.health * item.incrementTwo - weaponAttributesBase.health;
                         weaponAttributesResultant.health += healthDiff;
-                        weaponAttributesResultant.health = Mathf.Clamp(weaponAttributesResultant.health, 0.0f, 400.0f);
                         hc.IncreaseMaxHealth();
                         break;
 
