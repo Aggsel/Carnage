@@ -5059,7 +5059,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8373236212160343335}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.32
@@ -5078,6 +5078,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectileSpeed: 40
   damage: 7
+  hitDecal: {fileID: 5381826771473679965, guid: f18e7d5a9007c6a42b160ff6e93f318d,
+    type: 3}
+  hitEffect: {fileID: 1947692512829870840, guid: 252dc9beec27e7346a1fd026abab1e8f,
+    type: 3}
+  hitEffectLm:
+    serializedVersion: 2
+    m_Bits: 3127
   rb: {fileID: 8309891075262587701}
   sourceEnemy: {fileID: 0}
 --- !u!54 &8309891075262587701
@@ -5092,7 +5099,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0

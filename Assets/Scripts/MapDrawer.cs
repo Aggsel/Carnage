@@ -16,7 +16,6 @@ public class MapDrawer : MonoBehaviour
 
     private MazeCell[,] grid = new MazeCell[0,0];
     private Image[,] imageGrid = new Image[0,0];
-    private Sprite sprite = null;
     private RectTransform rectTransform = null;
     private Vector2Int currentRoom = new Vector2Int(0,0);
 
