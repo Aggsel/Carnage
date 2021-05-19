@@ -70,7 +70,7 @@ namespace EnemyStates.ConstraintRanged
                 spawnTransform = behavior.transform;
             GameObject instantiatedProjectile = GameObject.Instantiate(projectile, spawnTransform.position, spawnTransform.rotation);
             instantiatedProjectile.GetComponent<EnemyProjectile>().sourceEnemy = behavior.gameObject;
-            instantiatedProjectile.transform.LookAt(behavior.GetTargetPosition());
+            instantiatedProjectile.transform.LookAt(behavior.GetTargetPosition() + new Vector3(0, 0.5f, 0));
         }
 
         public void StopAttack(){
