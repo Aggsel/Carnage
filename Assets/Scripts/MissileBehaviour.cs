@@ -39,8 +39,11 @@ public class MissileBehaviour : MonoBehaviour
         if ((ignoreMask.value & (1 << other.transform.gameObject.layer)) > 0)
         {
             GameObject newDecal = Instantiate(explosionDecal) as GameObject;
-            newDecal.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(other.contacts[0].normal + new Vector3(0, 90, 0)));
+            newDecal.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(contact.normal));
             newDecal.transform.SetParent(other.transform, true);
+
+            float ranRot = Random.Range(-180, 180);
+            newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
         }
 
         Destroy(gameObject);
