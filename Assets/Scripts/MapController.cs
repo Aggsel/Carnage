@@ -7,9 +7,7 @@ public class MapController : MonoBehaviour
     [SerializeField] private MapDrawer drawer = null;
     private GameObject mapReference = null;
     private bool mapActive = false;
-    private float animationDuration = 1.0f;
     private PauseController pc = null;
-    private KeyCode mapKey = KeyCode.Asterisk;
 
     void Start(){
         pc = Object.FindObjectOfType<PauseController>();
