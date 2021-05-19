@@ -42,7 +42,7 @@ public class ItemTrail : MonoBehaviour
     private void Update()
     {
         destroyTimer += Time.deltaTime;
-        Debug.Log(destroyTimer);
+        //Debug.Log(destroyTimer);
 
         if(destroyTimer > 20.0f)
         {

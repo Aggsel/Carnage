@@ -61,7 +61,10 @@ public class LevelManager : MonoBehaviour
 
         //Ideally these should be referenced while still in editor. If not, as a last resort; try to find them.
         if(mapReference == null){
-            mapReference = FindObjectOfType<MapDrawer>();
+            //Must do it this way since the mapdrawer object is inactive.
+            MapDrawer[] maps = Resources.FindObjectsOfTypeAll<MapDrawer>();
+            if(maps.Length > 0)
+                mapReference = maps[0];
             Debug.Log("Map reference is empty. Please attach a reference to the map object.", this);
         }
         if(progressionUIReference == null){
@@ -78,7 +81,7 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
-        if(currentLevel == levels.Length){
+        if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
         }
@@ -107,6 +110,7 @@ public class LevelManager : MonoBehaviour
 
         PopulateLevel();
         InitialRoomDeactivation(spawnRoomLocation);
+        ActivateNeighbors(spawnRoomLocation);
         UpdateProgressionUI();
         mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
         OnFinishedGeneration.Invoke();
@@ -135,16 +139,38 @@ public class LevelManager : MonoBehaviour
     }
 
     public void ActivateNeighbors(Vector2Int pos){
-        for (int y = -2; y <= 2; y++){
-            for (int x = -2; x <= 2; x++){
-                int posX = pos.x + x;
-                int posY = pos.y + y;
-                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
-                    continue;
-                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
-                    this.grid[posX,posY]?.gameObject.SetActive(false);
-                else
-                    this.grid[posX,posY]?.gameObject.SetActive(true);
+        //We can only do this fancy depth check if no doors have been placed randomly.
+        if(levels[currentLevel].GetRandomDoorIterations() == 0){
+            for (int y = -2; y <= 2; y++){
+                for (int x = -2; x <= 2; x++){
+                    int posX = pos.x + x;
+                    int posY = pos.y + y;
+                    if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                        continue;
+                    if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
+                        this.grid[posX,posY]?.gameObject.SetActive(false);
+                    else
+                        this.grid[posX,posY]?.gameObject.SetActive(true);
+                }
+            }
+        }
+        else{   //TODO 
+            for (int y = 0; y < this.grid.GetLength(1); y++){
+                for (int x = 0; x < this.grid.GetLength(0); x++){
+                    if(x >= pos.x - 1 && x <= pos.x + 1 && y <= pos.y + 1 && y >= pos.y - 1)
+                        continue;
+                    this.grid[x,y]?.gameObject.SetActive(false);
+                }
+            }
+
+            for (int y = -1; y < 2; y++){
+                for (int x = -1; x < 2; x++){
+                    Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
+                    if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
+                        if(this.grid[newCoord.x,newCoord.y] != null && !this.grid[newCoord.x,newCoord.y].gameObject.activeInHierarchy)
+                            this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
+                    }
+                }
             }
         }
     }
@@ -237,13 +263,13 @@ public class MazeGenerator{
     }
 
     public void GenerateMaze(){
-            Random.InitState(this.seed);
+        Random.InitState(this.seed);
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
-        PlaceRandomDoors();
         PlaceSpecialRooms();
+        PlaceRandomDoors();
         //Maze generation is done
-        Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
+        // Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
     }
 
     private void MazeCrawl(Vector2Int pos, Vector2Int dir, int depth){
@@ -251,7 +277,7 @@ public class MazeGenerator{
         PlaceRoom(pos, depth);
         AddDoorToMask(pos, dir);
 
-        for (int i = 0; i < neighbors.Count; i++){
+        while(neighbors.Count > 0){
             int randomIndex = Random.Range(0, neighbors.Count);
             Vector2Int selectedNeighbor =  neighbors[randomIndex];
 
@@ -277,14 +303,14 @@ public class MazeGenerator{
     private void PlaceRandomDoors(){
         for (int i = 0; i < randomDoorIterations; i++){
             Vector2Int randomCoord = new Vector2Int(Random.Range(0, actualGridSize.x), Random.Range(0, actualGridSize.y));
-            if(!grid[randomCoord.x, randomCoord.y].visited || grid[randomCoord.x, randomCoord.y].type == RoomType.FINAL)
+            if(!grid[randomCoord.x, randomCoord.y].visited || grid[randomCoord.x, randomCoord.y].type != RoomType.COMMON)
                 continue;
             
             Vector2Int[] offsets = {new Vector2Int(0,1), new Vector2Int(1,0), new Vector2Int(0,-1), new Vector2Int(-1,0)};
             Vector2Int randDir = offsets[Random.Range(0, offsets.Length)];
             Vector2Int newCoord = randDir + randomCoord;
             if(newCoord.x >= 0 && newCoord.x < this.desiredGridSize.x && newCoord.y >= 0 && newCoord.y < this.desiredGridSize.y){
-                if(grid[newCoord.x, newCoord.y].visited || grid[newCoord.x, newCoord.y].type == RoomType.FINAL){
+                if(grid[newCoord.x, newCoord.y].visited && grid[newCoord.x, newCoord.y].type == RoomType.COMMON){
                     AddDoorToMask(randomCoord, randDir);
                     AddDoorToMask(newCoord, randDir * -1);
                 }
