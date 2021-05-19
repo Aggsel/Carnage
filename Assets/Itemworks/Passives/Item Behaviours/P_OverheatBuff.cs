@@ -11,6 +11,8 @@ public class P_OverheatBuff : Passive {
     [SerializeField] private float amount = 0.0f;
     [Tooltip("Min and max values for when this buff should be applied. x = 0.3, y = 0.7 means this buff will be active while overheat is between 30% and 70%.")]
     [SerializeField] private Vector2 overheatRange = new Vector2();
+    [Tooltip("When true, the buff will be applied while overheat is outside the range. When false, the buff will be applied while overheat is within the range.")]
+    [SerializeField] private bool invertRange = false;
 
     private AttributeController attributeController;
     private OverheatScript overheatScript;
@@ -24,10 +26,18 @@ public class P_OverheatBuff : Passive {
 
     public override void TriggerPassive() {
         float normalizedOverheat = overheatScript.HeatValue / attributeController.weaponAttributesResultant.heatMaximum;
-        if(normalizedOverheat > overheatRange.x && normalizedOverheat < overheatRange.y)
-            ActivateBuff();
-        else
-            DeactivateBuff();
+        if(invertRange){
+            if(normalizedOverheat < overheatRange.x && normalizedOverheat > overheatRange.y)
+                ActivateBuff();
+            else
+                DeactivateBuff();
+        }
+        else{
+            if(normalizedOverheat > overheatRange.x && normalizedOverheat < overheatRange.y)
+                ActivateBuff();
+            else
+                DeactivateBuff();
+        }
     }
 
     private void ActivateBuff(){
