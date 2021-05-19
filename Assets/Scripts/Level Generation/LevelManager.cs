@@ -61,7 +61,10 @@ public class LevelManager : MonoBehaviour
 
         //Ideally these should be referenced while still in editor. If not, as a last resort; try to find them.
         if(mapReference == null){
-            mapReference = FindObjectOfType<MapDrawer>();
+            //Must do it this way since the mapdrawer object is inactive.
+            MapDrawer[] maps = Resources.FindObjectsOfTypeAll<MapDrawer>();
+            if(maps.Length > 0)
+                mapReference = maps[0];
             Debug.Log("Map reference is empty. Please attach a reference to the map object.", this);
         }
         if(progressionUIReference == null){
@@ -78,7 +81,7 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
-        if(currentLevel == levels.Length){
+        if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
         }
@@ -260,13 +263,13 @@ public class MazeGenerator{
     }
 
     public void GenerateMaze(){
-            Random.InitState(this.seed);
+        Random.InitState(this.seed);
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
         PlaceSpecialRooms();
         PlaceRandomDoors();
         //Maze generation is done
-        Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
+        // Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
     }
 
     private void MazeCrawl(Vector2Int pos, Vector2Int dir, int depth){
@@ -274,7 +277,7 @@ public class MazeGenerator{
         PlaceRoom(pos, depth);
         AddDoorToMask(pos, dir);
 
-        for (int i = 0; i < neighbors.Count; i++){
+        while(neighbors.Count > 0){
             int randomIndex = Random.Range(0, neighbors.Count);
             Vector2Int selectedNeighbor =  neighbors[randomIndex];
 
