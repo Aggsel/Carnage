@@ -97,11 +97,13 @@ public class Itemgenerator : MonoBehaviour
         {
             if(active != null)
             {
+                //Debug.Log("not null active");
                 uic.UIAlertText(active.activeDescription, 3.0f);
                 cc.Initialize(active, other.gameObject);
             }
             else
             {
+                //Debug.Log("null active");
                 uic.UIAlertText(passive.passiveDescription, 3.0f);
                 pc.Initialize(passive, other.gameObject);
             }
