@@ -6,6 +6,9 @@ public class MissileBehaviour : MonoBehaviour
 {
     public GameObject player;
 
+    [SerializeField] LayerMask ignoreMask = 0;
+    [SerializeField] GameObject explosionDecal = null;
+
     [SerializeField] private float blastRadius = 0.0f;
     [SerializeField] private GameObject explosionVFX = null;
     [SerializeField] private float explosionDamage = 0.0f;
@@ -25,16 +28,21 @@ public class MissileBehaviour : MonoBehaviour
             }
             else
             {
-                if(obj.GetComponentInParent<EnemyBehavior>() == null)
-                {
-                    //shrug
-                }
-                else
+                if(obj.GetComponentInParent<EnemyBehavior>() != null)
                 {
                     obj.GetComponentInParent<EnemyBehavior>().OnShot(new HitObject(obj.transform.position - transform.position, transform.position - obj.transform.position, 125.0f, 1.0f));
+                    //shrug
                 }
             }
         }
+
+        if ((ignoreMask.value & (1 << other.transform.gameObject.layer)) > 0)
+        {
+            GameObject newDecal = Instantiate(explosionDecal) as GameObject;
+            newDecal.transform.SetPositionAndRotation(transform.position, Quaternion.Euler(other.contacts[0].normal + new Vector3(0, 90, 0)));
+            newDecal.transform.SetParent(other.transform, true);
+        }
+
         Destroy(gameObject);
     }
 
