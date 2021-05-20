@@ -24,12 +24,12 @@ public class Itemgenerator : MonoBehaviour
 
     void Start()
     {
-        reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
-        correctGenerate(); //make it seeded later tbh
-        startPos = model.transform.position;
         player = FindObjectOfType<MovementController>().transform.gameObject;
         cc = player.GetComponentInChildren<CooldownController>();
         pc = player.GetComponentInChildren<PassiveController>();
+        reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
+        correctGenerate(); //make it seeded later tbh
+        startPos = model.transform.position;
         uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
@@ -82,13 +82,14 @@ public class Itemgenerator : MonoBehaviour
         if (active != null)
         {
             model = Instantiate(active.modelPrefab, gameObject.transform);
-            model.transform.parent = gameObject.transform;
         }
         else
         {
             model = Instantiate(passive.modelPrefab, gameObject.transform);
-            model.transform.parent = gameObject.transform;
         }
+        model.transform.parent = gameObject.transform;
+        model.transform.LookAt(player.transform.position);
+        model.transform.Rotate(0f, 90f, 0f);
     }
 
     private void LateUpdate ()
