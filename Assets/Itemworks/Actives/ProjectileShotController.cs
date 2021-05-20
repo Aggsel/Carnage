@@ -20,6 +20,7 @@ public class ProjectileShotController : MonoBehaviour
 
         //Add force to the instantiated bullet, pushing it forward away from the bulletSpawn location, using projectile force for how hard to push it away
         clonedBullet.AddForce(bulletSpawn.transform.forward * -projectileForce);
+        clonedBullet.GetComponent<MissileBehaviour>().player = this.gameObject;
     }
 
 }

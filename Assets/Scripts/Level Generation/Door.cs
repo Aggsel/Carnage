@@ -9,20 +9,25 @@ public class Door : MonoBehaviour
     [HideInInspector] [SerializeField] private RoomManager parentRoom;
     [SerializeField] private Collider doorCollider = null;
     [SerializeField] private GameObject door = null;
+    [SerializeField] private Collider trigger = null;
     private bool isOpen = true;
-
+    
     public void SetParent(RoomManager parentRoom){
         this.parentRoom = parentRoom;
     }
 
     private void OnTriggerEnter(Collider other){
-        if(other.gameObject.layer == 12)
+        if (other.gameObject.layer == 12){ 
             parentRoom.OnEnterRoom();
+        }
     }
 
     public void OpenDoor(bool open){
         if(doorCollider == null || door == null)
             return;
+
+        if(trigger != null)
+            trigger.enabled = open;
 
         doorCollider.enabled = !open;
         door.SetActive(!open);

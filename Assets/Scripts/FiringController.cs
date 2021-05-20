@@ -7,23 +7,27 @@ using UnityEngine.VFX;
 public class FiringController : MonoBehaviour
 {
     [SerializeField] private Camera bulletCam = null;
+    [SerializeField] private Transform muzzlePoint = null;
+    [SerializeField] private ParticleSystem lineEffect = null;
+    [SerializeField] private ParticleSystem cases = null;
     [SerializeField] private GameObject hitEffect = null;
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
-    private ProjectileShotController psc;
-
-    private int bitmask;
-    private AttributeController attributeInstance;
+    [SerializeField] private LayerMask shotLayerMask = 0;
+    [SerializeField] private LayerMask hitEffectLayerMask = 0;
+    //private ProjectileShotController psc;
+    private Screenshake ss = null;
+    private AttributeController attributeInstance = null;
+    private AudioManager am = null;
     private float timeToFire = 0f;
     private bool overheated = false;
 
     void Start()
     {
-        GameObject player = this.gameObject;
-        attributeInstance = player.GetComponent<AttributeController>();
-        int playerLayer = 12;
-        bitmask = ~(1 << playerLayer);
+        attributeInstance = this.gameObject.GetComponent<AttributeController>();
+        ss = FindObjectOfType<Screenshake>();
+        am = AudioManager.Instance;
     }
 
     void Update()
@@ -51,19 +55,38 @@ public class FiringController : MonoBehaviour
         direction.z += UnityEngine.Random.Range(-attributeInstance.weaponAttributesResultant.accuracy * accMultiplier, attributeInstance.weaponAttributesResultant.accuracy * accMultiplier);
         RaycastHit bulletHit;
 
-        if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
+        lineEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        muzzlePoint.transform.LookAt(direction + muzzlePoint.transform.position);
+
+        lineEffect.Play();
+
+        //bullet cases
+        cases.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        ParticleSystem.MainModule main = cases.main;
+
+        main.startRotationX = (bulletCam.transform.eulerAngles.x + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationY = (bulletCam.transform.eulerAngles.y + UnityEngine.Random.Range(-12, 12)) * Mathf.Deg2Rad;
+        main.startRotationZ = bulletCam.transform.eulerAngles.z * Mathf.Deg2Rad;
+
+        cases.Play();
+
+        //recoil
+        ss.RecoilCall();
+
+        //play sound
+        am.PlaySound(am.playerShooting);
+
+        if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, shotLayerMask))
         {
             //draw line
             Debug.DrawLine(bulletCam.transform.position, bulletHit.point, Color.green, 1.5f);
-            TargetScript target = bulletHit.transform.GetComponent<TargetScript>();
-
-            if(target != null)
+            bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject(transform.position, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
+            //bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
+            if (((1 << bulletHit.transform.gameObject.layer) & hitEffectLayerMask) != 0)
             {
-                target.TakeDamage(attributeInstance.weaponAttributesResultant.damage);
+                GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
+                Destroy(impact, 2f);
             }
-            bulletHit.transform.GetComponent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point));
-            GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
-            Destroy(impact, 2f);
         }
         overheatObject.GetComponent<OverheatScript>().Heat(attributeInstance.weaponAttributesResultant.heatGeneration);
     }

@@ -7,22 +7,23 @@ public class OverheatScript : MonoBehaviour
 {
     [SerializeField] private GameObject player = null;
     [SerializeField] private AttributeController attributeInstance;
+    private UIController uiController;
     public float heatValue = 0f;
     private float heatMax = 0f;
-    private bool recentlyHeated = false;
-    private bool overheated = false;
+    public bool recentlyHeated = false;
+    public bool overheated = false;
     private float coolingInitializeRemaining = 0f;
     private Buff buffReferenceOne = null;
 
-
     void Start()
     {
+        uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
         attributeInstance = player.GetComponent<AttributeController>();
+        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
     }
 
     void Update()
     {
-        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
         if(recentlyHeated == true)
         {
             coolingInitializeRemaining -= Time.deltaTime;
@@ -34,8 +35,7 @@ public class OverheatScript : MonoBehaviour
         else
         {
             heatValue -= attributeInstance.weaponAttributesResultant.coolingRate * Time.deltaTime;
-            heatValue = Mathf.Clamp(heatValue, 0f, heatMax);
-
+            heatValue = Mathf.Clamp(heatValue, 0f, attributeInstance.weaponAttributesResultant.heatMaximum);
 
             if (heatValue == 0 && overheated == true)
             {
@@ -49,6 +49,8 @@ public class OverheatScript : MonoBehaviour
 
     public void Heat(float heatGeneration)
     {
+        uiController.SetMaxHeat(attributeInstance.weaponAttributesResultant.heatMaximum);
+        heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
         heatValue += heatGeneration;
         if(heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
         {
@@ -60,9 +62,25 @@ public class OverheatScript : MonoBehaviour
         coolingInitializeRemaining = attributeInstance.weaponAttributesResultant.coolingInitialize;
     }
 
-    private void OnGUI()
+    public float HeatValue
+    {
+        get
+        {
+            return heatValue;
+        }
+    }
+
+    public float HeatPercentage
+    {
+        get
+        {
+            return heatValue / heatMax;
+        }
+    }
+
+    /*private void OnGUI()
     {
         GUI.Label(new Rect(10, 60, 100, 50), heatValue.ToString("F0"));
-    }
+    }*/
 
 }

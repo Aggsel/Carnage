@@ -5,48 +5,39 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Passives/Buffs")]
 public class P_Buff : Passive
 {
-    [Tooltip("The first attribute which to buff or debuff.")]
-    [SerializeField] public string attribute = "";
-    [Tooltip("The second attribute which to buff or debuff.")]
-    [SerializeField] public string secondAttribute = "";
-    [Tooltip("The value of which to change the first attribute. A value of 1.25 means a 25% percent increase.")]
-    [SerializeField] public float attributePercentage;
-    [Tooltip("The value of which to change the second attribute. A value of 1.25 means a 25% percent increase.")]
-    [SerializeField] public float secondAttributePercentage;
+    [Tooltip("The array of all buffs you want this item to apply.")]
+    [SerializeField] public Buff[] buffs;
 
     private AttributeController ac;
-    private Buff buffReference = null;
     private bool validity;
 
     public override void Initialize(GameObject obj)
     {
-        Debug.Log("Initialized passive");
         ac = obj.GetComponent<AttributeController>();
         validity = true;
-
     }
 
     public override void TriggerPassive()
     {
-        Debug.Log("Triggered Passive");
-        if (secondAttribute != "")
+        foreach(Buff i in buffs)
         {
-            buffReference = ac.AddBuff(attribute, secondAttribute, attributePercentage, secondAttributePercentage);
+            if(i.statTwo != "")
+            {
+                ac.AddBuff(i.stat, i.statTwo, i.increment, i.incrementTwo);
+            }
+            else
+            {
+                ac.AddBuff(i.stat, i.increment);
+            }  
         }
-        else
-        {
-            buffReference = ac.AddBuff(attribute, attributePercentage);
-        }
-
         validity = false;
-
     }
 
     public override void DeTriggerPassive()
     {
-        if (buffReference != null)
+        foreach (Buff i in buffs)
         {
-            ac.RemoveBuff(buffReference);
+            ac.RemoveBuff(i);
         }
     }
 

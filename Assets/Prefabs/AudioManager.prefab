@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1571835338459069079
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1571835338459069081}
+  - component: {fileID: 1571835338459069078}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1571835338459069081
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571835338459069079}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1571835338459069078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571835338459069079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7049c177a63255469829abf79edcd67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDeath:
+    reference: event:/Carnage/SFX/Player/Combat/Death
+  playerHurt:
+    reference: event:/Carnage/SFX/Player/Combat/Hurt
+  playerMelee:
+    reference: event:/Carnage/SFX/Player/Combat/Melee
+  playerShooting:
+    reference: event:/Carnage/SFX/Player/Combat/Weapon/Shooting
+  playerDash:
+    reference: event:/Carnage/SFX/Player/Movement/Dash
+  playerFootsteps:
+    reference: event:/Carnage/SFX/Player/Movement/Footsteps
+  playerJump:
+    reference: event:/Carnage/SFX/Player/Movement/Jump
+  playerLand:
+    reference: event:/Carnage/SFX/Player/Movement/Land
+  patientDeath:
+    reference: event:/Carnage/SFX/Enemies/Patient/Combat/Death
+  patientHurt:
+    reference: event:/Carnage/SFX/Enemies/Patient/Combat/Hurt
+  patientMelee:
+    reference: event:/Carnage/SFX/Enemies/Patient/Combat/Melee/Melee
+  patientFootsteps:
+    reference: event:/Carnage/SFX/Enemies/Patient/Movement/Footsteps
+  patientSpawn:
+    reference: event:/Carnage/SFX/Enemies/Patient/Movement/Spawn
+  ambManager:
+    reference: event:/Carnage/Environment/Ambiance/AMBManager

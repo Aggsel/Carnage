@@ -33,6 +33,9 @@ public struct OptionAssignments
     [Header("Post processing: ")]
     public TextMeshProUGUI gammaValue;
     public Slider gammaSlider;
+    [Header("Graphics settings: ")]
+    public TextMeshProUGUI graphicsValue;
+    public Slider graphicsSlider;
 }
 
 [Serializable]
@@ -48,6 +51,7 @@ public struct KeyBindAsignments
     public KeyCode jump; //6
     public KeyCode melee; //7
     public KeyCode action; //8
+    public KeyCode status; //9
 }
 
 [Serializable]
@@ -62,6 +66,7 @@ public struct KeybindTexts
     public TextMeshProUGUI jumpText; //6
     public TextMeshProUGUI meleeText; //7
     public TextMeshProUGUI actionText; //8
+    public TextMeshProUGUI statusText; //9
 }
 #endregion
 
@@ -82,6 +87,7 @@ public class PauseController : MonoBehaviour
     private int menuStage = 0; //nothing, pause, options, exitConfirm
     //private MovementController mc = null;
     private SerializeController sc = null; //use unityActions instead
+    private TutorialController tc = null;
 
     private bool changingKey = false;
     private int changingKeyIndex = 0;
@@ -95,8 +101,10 @@ public class PauseController : MonoBehaviour
 
     private void Start ()
     {
-        UpdatePause(false);
+        //UpdatePause(false);
+        //UpdateUi(0);
         updateKeysFunction.Invoke(keybindAssignments);
+        tc = GetComponent<TutorialController>();
         sc = FindObjectOfType<SerializeController>();
     }
 
@@ -151,9 +159,18 @@ public class PauseController : MonoBehaviour
                 keybindAssignments.action = key;
                 keybindTexts.actionText.text = key.ToString();
                 break;
+            case 9: //status
+                keybindAssignments.status = key;
+                keybindTexts.statusText.text = key.ToString();
+                break;
             default:
                 break;
         }
+    }
+
+    public bool GetPaused ()
+    {
+        return paused;
     }
 
     private void Update ()
@@ -161,6 +178,7 @@ public class PauseController : MonoBehaviour
         if(Input.GetKeyDown(keybindAssignments.pause) && !paused) //change to escape later just for testing
         {
             UpdatePause(true);
+            UpdateUi(1);
         }
 
         //change keys for shift
@@ -210,17 +228,33 @@ public class PauseController : MonoBehaviour
 
         for (int i = 0; i < scripts.Length; i++)
         {
-            scripts[i].enabled = !paused;
+            if(i == 3)
+            {
+                MeleeController mc = FindObjectOfType<MeleeController>();
+
+                if (mc.inHit && !paused)
+                {
+                    continue;
+                }
+                else
+                {
+                    scripts[i].enabled = !paused;
+                }
+            }
+            else
+            {
+                scripts[i].enabled = !paused;
+            }
         }
 
-        if(paused)
+        /*if(paused)
         {
             UpdateUi(1);
         }
         else
         {
             UpdateUi(0);
-        }
+        }*/
 
         Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
         LockCursor(paused);
@@ -285,6 +319,9 @@ public class PauseController : MonoBehaviour
                 break;
             case 8: //action
                 keybindAssignments.action = key;
+                break;
+            case 9: //status
+                keybindAssignments.status = key;
                 break;
             default:
                 break;
@@ -426,9 +463,44 @@ public class PauseController : MonoBehaviour
             changingKeyIndex = 8;
         }
     }
+
+    public void ChangeButton_Status(TextMeshProUGUI text)
+    {
+        if (!changingKey)
+        {
+            LockCursor(false);
+
+            changingKeyText = text;
+            changingKeyText.text = "None";
+
+            changingKey = true;
+            changingKeyIndex = 9;
+        }
+    }
     #endregion
 
     #region button calls / options
+    //Tutorial
+    public void ButtonTutorialQuestion ()
+    {
+        UpdatePause(true);
+        UpdateUi(5);
+    }
+
+    public void ButtonTutorialYes ()
+    {
+        tc.TriggerTutorial();
+        UpdatePause(false);
+        UpdateUi(0);
+    }
+
+    public void ButtonTutorialNo ()
+    {
+        UpdatePause(false);
+        UpdateUi(0);
+        tc.TriggerNoTutorial();
+    }
+
     //main pause
     public void ButtonYes () //exit confirm
     {
@@ -443,12 +515,18 @@ public class PauseController : MonoBehaviour
     public void ButtonResume ()
     {
         UpdatePause(false);
+        UpdateUi(0);
     }
 
     public void ButtonMenu()
     {
         UpdateUi(3);
         //Application.Quit();
+    }
+
+    public void ButtonCredits ()
+    {
+        UpdateUi(4);
     }
     
     public void ButtonOptions ()
@@ -459,7 +537,7 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
-        Debug.Log("SAVE");
+        //Debug.Log("SAVE");
         sc.SavePreferences();
     }
 
@@ -473,12 +551,16 @@ public class PauseController : MonoBehaviour
     public void ChangeSound(Slider slider)
     {
         //Do sound change here
+        FMOD.Studio.VCA Master = FMODUnity.RuntimeManager.GetVCA("vca:/Master");
+        Master.setVolume(slider.value * 0.01f);
         optionAssignments.soundValue.text = slider.value.ToString("F1") + "%";
     }
 
     public void ChangeMusic(Slider slider)
     {
         //Do music change here
+        FMOD.Studio.VCA Music = FMODUnity.RuntimeManager.GetVCA("vca:/Music");
+        Music.setVolume(slider.value * 0.01f);
         optionAssignments.musicValue.text = slider.value.ToString("F1") + "%";
     }
 
@@ -498,6 +580,27 @@ public class PauseController : MonoBehaviour
 
         gamma.gamma.value = new Vector4(gamma.gamma.value.x, gamma.gamma.value.y, gamma.gamma.value.z, (slider.value) * 0.25f);
         optionAssignments.gammaValue.text = slider.value.ToString("F2");
+    }
+
+    public void ChangeGraphics(Slider slider)
+    {
+        QualitySettings.SetQualityLevel((int)slider.value, true);
+
+        switch ((int)slider.value)
+        {
+            case 0:
+                optionAssignments.graphicsValue.text = "Low";
+                break;
+            case 1:
+                optionAssignments.graphicsValue.text = "Medium";
+                break;
+            case 2:
+                optionAssignments.graphicsValue.text = "High";
+                break;
+            default:
+                Debug.LogWarning("This should not happen");
+                break;
+        }
     }
 
     public void ChangeInvertedControls ()
