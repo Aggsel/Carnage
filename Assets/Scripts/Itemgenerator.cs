@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class Itemgenerator : MonoBehaviour
 {
     [SerializeField] private GameObject tex = null;
-    [SerializeField] private GameObject model = null;
+    private GameObject model = null;
     private GameObject flashImageGO = null;
     private UIController uic;
     private Passive passive;
@@ -24,15 +24,15 @@ public class Itemgenerator : MonoBehaviour
 
     void Start()
     {
+        reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
+        correctGenerate(); //make it seeded later tbh
         startPos = model.transform.position;
         player = FindObjectOfType<MovementController>().transform.gameObject;
         cc = player.GetComponentInChildren<CooldownController>();
         pc = player.GetComponentInChildren<PassiveController>();
-        reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
         uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
-        correctGenerate(); //make it seeded later tbh
     }
 
     private void correctGenerate()
@@ -47,7 +47,9 @@ public class Itemgenerator : MonoBehaviour
             }
             else
             {
+
                 passive = reference.itemholder.passives[randomIndex];
+                ActivateModel();
                 if (reference.itemholder.passives[randomIndex].depool == true)
                 {
                     reference.DepoolItemPassive(randomIndex);
@@ -65,12 +67,27 @@ public class Itemgenerator : MonoBehaviour
             else
             {
                 active = reference.itemholder.actives[randomIndex];
+                ActivateModel();
                 if (reference.itemholder.actives[randomIndex].depool == true)
                 {
                     reference.DepoolItemActive(randomIndex);
                 }
                 tex.GetComponentInChildren<TextMeshPro>().text = active.activeName;
             }
+        }
+    }
+
+    private void ActivateModel()
+    {
+        if (active != null)
+        {
+            model = Instantiate(active.modelPrefab, gameObject.transform);
+            model.transform.parent = gameObject.transform;
+        }
+        else
+        {
+            model = Instantiate(passive.modelPrefab, gameObject.transform);
+            model.transform.parent = gameObject.transform;
         }
     }
 
