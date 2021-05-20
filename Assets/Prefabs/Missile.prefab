@@ -95,7 +95,7 @@ CapsuleCollider:
   m_Enabled: 1
   m_Radius: 0.08
   m_Height: 0.6
-  m_Direction: 0
+  m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &-3167304893198024899
 Rigidbody:
@@ -200,18 +200,29 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: a4b619e33c378ee4ea9a5aa04b23b4a2,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a4b619e33c378ee4ea9a5aa04b23b4a2,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a4b619e33c378ee4ea9a5aa04b23b4a2,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a4b619e33c378ee4ea9a5aa04b23b4a2,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 62966d76d65b2aa4bbaca0bd310e67f1, type: 2}
+    - target: {fileID: -5754084199372789682, guid: a4b619e33c378ee4ea9a5aa04b23b4a2,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 1988216149656743765, guid: 7cb98827e1bf30f4c87ebe44d70196cf,
+        type: 3}
     - target: {fileID: 919132149155446097, guid: a4b619e33c378ee4ea9a5aa04b23b4a2,
         type: 3}
       propertyPath: m_Name
