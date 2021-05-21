@@ -236,10 +236,17 @@ public class RoomManager : MonoBehaviour
                     }
                 }
 
-                if(destroyObject)
-                        Destroy(currentMeshRenderer.gameObject);
-                    else
+                if(destroyObject){
+                    //Before removing, make sure we transfer all the objects children up one step.
+                    //We might not want to remove them. And if we do, we will in another loop iteration.
+                    foreach(Transform child in currentMeshRenderer.transform){
+                        child.SetParent(currentMeshRenderer.transform.parent);
+                    }
+                    Destroy(currentMeshRenderer.gameObject);
+                }
+                else{
                         continue;
+                }
 
                 combiners[i].subMeshIndex = 0;
                 combiners[i].mesh = meshFilters[i].sharedMesh;
