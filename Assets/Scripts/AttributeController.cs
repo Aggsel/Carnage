@@ -126,7 +126,7 @@ public class AttributeController : MonoBehaviour
                 case "damage":
                     float damageDiff = weaponAttributesBase.damage * item.increment - weaponAttributesBase.damage;
                     weaponAttributesResultant.damage += damageDiff;
-                    weaponAttributesResultant.damage = Mathf.Clamp(weaponAttributesResultant.damage, 5.0f, 100.0f);
+                    weaponAttributesResultant.damage = Mathf.Clamp(weaponAttributesResultant.damage, 5.0f, 250.0f);
                     break;
                 case "firerate":
                     float firerateDiff = weaponAttributesBase.fireRate * item.increment - weaponAttributesBase.fireRate;
