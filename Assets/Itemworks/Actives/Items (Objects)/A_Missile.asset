@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeName: Missile
   activeDescription: 'Fire a missile. Mind the ''boom''. '
-  cooldown: 1
+  cooldown: 25
   buffTime: 0
   depool: 1
   sprite: {fileID: 21300000, guid: 317a9da2c504b694da64a4d0f650fa80, type: 3}
-  dontSpawn: 0
+  modelPrefab: {fileID: 7306960401702900304, guid: 259787804c81906419f7e9644c1bb071,
+    type: 3}
+  dontSpawn: 1
   projectile: {fileID: -3167304893198024899, guid: 231edf4e9948b594b83e1c97ffe04767,
     type: 3}
   projectileForce: 2000

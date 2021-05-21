@@ -16,6 +16,8 @@ public abstract class Active : ScriptableObject
     [SerializeField] public bool depool;
     [Tooltip("Sprite used for UI-elements.")]
     [SerializeField] public Sprite sprite;
+    [Tooltip("Model used for item.")]
+    [SerializeField] public GameObject modelPrefab;
     public bool dontSpawn = false;
 
     //Intialize the active, create any needed references in here
