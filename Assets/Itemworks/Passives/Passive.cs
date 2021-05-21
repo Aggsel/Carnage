@@ -12,6 +12,8 @@ public abstract class Passive : ScriptableObject
     [SerializeField] public bool depool;
     [Tooltip("Sprite used for UI-elements.")]
     [SerializeField] public Sprite sprite;
+    [Tooltip("Model used for item.")]
+    [SerializeField] public GameObject modelPrefab;
     public bool dontSpawn = false;
 
     //Every passive needs to be initialized, in here any necessary references are made and variables pre-defined before use
