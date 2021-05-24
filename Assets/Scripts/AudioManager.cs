@@ -50,20 +50,39 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer playerHurt;
     [SerializeField] public EventContainer playerMelee;
     [SerializeField] public EventContainer playerShooting;
+    [SerializeField] public EventContainer playerOverheat;
+    [SerializeField] public EventContainer playerExplosion;
     [SerializeField] public EventContainer playerDash;
     [SerializeField] public EventContainer playerFootsteps;
     [SerializeField] public EventContainer playerJump;
     [SerializeField] public EventContainer playerLand;
 
-    [Header("Enemies - Patient")]
+    [Header("Enemies - Constraint")]
     [SerializeField] public EventContainer patientDeath;
     [SerializeField] public EventContainer patientHurt;
     [SerializeField] public EventContainer patientMelee;
     [SerializeField] public EventContainer patientFootsteps;
     [SerializeField] public EventContainer patientSpawn;
+    [SerializeField] public EventContainer patientProjectile;
+
+    [Header("Enemies - Rage")]
+    [SerializeField] public EventContainer rageCharge;
+    [SerializeField] public EventContainer rageDeath;
+    [SerializeField] public EventContainer rageHurt;
+    [SerializeField] public EventContainer rageMelee;
+    [SerializeField] public EventContainer rageSpawn;
+    [SerializeField] public EventContainer rageFootsteps;
+
+    [Header("Items")]
+    [SerializeField] public EventContainer itemsActivate;
+    [SerializeField] public EventContainer itemsHealing;
+    [SerializeField] public EventContainer itemsPickup;
 
     [Header("Music")]
     [SerializeField] public EventContainer ambManager;
+
+    [Header("Misc")]
+    [SerializeField] public EventContainer endOfLevelBell;
 
     public void PlaySound(EventContainer eventContainer){
         eventContainer.Play();
