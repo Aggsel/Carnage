@@ -278,6 +278,7 @@ public class MazeGenerator{
     }
 
     private void PlaceRandomDoors(){
+        Debug.Log("Placing random doors");
         for (int i = 0; i < randomDoorIterations; i++){
             Vector2Int randomCoord = new Vector2Int(Random.Range(0, actualGridSize.x), Random.Range(0, actualGridSize.y));
             if(!grid[randomCoord.x, randomCoord.y].visited || grid[randomCoord.x, randomCoord.y].type != RoomType.COMMON)
@@ -293,6 +294,7 @@ public class MazeGenerator{
                 }
             }
         }
+        Debug.Log("Recalculating depth");
         RecalculateDepth(initPosition);
     }
 
@@ -310,7 +312,9 @@ public class MazeGenerator{
             return;
 
         this.maxDepthReached = this.maxDepthReached < depth ? depth : this.maxDepthReached;
-        this.grid[pos.x, pos.y].depth = depth;
+        if(this.grid[pos.x, pos.y].depth != depth)
+            Debug.Log(string.Format("Position: ({0},{1}), Old Depth: {2}, New Depth: {3}", pos.x, pos.y, grid[pos.x, pos.y].depth, depth));
+        this.grid[pos.x, pos.y].depth = Mathf.Min(grid[pos.x, pos.y].depth, depth);
         this.grid[pos.x,pos.y].visited = true;
 
         int mask = this.grid[pos.x, pos.y].doorMask;
@@ -327,11 +331,6 @@ public class MazeGenerator{
 
         while(neighbors.Count > 0){
             Vector2Int newPos = new Vector2Int(pos.x + neighbors[0].x, pos.y + neighbors[0].y);
-            if(this.grid[newPos.x, newPos.y].visited){
-                neighbors.RemoveAt(0);
-                continue;
-            }
-
             neighbors.RemoveAt(0);
             RecalculateDepth(newPos, depth + 1);
         }
