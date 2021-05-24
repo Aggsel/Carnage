@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class AlertMessage{
@@ -51,6 +52,13 @@ public class UIController : MonoBehaviour
     private void Start ()
     {
         StartCoroutine(Counter());
+        //StartCoroutine(WhiteFade(false, 3f));
+        Debug.LogWarning("When you change scene for tutorial, change this too!");
+
+        if(SceneManager.GetActiveScene().name != "Actual_Hub")
+        {
+            StartCoroutine(WhiteFade(false, 0.5f));
+        }
     }
 
     public void SetMaxHealth(float maxHealth)
@@ -137,17 +145,18 @@ public class UIController : MonoBehaviour
     //white effect for fading in and out
     public IEnumerator WhiteFade (bool fadeIn, float time) //fadeIn is if its out or in, time should be around 1
     {
-        float elapsedTime = 0.0f;
         fadeImage.gameObject.SetActive(true);
+        float fade = 0.0f;
 
         if (fadeIn)
         {
             fadeImage.color = new Color(1, 1, 1, 0);
 
-            while (elapsedTime < time)
+            while (fadeImage.color.a < 1.0f)
             {
-                fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime * time);
-                elapsedTime += Time.deltaTime * time;
+                fade = fadeImage.color.a + (Time.deltaTime * time);
+                fadeImage.color = new Color(1, 1, 1, fade);
+                //fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime * time);
                 yield return null;
             }
         }
@@ -155,12 +164,15 @@ public class UIController : MonoBehaviour
         {
             fadeImage.color = new Color(1, 1, 1, 1);
 
-            while (elapsedTime < time)
+            while (fadeImage.color.a > 0.0f)
             {
-                fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 0), Time.deltaTime * time);
-                elapsedTime += Time.deltaTime * time;
+                fade = fadeImage.color.a - (Time.deltaTime * time);
+                fadeImage.color = new Color(1, 1, 1, fade);
+                //fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 0), Time.deltaTime * time);
                 yield return null;
             }
+
+            fadeImage.gameObject.SetActive(false);
         }
     }
 }

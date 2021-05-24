@@ -111,7 +111,7 @@ public class HealthController : MonoBehaviour
 
         weaponObj.SetActive(false);
         dead = true;
-        uiController.StartCoroutine(uiController.WhiteFade(true, 1f));
+        uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");

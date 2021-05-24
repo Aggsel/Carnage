@@ -491,6 +491,7 @@ public class PauseController : MonoBehaviour
     {
         tc.TriggerTutorial();
         UpdatePause(false);
+        FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
         UpdateUi(0);
     }
 
@@ -498,6 +499,7 @@ public class PauseController : MonoBehaviour
     {
         UpdatePause(false);
         UpdateUi(0);
+        FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
         tc.TriggerNoTutorial();
     }
 
