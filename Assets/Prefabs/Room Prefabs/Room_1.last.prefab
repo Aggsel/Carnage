@@ -109,9 +109,9 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.11000001
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: b2ba39f00df297949a02d987d8dfdd18, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 5dead54905b715742b2ad045b20a829e, type: 2}
 --- !u!1 &2910869861962992454
 GameObject:
   m_ObjectHideFlags: 0
@@ -121,8 +121,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9210589504636071746}
-  - component: {fileID: 5207694205399170044}
   - component: {fileID: 2316614468733289452}
+  - component: {fileID: 9197412197540768656}
   m_Layer: 0
   m_Name: Pedestal
   m_TagString: Untagged
@@ -147,18 +147,6 @@ Transform:
   m_Father: {fileID: 8061779230494707181}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5207694205399170044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2910869861962992454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7553f389d5254d546a4e3925ca572d38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &2316614468733289452
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -170,8 +158,20 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6, y: 5, z: 6}
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Size: {x: 6, y: 8, z: 6}
+  m_Center: {x: 0, y: 3.5, z: 0}
+--- !u!114 &9197412197540768656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2910869861962992454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e068929f075de614e99c17106be37123, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4130985941135711134
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,9 +646,10 @@ MonoBehaviour:
   - {fileID: 8660424554111993961}
   doors: []
   roomAsset: {fileID: 0}
-  spawnPoints:
-  - {fileID: 0}
+  spawnPoints: []
   itemSpawnPoint: {fileID: 0}
+  trailPrefab: {fileID: 6836371986438083107, guid: ae21f9b00bfd5a44eb4384ea9d2cbac3,
+    type: 3}
   validMaterial: {fileID: 2100000, guid: 9b66fd77ccdacb14b9c8333eb400a947, type: 2}
 --- !u!1 &8061779230744169490
 GameObject:

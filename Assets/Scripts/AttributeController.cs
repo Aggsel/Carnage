@@ -45,6 +45,7 @@ public struct WeaponAttributesResultant
     public float health;
 }
 
+[System.Serializable]
 public class Buff
 {
     public string stat;
@@ -57,12 +58,19 @@ public class Buff
         stat = theStat;
         increment = value;
     }
+
     public Buff(string firstStat, string secondStat, float firstValue, float secondValue)
     {
         stat = firstStat;
         statTwo = secondStat;
         increment = firstValue;
         incrementTwo = secondValue;
+    }
+
+    public Buff(Buff buffToApply)
+    {
+        stat = buffToApply.stat;
+        increment = buffToApply.increment;
     }
 }
 
@@ -71,10 +79,12 @@ public class AttributeController : MonoBehaviour
     [SerializeField] private WeaponAttributes weaponAttributesBase = new WeaponAttributes();
     [SerializeField] public WeaponAttributesResultant weaponAttributesResultant = new WeaponAttributesResultant();
     private List<Buff> buffList = new List<Buff>();
+    private HealthController hc = null;
 
     void Awake()
     {
         Recalculate();
+        hc = this.gameObject.GetComponent<HealthController>();
     }
 
     public Buff AddBuff(string stat, float increment)
@@ -116,22 +126,17 @@ public class AttributeController : MonoBehaviour
                 case "damage":
                     float damageDiff = weaponAttributesBase.damage * item.increment - weaponAttributesBase.damage;
                     weaponAttributesResultant.damage += damageDiff;
+                    weaponAttributesResultant.damage = Mathf.Clamp(weaponAttributesResultant.damage, 5.0f, 100.0f);
                     break;
                 case "firerate":
                     float firerateDiff = weaponAttributesBase.fireRate * item.increment - weaponAttributesBase.fireRate;
                     weaponAttributesResultant.fireRate += firerateDiff;
-                    /*if(weaponAttributesResultant.fireRate >= 12.0f)
-                    {
-                        FindObjectOfType<Screenshake>().SetRecoilIncrease(0.01f);
-                    }
-                    else if (weaponAttributesResultant.fireRate < 12.0f)
-                    {
-                        FindObjectOfType<Screenshake>().SetRecoilIncrease(0.05f);
-                    }*/
+                    weaponAttributesResultant.fireRate = Mathf.Clamp(weaponAttributesResultant.fireRate, 1.0f, 20.0f);
                     break;
                 case "heatgeneration":
                     float heatgenerationDiff = weaponAttributesBase.heatGeneration * item.increment - weaponAttributesBase.heatGeneration;
                     weaponAttributesResultant.heatGeneration += heatgenerationDiff;
+                    weaponAttributesResultant.heatGeneration = Mathf.Clamp(weaponAttributesResultant.heatGeneration, 1.0f, 25.0f);
                     break;
                 case "heatmaximum":
                     float heatmaximumDiff = weaponAttributesBase.heatMaximum * item.increment - weaponAttributesBase.heatMaximum;
@@ -152,6 +157,8 @@ public class AttributeController : MonoBehaviour
                 case "health":
                     float healthDiff = weaponAttributesBase.health * item.increment - weaponAttributesBase.health;
                     weaponAttributesResultant.health += healthDiff;
+                    weaponAttributesResultant.health = Mathf.Clamp(weaponAttributesResultant.health, 0.0f, 400.0f);
+                    hc.IncreaseMaxHealth();
                     break;
 
             }
@@ -163,14 +170,17 @@ public class AttributeController : MonoBehaviour
                     case "damage":
                         float damageDiff = weaponAttributesBase.damage * item.incrementTwo - weaponAttributesBase.damage;
                         weaponAttributesResultant.damage += damageDiff;
+                        weaponAttributesResultant.damage = Mathf.Clamp(weaponAttributesResultant.damage, 5.0f, 100.0f);
                         break;
                     case "firerate":
                         float firerateDiff = weaponAttributesBase.fireRate * item.incrementTwo - weaponAttributesBase.fireRate;
                         weaponAttributesResultant.fireRate += firerateDiff;
+                        weaponAttributesResultant.fireRate = Mathf.Clamp(weaponAttributesResultant.fireRate, 1.0f, 20.0f);
                         break;
                     case "heatgeneration":
                         float heatgenerationDiff = weaponAttributesBase.heatGeneration * item.incrementTwo - weaponAttributesBase.heatGeneration;
                         weaponAttributesResultant.heatGeneration += heatgenerationDiff;
+                        weaponAttributesResultant.heatGeneration = Mathf.Clamp(weaponAttributesResultant.heatGeneration, 1.0f, 25.0f);
                         break;
                     case "heatmaximum":
                         float heatmaximumDiff = weaponAttributesBase.heatMaximum * item.incrementTwo - weaponAttributesBase.heatMaximum;
@@ -191,6 +201,8 @@ public class AttributeController : MonoBehaviour
                     case "health":
                         float healthDiff = weaponAttributesBase.health * item.incrementTwo - weaponAttributesBase.health;
                         weaponAttributesResultant.health += healthDiff;
+                        weaponAttributesResultant.health = Mathf.Clamp(weaponAttributesResultant.health, 0.0f, 400.0f);
+                        hc.IncreaseMaxHealth();
                         break;
 
                 }

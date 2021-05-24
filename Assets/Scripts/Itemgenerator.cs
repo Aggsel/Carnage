@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Itemgenerator : MonoBehaviour
 {
     [SerializeField] private GameObject tex = null;
+    private GameObject model = null;
     private GameObject flashImageGO = null;
     private UIController uic;
     private Passive passive;
@@ -19,32 +20,36 @@ public class Itemgenerator : MonoBehaviour
     private RawImage flashImage;
     private bool recieved = false;
 
+    private Vector3 startPos = Vector3.zero;
 
     void Start()
     {
         player = FindObjectOfType<MovementController>().transform.gameObject;
-        cc = GameObject.Find("Player/ActiveHolder").GetComponent<CooldownController>();
-        pc = GameObject.Find("Player/PassiveHolder").GetComponent<PassiveController>();
+        cc = player.GetComponentInChildren<CooldownController>();
+        pc = player.GetComponentInChildren<PassiveController>();
         reference = GameObject.Find("Game Controller Controller/ItemHolder").GetComponent<Itemholder>();
-        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>(); ;
+        correctGenerate(); //make it seeded later tbh
+        startPos = model.transform.position;
+        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
-        Generate(); //make it seeded later tbh
     }
 
-    private void Generate()
+    private void correctGenerate()
     {
-        randomIndex = Random.Range(0, (reference.itemholder.actives.Length + reference.itemholder.passives.Length));
-        if (randomIndex > (reference.itemholder.actives.Length - 1))
+        randomIndex = Random.Range(0, (reference.itemholder.actives.Length + reference.itemholder.passives.Length) - 1);
+        if(randomIndex >= reference.itemholder.actives.Length)  //if index landed outside of active length, spawn a passive
         {
-            randomIndex -= (reference.itemholder.actives.Length); 
-            if(reference.itemholder.passives[randomIndex].dontSpawn == true)
+            randomIndex -= (reference.itemholder.actives.Length);
+            if (reference.itemholder.passives[randomIndex].dontSpawn == true)
             {
-                Generate();
-            } 
+                correctGenerate();
+            }
             else
             {
+
                 passive = reference.itemholder.passives[randomIndex];
+                ActivateModel();
                 if (reference.itemholder.passives[randomIndex].depool == true)
                 {
                     reference.DepoolItemPassive(randomIndex);
@@ -53,28 +58,50 @@ public class Itemgenerator : MonoBehaviour
                 tex.GetComponentInChildren<TextMeshPro>().text = passive.passiveName;
             }
         }
-        else
+        else if(randomIndex < reference.itemholder.actives.Length)  //if index landed inside of active length, spawn an active
         {
-            if(reference.itemholder.actives[randomIndex].dontSpawn == true)
+            if (reference.itemholder.actives[randomIndex].dontSpawn == true)
             {
-                Generate();
+                correctGenerate();
             }
             else
             {
                 active = reference.itemholder.actives[randomIndex];
+                ActivateModel();
                 if (reference.itemholder.actives[randomIndex].depool == true)
                 {
                     reference.DepoolItemActive(randomIndex);
                 }
-
                 tex.GetComponentInChildren<TextMeshPro>().text = active.activeName;
             }
         }
     }
 
+    private void ActivateModel()
+    {
+        if (active != null)
+        {
+            model = Instantiate(active.modelPrefab, gameObject.transform);
+        }
+        else
+        {
+            model = Instantiate(passive.modelPrefab, gameObject.transform);
+        }
+        model.transform.parent = gameObject.transform;
+        model.transform.LookAt(player.transform.position);
+        model.transform.Rotate(0f, 90f, 0f);
+    }
+
     private void LateUpdate ()
     {
         Billboard();
+        Bobbing();
+    }
+
+    private void Bobbing ()
+    {
+        float step = Mathf.Cos(Time.time) * 0.12f;
+        model.transform.position = startPos + new Vector3(0, step, 0);
     }
     
     private void Billboard ()
@@ -88,10 +115,14 @@ public class Itemgenerator : MonoBehaviour
         {
             if(active != null)
             {
+                //Debug.Log("not null active");
+                uic.UIAlertText(active.activeDescription, 3.0f);
                 cc.Initialize(active, other.gameObject);
             }
             else
             {
+                //Debug.Log("null active");
+                uic.UIAlertText(passive.passiveDescription, 3.0f);
                 pc.Initialize(passive, other.gameObject);
             }
             
@@ -108,6 +139,7 @@ public class Itemgenerator : MonoBehaviour
                 recieved = true;
                 uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
                 Destroy(this.gameObject);
+
             }
             
         }

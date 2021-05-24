@@ -11,10 +11,10 @@ public enum RoomType{
 
 public class RoomManager : MonoBehaviour
 {
-    [HideInInspector] private Vector2Int gridPosition;
-    [HideInInspector] private int roomID = -1; //Serial number for the room. In generation order. 
-    [HideInInspector] private int depth = -1; //How far from the initial room this room is.
-    [HideInInspector] private float normalizedDepth = 0.0f;
+    private Vector2Int gridPosition;
+    private int roomID = -1; //Serial number for the room. In generation order. 
+    private int depth = -1; //How far from the initial room this room is.
+    private float normalizedDepth = 0.0f;
     [HideInInspector] [SerializeField] private DoorPlacer[] doorPlacers = new DoorPlacer[4];
     [HideInInspector] [SerializeField] private List<Door> doors = new List<Door>();
     [HideInInspector] [SerializeField] private RoomAsset roomAsset;
@@ -22,8 +22,15 @@ public class RoomManager : MonoBehaviour
     private int doorMask = 0;
     private LevelManager parentLevelManager = null;
     private bool hasBeenVisited = false;
+    private GameObject playerReference = null;
+    private float difficultyMultiplier = 1.0f;
     
+    private GameEvent onRoomEnterFirstGameEvent;
+    private GameEvent onCombatCompleteGameEvent;
+
+    private UIController uic;
     private AudioManager am;
+    private MapDrawer mapReference;
 
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -31,15 +38,18 @@ public class RoomManager : MonoBehaviour
 
     [Header("Item Spawn Points")]
     [SerializeField] private Transform itemSpawnPoint = null;
+    [SerializeField] private GameObject trailPrefab = null;
 
     [Header("Mesh Merging")]
     [Tooltip(@"When merging the meshes the final combined mesh will just have one material. 
     The merging process will therefore only combine meshes from objects with this material on them.")]
-    [SerializeField] private Material validMaterial;
+    [SerializeField] private Material validMaterial = null;
 
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
         am = AudioManager.Instance;
+        if(uic == null) 
+            uic = FindObjectOfType<UIController>();
     }
 
     void OnDisable(){
@@ -50,12 +60,18 @@ public class RoomManager : MonoBehaviour
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
         this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+        mapReference?.SetRoomAsVisited(this.gridPosition);
+        mapReference?.SetCurrentRoom(this.gridPosition);
     }
 
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
-        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount());
+        difficulty = difficulty * difficultyMultiplier;
+        //playerReference should NEVER be null here, but just to be sure.
+        if(playerReference == null)
+            playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
+        this.waveHandler = new WaveHandler(onCombatComplete, spawnPoints, difficulty, roomAsset.GetEnemyWaveCount(), playerReference, normalizedDepth);
         int enemyCount = waveHandler.Start();
         
         //Close door if any enemies were spawned.
@@ -63,8 +79,10 @@ public class RoomManager : MonoBehaviour
             OpenDoors(false);
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+        }else{  //No enemies were spawned, consider the room completed.
+            parentLevelManager?.IncrementCompletedRooms();
         }
-
+        onRoomEnterFirstGameEvent?.Invoke();
         hasBeenVisited = true;
     }
 
@@ -73,14 +91,26 @@ public class RoomManager : MonoBehaviour
         OpenDoors(true);
         am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
+        parentLevelManager?.IncrementCompletedRooms();
+        // parentLevelManager?.ProgressionUISetActive(true);
+        uic?.UIAlertText("Combat complete!", 1.5f);
         SpawnItem();
+        onCombatCompleteGameEvent?.Invoke();
     }
 
     private void SpawnItem(){
-        if(itemSpawnPoint != null){
+        if(itemSpawnPoint != null) {
             GameObject spawnPrefab = roomAsset.GetItemSpawnPrefab();
-            if(spawnPrefab != null)
-                Instantiate(spawnPrefab, itemSpawnPoint);
+
+            if(spawnPrefab != null) {
+                GameObject newItem = Instantiate(spawnPrefab) as GameObject;
+                newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+
+                //trail stuff
+                newItem.SetActive(false);
+                GameObject newTrail = Instantiate(trailPrefab, playerReference.transform.position, Quaternion.identity);
+                newTrail.GetComponent<ItemTrail>().SetStuff(newItem);
+            }
         }
     }
 
@@ -91,12 +121,19 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, LevelManager newManager = null){
+    public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, 
+    LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f,
+    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, MapDrawer mapReference = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
         this.normalizedDepth = normalizedDepth;
         this.parentLevelManager = newManager;
+        this.playerReference = playerReference;
+        this.difficultyMultiplier = difficultyMultiplier;
+        this.onRoomEnterFirstGameEvent = onRoomEnterFirstTime;
+        this.onCombatCompleteGameEvent = onCombatComplete;
+        this.mapReference = mapReference;
         MergeMeshes();
     }
 
@@ -167,6 +204,7 @@ public class RoomManager : MonoBehaviour
         Mesh finalMesh = new Mesh();
 
         CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+        int meshCount = 0;
 
         for (int i = 0; i < meshFilters.Length; i++){
             if(meshFilters[i].transform == transform)
@@ -181,12 +219,21 @@ public class RoomManager : MonoBehaviour
             combiners[i].mesh = meshFilters[i].sharedMesh;
             combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
             combiners[i].lightmapScaleOffset = currentMeshRenderer.lightmapScaleOffset;
+            meshCount++;
 
             Destroy(meshFilters[i]);
             Destroy(currentMeshRenderer);
         }
+        CombineInstance[] newCombiners = new CombineInstance[meshCount];
+        meshCount = 0;
+        for (int i = 0; i < combiners.Length; i++){
+            if(combiners[i].mesh != null){
+                newCombiners[meshCount] = combiners[i];
+                meshCount++;
+            }
+        }
 
-        finalMesh.CombineMeshes(combiners, true, true, true);
+        finalMesh.CombineMeshes(newCombiners, true, true, true);
         MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
         meshFilter.sharedMesh = finalMesh;
         MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();

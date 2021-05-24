@@ -227,7 +227,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.33
-  m_Speed: 7
+  m_Speed: 10
   m_Acceleration: 200
   avoidancePriority: 50
   m_AngularSpeed: 500
@@ -251,34 +251,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34bbf24e344be674fb3ad11614964dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState:
-    attackInitiationRange: 4
-  bloodDecalProjector: {fileID: 1099489180470404072, guid: a634fe900566378439449b167688cb5c,
-    type: 3}
-  decalRotation: 0.35
+  onDeath: {fileID: 11400000, guid: 7b4b931a11ff28348b90e989d754b3a6, type: 2}
+  onDamage: {fileID: 11400000, guid: 65683f2abc0daf945888a3d53be198dd, type: 2}
+  onMeleeKill: {fileID: 11400000, guid: 75e1f17f6c6b43f4f9f4a5328cbc6946, type: 2}
+  health: 80
+  difficulty: 1
   am: {fileID: 0}
+  anim: {fileID: 0}
   chaseState:
-    attackInitiationRange: 0.9
-    chaseSpeed: 6
-    stoppingDistance: 0
+    rotationSpeed: 15
+    chaseSpeed: 9.5
+    stoppingDistance: 1.5
   patrolState:
-    attackInitiationRange: 0
+    rotationSpeed: 15
     enemyVisionDistance: 30
     patrolSpeed: 5
   attackState:
-    attackInitiationRange: 0
     rotationSpeed: 13
-    attackRange: 1.5
+    attackRange: 2
     damage: 15
-  rangedAttackState:
-    attackInitiationRange: 0
-    rotationSpeed: 0
-    projectilePrefab: {fileID: 0}
-    projectileSpawnPosition: {fileID: 0}
-  agent: {fileID: 0}
-  player: {fileID: 0}
-  anim: {fileID: 0}
-  health: 80
 --- !u!1001 &3403306408612049747
 PrefabInstance:
   m_ObjectHideFlags: 0

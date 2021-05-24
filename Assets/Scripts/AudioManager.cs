@@ -10,6 +10,9 @@ public struct EventContainer{
     public EventInstance instance;
     private bool initialized;
     public void Initialize(){
+        if(this.reference == null){
+            return;
+        }
         instance = RuntimeManager.CreateInstance(this.reference);
         initialized = true;
     }
@@ -94,6 +97,7 @@ public class AudioManager : MonoBehaviour
                 if (_managerInstance == null){
                     GameObject AudioManager = new GameObject("AudioManager");
                     _managerInstance = AudioManager.AddComponent<AudioManager>();
+                    Debug.LogError("Audio Manager not properly configured in this scene. Please add the AudioManager prefab to the scene if you want audio.");
                 }
             }
             return _managerInstance;

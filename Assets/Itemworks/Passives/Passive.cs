@@ -6,9 +6,15 @@ public abstract class Passive : ScriptableObject
 {
     [Tooltip("The name of the passive, currently not used anywhere.")]
     [SerializeField] public string passiveName = "New passive";
+    [Tooltip("The short description that will appear when a player picks up this item.")]
+    [SerializeField] public string passiveDescription;
     [Tooltip("Wether or not the item will depool after being spawned once, preventing more spawns of the item.")]
     [SerializeField] public bool depool;
-    [HideInInspector] public bool dontSpawn = false;
+    [Tooltip("Sprite used for UI-elements.")]
+    [SerializeField] public Sprite sprite;
+    [Tooltip("Model used for item.")]
+    [SerializeField] public GameObject modelPrefab;
+    public bool dontSpawn = false;
 
     //Every passive needs to be initialized, in here any necessary references are made and variables pre-defined before use
     public abstract void Initialize(GameObject obj);
@@ -21,5 +27,4 @@ public abstract class Passive : ScriptableObject
 
     //Every passive's validity gets checked every frame. If this returns true then it means the passive's ability will be triggered this frame. 
     public abstract bool CheckValidity();
-
 }
