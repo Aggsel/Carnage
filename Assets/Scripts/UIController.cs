@@ -56,7 +56,7 @@ public class UIController : MonoBehaviour
     [Tooltip("When very short texts using dynamic duration is used, what will be the shortest duration allowed?")]
     [SerializeField] private float minTextDisplayDuration = 1.0f;
     [Tooltip("When no other animation curve is supplied to the text, this is the backup one to use.")]
-    [SerializeField] private AnimationCurve defaultAnimationCurve;
+    [SerializeField] private AnimationCurve defaultAnimationCurve = new AnimationCurve();
 
     private void OnEnable()
     {
@@ -101,7 +101,7 @@ public class UIController : MonoBehaviour
         if(curve == null)
             curve = defaultAnimationCurve;
         if(duration < 0.0f)
-            duration = Mathf.Max(1.0f, (text.Split(' ').Length / 3.0f) + 0.5f);
+            duration = Mathf.Max(minTextDisplayDuration, text.Split(' ').Length / wordsPerSecond);
         if(color == null)
             color = winText.GetComponent<TMPro.TextMeshProUGUI>().color;
 
