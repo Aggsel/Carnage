@@ -11890,6 +11890,32 @@ MonoBehaviour:
   baseEmissiveColor: {r: 1, g: 0.034868218, b: 0, a: 1}
   emissionIntensity: 0
   MaxIntensity: 10
+  wordsPerSecond: 3
+  minTextDisplayDuration: 1
+  defaultAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 20.335852
+      outSlope: 20.335852
+      tangentMode: 0
+      weightedMode: 2
+      inWeight: 0
+      outWeight: 0.059148263
+    - serializedVersion: 3
+      time: 0.39999998
+      value: 1
+      inSlope: -0
+      outSlope: -0
+      tangentMode: 0
+      weightedMode: 1
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4158066617491031159
 GameObject:
   m_ObjectHideFlags: 0
@@ -13803,7 +13829,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.000061035156, y: 0.000015258789}
-  m_SizeDelta: {x: 1200, y: 800}
+  m_SizeDelta: {x: 1000, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6171269863111383473
 CanvasRenderer:
@@ -18196,12 +18222,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -55.42836
       objectReference: {fileID: 0}
-    - target: {fileID: 5065991170005627374, guid: ee42cd0995687dc41b167485bca81841,
-        type: 3}
-      propertyPath: active
-      value: 
-      objectReference: {fileID: 11400000, guid: f244942de1287f647899e31bea2e8b1a,
-        type: 2}
     - target: {fileID: 5065991170005627374, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: frameImage
