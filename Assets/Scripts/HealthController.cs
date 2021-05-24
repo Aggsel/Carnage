@@ -11,6 +11,8 @@ public class HealthController : MonoBehaviour
 {
     [SerializeField] private float maxHealth = 10.0f;
     [SerializeField] private MonoBehaviour[] deathDisableScripts = null;
+    [SerializeField] private GameObject weaponObj = null;
+    [SerializeField] private Image fadeImage = null;
     [SerializeField] private GameObject bloodImageGO = null;
 
     private float currentHealth = 0.0f; //dont remove
@@ -19,6 +21,7 @@ public class HealthController : MonoBehaviour
     private AttributeController attributeInstance = null;
     private UIController uiController = null;
     private Screenshake ss = null;
+    private bool dead = false; //he is dead lmao
 
     public void SetMaxHealth(float newMaxHealth){
         maxHealth = newMaxHealth;
@@ -75,6 +78,7 @@ public class HealthController : MonoBehaviour
         ss = GetComponent<Screenshake>();
         attributeInstance = this.gameObject.GetComponent<AttributeController>();
         bloodImageGO.SetActive(true);
+        dead = false;
         damageIndicator = bloodImageGO.GetComponent<RawImage>();
         uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
 
@@ -90,9 +94,20 @@ public class HealthController : MonoBehaviour
         SetMaxHealth(attributeInstance.weaponAttributesResultant.health);
     }
 
+    private void LateUpdate ()
+    {
+        if(dead)
+        {
+            fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime);
+        }
+    }
+
     private void CheckDeathCriteria(){
         if(currentHealth <= 0.0f){
-            Die();
+            if(!dead)
+            {
+                Die();
+            }
         }
     }
 
@@ -103,12 +118,20 @@ public class HealthController : MonoBehaviour
             deathDisableScripts[i].enabled = false;
         }
 
+        weaponObj.SetActive(false);
+        dead = true;
+
+        fadeImage.gameObject.SetActive(true);
+        fadeImage.color = new Color(1, 1, 1, 0);
+
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
         am.StopSound(ref am.ambManager);
     }
 
     private IEnumerator DeathEffects(){
+        //uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
+
         yield return new WaitForSeconds(3f);
         SceneManager.LoadScene(1);
     }

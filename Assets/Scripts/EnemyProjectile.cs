@@ -5,17 +5,23 @@ using UnityEngine;
 public class EnemyProjectile : MonoBehaviour
 {
     [Tooltip("The speed of the projectile....")]
-    [SerializeField] private float projectileSpeed = 20.0f;
+    [SerializeField] private float speedMin, speedMax = 30.0f;
+    [Tooltip("For fast the projectile accelerates per second")]
+    [SerializeField] private float accelerationSpeed = 5.0f;
     [SerializeField] private float damage = 2.0f;
     [SerializeField] private GameObject hitDecal = null;
     [SerializeField] private GameObject hitEffect = null;
     [SerializeField] private LayerMask hitEffectLm = 0;
     [SerializeField] Rigidbody rb = null;
     [HideInInspector] public GameObject sourceEnemy;
+
     Collider col = null;
+    float speed = 0.0f;
 
     void OnEnable(){
-        if(rb == null)
+        speed = speedMin;
+
+        if (rb == null)
             rb = GetComponent<Rigidbody>();
         if(col == null)
             col = GetComponent<Collider>();
@@ -24,7 +30,9 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     void Update(){
-        rb.MovePosition(transform.position + transform.forward * projectileSpeed * Time.deltaTime);
+        speed += Time.deltaTime * accelerationSpeed;
+        speed = Mathf.Clamp(speed, speedMin, speedMax);
+        rb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
     }
 
     private void OnCollisionEnter (Collision other)
