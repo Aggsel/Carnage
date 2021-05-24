@@ -6,7 +6,11 @@ using UnityEngine.UI;
 
 public class Itemgenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject tex = null;
+    [SerializeField]
+    private GameObject tex = null;
+    [SerializeField]
+    private float rotationSpeed = 0f;
+
     private GameObject model = null;
     private GameObject flashImageGO = null;
     private UIController uic;
@@ -19,8 +23,8 @@ public class Itemgenerator : MonoBehaviour
     private GameObject player = null;
     private RawImage flashImage;
     private bool recieved = false;
-
     private Vector3 startPos = Vector3.zero;
+    
 
     void Start()
     {
@@ -79,6 +83,12 @@ public class Itemgenerator : MonoBehaviour
 
     private void ActivateModel()
     {
+        //if model exists, delete the old one before spawning a new model, for active re-pickup functionality
+        if(model != null)
+        {
+            Destroy(model);
+        }
+
         if (active != null)
         {
             model = Instantiate(active.modelPrefab, gameObject.transform);
@@ -88,14 +98,15 @@ public class Itemgenerator : MonoBehaviour
             model = Instantiate(passive.modelPrefab, gameObject.transform);
         }
         model.transform.parent = gameObject.transform;
-        model.transform.LookAt(player.transform.position);
-        model.transform.Rotate(0f, 90f, 0f);
+        Vector3 r = new Vector3 (0f, model.transform.rotation.y, 0f);
+        model.transform.rotation = Quaternion.Euler(r);
     }
 
     private void LateUpdate ()
     {
         Billboard();
         Bobbing();
+        Rotation();
     }
 
     private void Bobbing ()
@@ -109,39 +120,60 @@ public class Itemgenerator : MonoBehaviour
         tex.transform.LookAt(player.transform.position);
     }
 
+    private void Rotation()
+    {
+        transform.Rotate(0f, Time.deltaTime * rotationSpeed, 0f);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.name == "Player" && recieved == false)
         {
             if(active != null)
             {
-                //Debug.Log("not null active");
                 uic.UIAlertText(active.activeDescription, 3.0f);
-                cc.Initialize(active, other.gameObject);
+
+                //if player has an active, replace and "remake" this active to player's currently held active
+                if(cc.active != null)
+                {
+                    Active tmp = active;
+                    active = cc.active;
+                    cc.Initialize(tmp, other.gameObject);
+                    flashImageGO.SetActive(true);
+                    flashImage = flashImageGO.GetComponent<RawImage>();
+                    flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
+                    recieved = true;
+                    uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
+                    ActivateModel();
+                    tex.GetComponentInChildren<TextMeshPro>().text = active.activeName;
+                    recieved = false;
+                }
+                //..otherwise dont xd
+                else
+                {
+                    cc.Initialize(active, other.gameObject);
+                    flashImageGO.SetActive(true);
+                    flashImage = flashImageGO.GetComponent<RawImage>();
+                    flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
+                    recieved = true;
+                    uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
+                    ActivateModel();
+                    Destroy(this.gameObject);
+                }
+                
+
             }
             else
             {
-                //Debug.Log("null active");
                 uic.UIAlertText(passive.passiveDescription, 3.0f);
                 pc.Initialize(passive, other.gameObject);
-            }
-            
-            
-            if (flashImageGO == null)
-            {
-                Debug.LogWarning("Missing damage indicator reference!");
-            }
-            else
-            {
                 flashImageGO.SetActive(true);
                 flashImage = flashImageGO.GetComponent<RawImage>();
                 flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
                 recieved = true;
                 uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
                 Destroy(this.gameObject);
-
-            }
-            
+            }            
         }
     }
 }
