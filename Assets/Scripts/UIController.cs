@@ -2,17 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class AlertMessage{
     string message;
     float timer;
-    public AlertMessage(string message, float timer){
+    AnimationCurve fadeCurve;
+    Color color;
+    public AlertMessage(string message, float timer, Color? color = null, AnimationCurve fadeCurve = null){
         this.message = message;
         this.timer = timer;
+        this.fadeCurve = fadeCurve;
+        this.color = color.GetValueOrDefault();
     }
     public string GetMessage(){
         return message;
+    }
+    public AnimationCurve GetCurve(){
+        return fadeCurve;
+    }
+    public Color GetColor(){
+        return color;
     }
     public float GetTimer(){
         return timer;
@@ -28,6 +39,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider overheatbar = null;
     [SerializeField] private GameObject winText = null;
     [SerializeField] private Renderer targetRenderer = null;
+    [SerializeField] private Image fadeImage = null;
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc = null;
@@ -38,6 +50,14 @@ public class UIController : MonoBehaviour
     public float emissionIntensity;
     public float MaxIntensity;
     private MaterialPropertyBlock _propBlock;
+
+    [Header("Alerts")]
+    [Tooltip("How many words per second a player is reading at. Used for dynamically scaling alert text duration on screen.")]
+    [SerializeField] private float wordsPerSecond = 3.0f;
+    [Tooltip("When very short texts using dynamic duration is used, what will be the shortest duration allowed?")]
+    [SerializeField] private float minTextDisplayDuration = 1.0f;
+    [Tooltip("When no other animation curve is supplied to the text, this is the backup one to use.")]
+    [SerializeField] private AnimationCurve defaultAnimationCurve;
 
     private void OnEnable()
     {
@@ -50,6 +70,9 @@ public class UIController : MonoBehaviour
     private void Start ()
     {
         StartCoroutine(Counter());
+        StartCoroutine(WhiteFade(false, 3f));
+        Debug.LogWarning("When you change scene for tutorial, change this too!");
+        //make sure to fade it in a good way when you introduce the tutorial in Level1
     }
 
     public void SetMaxHealth(float maxHealth)
@@ -78,19 +101,56 @@ public class UIController : MonoBehaviour
         winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
     }
 
-    public void UIAlertText(string text, float duration){
-        alertQueue.Enqueue(new AlertMessage(text, duration));
+    public void UIAlertText(string text, float duration = -1.0f, AnimationCurve curve = null, Color? color = null){
+        if(curve == null)
+            curve = defaultAnimationCurve;
+        if(duration < 0.0f)
+            duration = Mathf.Max(1.0f, (text.Split(' ').Length / 3.0f) + 0.5f);
+        if(color == null)
+            color = winText.GetComponent<TMPro.TextMeshProUGUI>().color;
+
+        alertQueue.Enqueue(new AlertMessage(text, duration, color, curve));
         if(!alertActive)
             StartCoroutine(DisplayNextAlert());
     }
 
     private IEnumerator DisplayNextAlert(){
         alertActive = true;
+        TextMeshProUGUI textRef = winText.GetComponent<TMPro.TextMeshProUGUI>();
+
         while(alertQueue.Count > 0){
             AlertMessage currentAlert = alertQueue.Dequeue();
-            SetWinText(currentAlert.GetMessage(), true);
+            AnimationCurve curve = currentAlert.GetCurve();
+            float time = 0.0f;
+            float fade = curve.Evaluate(time);
+
+            winText.SetActive(true);
+            textRef.text = currentAlert.GetMessage();
+            Color fadeColor = currentAlert.GetColor();;
+
+            float fadeDuration = curve.keys[curve.length-1].time;
+            //Fade in.
+            while(time < fadeDuration){
+                fadeColor.a = fade;
+                textRef.color = fadeColor;
+                yield return null;
+                time += Time.deltaTime;
+                fade = curve.Evaluate(time);
+            }
+
             yield return new WaitForSeconds(currentAlert.GetTimer());
-            SetWinText("", true);
+
+            //Fade out using same curve but in reverse.
+            time = fadeDuration;
+            while(time > 0.0f){
+                fadeColor.a = fade;
+                textRef.color = fadeColor;
+                yield return null;
+                time -= Time.deltaTime;
+                fade = curve.Evaluate(time);
+            }
+
+            textRef.text = "";
         }
         alertActive = false;
     } 
@@ -130,6 +190,40 @@ public class UIController : MonoBehaviour
 
             string displayText = Mathf.Ceil(frameCount / timeSpan).ToString();
             fpsText.text = displayText;
+        }
+    }
+
+    //white effect for fading in and out
+    public IEnumerator WhiteFade (bool fadeIn, float time) //fadeIn is if its out or in, time should be around 1
+    {
+        fadeImage.gameObject.SetActive(true);
+        float fade = 0.0f;
+
+        if (fadeIn)
+        {
+            fadeImage.color = new Color(1, 1, 1, 0);
+
+            while (fadeImage.color.a < 1.0f)
+            {
+                fade = fadeImage.color.a + (Time.deltaTime * time);
+                fadeImage.color = new Color(1, 1, 1, fade);
+                //fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime * time);
+                yield return null;
+            }
+        }
+        else
+        {
+            fadeImage.color = new Color(1, 1, 1, 1);
+
+            while (fadeImage.color.a > 0.0f)
+            {
+                fade = fadeImage.color.a - (Time.deltaTime * time);
+                fadeImage.color = new Color(1, 1, 1, fade);
+                //fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 0), Time.deltaTime * time);
+                yield return null;
+            }
+
+            fadeImage.gameObject.SetActive(false);
         }
     }
 }

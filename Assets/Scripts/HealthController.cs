@@ -12,7 +12,6 @@ public class HealthController : MonoBehaviour
     [SerializeField] private float maxHealth = 10.0f;
     [SerializeField] private MonoBehaviour[] deathDisableScripts = null;
     [SerializeField] private GameObject weaponObj = null;
-    [SerializeField] private Image fadeImage = null;
     [SerializeField] private GameObject bloodImageGO = null;
 
     private float currentHealth = 0.0f; //dont remove
@@ -94,14 +93,6 @@ public class HealthController : MonoBehaviour
         SetMaxHealth(attributeInstance.weaponAttributesResultant.health);
     }
 
-    private void LateUpdate ()
-    {
-        if(dead)
-        {
-            fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime);
-        }
-    }
-
     private void CheckDeathCriteria(){
         if(currentHealth <= 0.0f){
             if(!dead)
@@ -120,9 +111,7 @@ public class HealthController : MonoBehaviour
 
         weaponObj.SetActive(false);
         dead = true;
-
-        fadeImage.gameObject.SetActive(true);
-        fadeImage.color = new Color(1, 1, 1, 0);
+        uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
