@@ -15,38 +15,41 @@ public class MissileBehaviour : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        player.GetComponent<Screenshake>().StartCoroutine(player.GetComponent<Screenshake>().Shake(1.6f, 0.6f));
-        ContactPoint contact = other.contacts[0];
-        Instantiate(explosionVFX, transform.position, Quaternion.FromToRotation(Vector3.up, contact.normal));
-        
-        Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
-        foreach (Collider obj in colliders){
-            if(obj.name == "Player")
+        if(other.gameObject.name != "Player")
+        {
+            player.GetComponent<Screenshake>().StartCoroutine(player.GetComponent<Screenshake>().Shake(1.6f, 0.35f));
+            ContactPoint contact = other.contacts[0];
+            Instantiate(explosionVFX, transform.position, Quaternion.FromToRotation(Vector3.up, contact.normal));
+
+            Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
+            foreach (Collider obj in colliders)
             {
-                HealthController hc = obj.GetComponent<HealthController>();
-                hc.OnShot(new HitObject(transform.position - obj.transform.position, transform.position - obj.transform.position, explosionDamage, 1.0f));
-            }
-            else
-            {
-                if(obj.GetComponentInParent<EnemyBehavior>() != null)
+                if (obj.name == "Player")
                 {
-                    obj.GetComponentInParent<EnemyBehavior>().OnShot(new HitObject(obj.transform.position - transform.position, transform.position - obj.transform.position, 125.0f, 1.0f));
-                    //shrug
+                    HealthController hc = obj.GetComponent<HealthController>();
+                    hc.OnShot(new HitObject(transform.position - obj.transform.position, transform.position - obj.transform.position, explosionDamage, 1.0f));
+                }
+                else
+                {
+                    if (obj.GetComponentInParent<EnemyBehavior>() != null)
+                    {
+                        obj.GetComponentInParent<EnemyBehavior>().OnShot(new HitObject(obj.transform.position - transform.position, transform.position - obj.transform.position, 125.0f, 1.0f));
+                        //shrug
+                    }
                 }
             }
+
+            if ((ignoreMask.value & (1 << other.transform.gameObject.layer)) > 0)
+            {
+                GameObject newDecal = Instantiate(explosionDecal) as GameObject;
+                newDecal.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(contact.normal));
+                newDecal.transform.SetParent(other.transform, true);
+
+                float ranRot = Random.Range(-180, 180);
+                newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
+            }
+
+            Destroy(gameObject);
         }
-
-        if ((ignoreMask.value & (1 << other.transform.gameObject.layer)) > 0)
-        {
-            GameObject newDecal = Instantiate(explosionDecal) as GameObject;
-            newDecal.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(contact.normal));
-            newDecal.transform.SetParent(other.transform, true);
-
-            float ranRot = Random.Range(-180, 180);
-            newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
-        }
-
-        Destroy(gameObject);
     }
-
 }

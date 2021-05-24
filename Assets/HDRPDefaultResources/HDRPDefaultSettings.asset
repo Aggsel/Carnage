@@ -115,36 +115,6 @@ MonoBehaviour:
   gain:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1, w: 0}
---- !u!114 &-2761743470872482152
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a6b00fcf518bb94a90b408492e07b44, type: 3}
-  m_Name: FilmGrain
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  type:
-    m_OverrideState: 1
-    m_Value: 1
-  intensity:
-    m_OverrideState: 1
-    m_Value: 0.72
-    min: 0
-    max: 1
-  response:
-    m_OverrideState: 1
-    m_Value: 0.8
-    min: 0
-    max: 1
-  texture:
-    m_OverrideState: 0
-    m_Value: {fileID: 0}
 --- !u!114 &-2176426081244441620
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -288,8 +258,6 @@ MonoBehaviour:
   - {fileID: 6747971895265028430}
   - {fileID: -5518458011200904744}
   - {fileID: 5169665752681361408}
-  - {fileID: 829878144465619220}
-  - {fileID: -2761743470872482152}
 --- !u!114 &448115243408767295
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -391,36 +359,6 @@ MonoBehaviour:
   rectLightShadow:
     m_OverrideState: 0
     m_Value: 0
---- !u!114 &829878144465619220
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 598e2d32e2c7b0c418e030c3236d663a, type: 3}
-  m_Name: ChromaticAberration
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  quality:
-    m_OverrideState: 1
-    m_Value: 2
-  spectralLut:
-    m_OverrideState: 1
-    m_Value: {fileID: 0}
-  intensity:
-    m_OverrideState: 1
-    m_Value: 0.4
-    min: 0
-    max: 1
-  m_MaxSamples:
-    m_OverrideState: 0
-    m_Value: 6
-    min: 3
-    max: 24
 --- !u!114 &1501199423866068322
 MonoBehaviour:
   m_ObjectHideFlags: 3
