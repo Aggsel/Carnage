@@ -226,35 +226,34 @@ public class PauseController : MonoBehaviour
     {
         paused = yes;
 
-        for (int i = 0; i < scripts.Length; i++)
+        if(SceneManager.GetActiveScene().name != "Actual_Hub")
         {
-            if(i == 3)
+            for (int i = 0; i < scripts.Length; i++)
             {
-                MeleeController mc = FindObjectOfType<MeleeController>();
-
-                if (mc.inHit && !paused)
+                if (i == 3)
                 {
-                    continue;
+                    MeleeController mc = FindObjectOfType<MeleeController>();
+
+                    if (mc.inHit && !paused)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        scripts[i].enabled = !paused;
+                    }
                 }
                 else
                 {
                     scripts[i].enabled = !paused;
                 }
             }
-            else
-            {
-                scripts[i].enabled = !paused;
-            }
-        }
-
-        /*if(paused)
-        {
-            UpdateUi(1);
         }
         else
         {
-            UpdateUi(0);
-        }*/
+            //if in hub, only change movement
+            scripts[1].enabled = !paused;
+        }
 
         Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
         LockCursor(paused);
@@ -491,6 +490,7 @@ public class PauseController : MonoBehaviour
     {
         tc.TriggerTutorial();
         UpdatePause(false);
+        //FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
         UpdateUi(0);
     }
 
@@ -498,6 +498,7 @@ public class PauseController : MonoBehaviour
     {
         UpdatePause(false);
         UpdateUi(0);
+        //FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
         tc.TriggerNoTutorial();
     }
 
