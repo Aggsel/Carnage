@@ -73,6 +73,7 @@ public struct KeybindTexts
 public class PauseController : MonoBehaviour
 {
     [Header("Set things, dont touch")]
+    [SerializeField] private GameObject bulletcases = null;
     [SerializeField] private VolumeProfile profile = null;
     [SerializeField] private MovementController mc = null;
     [Tooltip("Programmer stuff, no touchy")]
@@ -590,12 +591,15 @@ public class PauseController : MonoBehaviour
         switch ((int)slider.value)
         {
             case 0:
+                bulletcases.SetActive(false);
                 optionAssignments.graphicsValue.text = "Low";
                 break;
             case 1:
+                bulletcases.SetActive(true);
                 optionAssignments.graphicsValue.text = "Medium";
                 break;
             case 2:
+                bulletcases.SetActive(true);
                 optionAssignments.graphicsValue.text = "High";
                 break;
             default:
