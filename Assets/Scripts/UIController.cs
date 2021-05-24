@@ -28,6 +28,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider overheatbar = null;
     [SerializeField] private GameObject winText = null;
     [SerializeField] private Renderer targetRenderer = null;
+    [SerializeField] private Image fadeImage = null;
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc = null;
@@ -130,6 +131,36 @@ public class UIController : MonoBehaviour
 
             string displayText = Mathf.Ceil(frameCount / timeSpan).ToString();
             fpsText.text = displayText;
+        }
+    }
+
+    //white effect for fading in and out
+    public IEnumerator WhiteFade (bool fadeIn, float time) //fadeIn is if its out or in, time should be around 1
+    {
+        float elapsedTime = 0.0f;
+        fadeImage.gameObject.SetActive(true);
+
+        if (fadeIn)
+        {
+            fadeImage.color = new Color(1, 1, 1, 0);
+
+            while (elapsedTime < time)
+            {
+                fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime * time);
+                elapsedTime += Time.deltaTime * time;
+                yield return null;
+            }
+        }
+        else
+        {
+            fadeImage.color = new Color(1, 1, 1, 1);
+
+            while (elapsedTime < time)
+            {
+                fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 0), Time.deltaTime * time);
+                elapsedTime += Time.deltaTime * time;
+                yield return null;
+            }
         }
     }
 }
