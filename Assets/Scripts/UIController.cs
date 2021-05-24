@@ -8,12 +8,22 @@ using TMPro;
 public class AlertMessage{
     string message;
     float timer;
-    public AlertMessage(string message, float timer){
+    AnimationCurve fadeCurve;
+    Color color;
+    public AlertMessage(string message, float timer, Color? color = null, AnimationCurve fadeCurve = null){
         this.message = message;
         this.timer = timer;
+        this.fadeCurve = fadeCurve;
+        this.color = color.GetValueOrDefault();
     }
     public string GetMessage(){
         return message;
+    }
+    public AnimationCurve GetCurve(){
+        return fadeCurve;
+    }
+    public Color GetColor(){
+        return color;
     }
     public float GetTimer(){
         return timer;
@@ -40,6 +50,14 @@ public class UIController : MonoBehaviour
     public float emissionIntensity;
     public float MaxIntensity;
     private MaterialPropertyBlock _propBlock;
+
+    [Header("Alerts")]
+    [Tooltip("How many words per second a player is reading at. Used for dynamically scaling alert text duration on screen.")]
+    [SerializeField] private float wordsPerSecond = 3.0f;
+    [Tooltip("When very short texts using dynamic duration is used, what will be the shortest duration allowed?")]
+    [SerializeField] private float minTextDisplayDuration = 1.0f;
+    [Tooltip("When no other animation curve is supplied to the text, this is the backup one to use.")]
+    [SerializeField] private AnimationCurve defaultAnimationCurve;
 
     private void OnEnable()
     {
@@ -83,19 +101,56 @@ public class UIController : MonoBehaviour
         winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
     }
 
-    public void UIAlertText(string text, float duration){
-        alertQueue.Enqueue(new AlertMessage(text, duration));
+    public void UIAlertText(string text, float duration = -1.0f, AnimationCurve curve = null, Color? color = null){
+        if(curve == null)
+            curve = defaultAnimationCurve;
+        if(duration < 0.0f)
+            duration = Mathf.Max(1.0f, (text.Split(' ').Length / 3.0f) + 0.5f);
+        if(color == null)
+            color = winText.GetComponent<TMPro.TextMeshProUGUI>().color;
+
+        alertQueue.Enqueue(new AlertMessage(text, duration, color, curve));
         if(!alertActive)
             StartCoroutine(DisplayNextAlert());
     }
 
     private IEnumerator DisplayNextAlert(){
         alertActive = true;
+        TextMeshProUGUI textRef = winText.GetComponent<TMPro.TextMeshProUGUI>();
+
         while(alertQueue.Count > 0){
             AlertMessage currentAlert = alertQueue.Dequeue();
-            SetWinText(currentAlert.GetMessage(), true);
+            AnimationCurve curve = currentAlert.GetCurve();
+            float time = 0.0f;
+            float fade = curve.Evaluate(time);
+
+            winText.SetActive(true);
+            textRef.text = currentAlert.GetMessage();
+            Color fadeColor = currentAlert.GetColor();;
+
+            float fadeDuration = curve.keys[curve.length-1].time;
+            //Fade in.
+            while(time < fadeDuration){
+                fadeColor.a = fade;
+                textRef.color = fadeColor;
+                yield return null;
+                time += Time.deltaTime;
+                fade = curve.Evaluate(time);
+            }
+
             yield return new WaitForSeconds(currentAlert.GetTimer());
-            SetWinText("", true);
+
+            //Fade out using same curve but in reverse.
+            time = fadeDuration;
+            while(time > 0.0f){
+                fadeColor.a = fade;
+                textRef.color = fadeColor;
+                yield return null;
+                time -= Time.deltaTime;
+                fade = curve.Evaluate(time);
+            }
+
+            textRef.text = "";
         }
         alertActive = false;
     } 

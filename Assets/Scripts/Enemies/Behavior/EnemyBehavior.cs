@@ -46,9 +46,10 @@ public class EnemyBehavior : MonoBehaviour
         return this.agent;
     }
 
-    public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition){
+    public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition, float range = Mathf.Infinity){
         RaycastHit hit;
-        if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, Mathf.Infinity)){
+        // Debug.DrawLine(originPos, targetPosition, Color.blue, 0.5f);
+        if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, range)){
             //Should this mask passed as an function argument instead?
             if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0)
                 return true;
