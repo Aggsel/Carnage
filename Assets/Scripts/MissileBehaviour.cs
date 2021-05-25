@@ -48,7 +48,7 @@ public class MissileBehaviour : MonoBehaviour
                 float ranRot = Random.Range(-180, 180);
                 newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
             }
-            am.PlaySound(ref am.playerExplosion, this.transform.position);
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.playerExplosion, this.transform.position);
             Destroy(gameObject);
         }
     }
