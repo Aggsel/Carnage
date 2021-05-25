@@ -6,7 +6,7 @@ public class MapController : MonoBehaviour
 {
     [SerializeField] private MapDrawer drawer = null;
     private GameObject mapReference = null;
-    private bool mapActive = false;
+    //private bool mapActive = false;
     private PauseController pc = null;
 
     void Start(){
@@ -22,11 +22,18 @@ public class MapController : MonoBehaviour
     }
 
     void Update(){
-        if(Input.GetKeyDown(pc.GetKeybindings().status) && !pc.GetPaused())
+        if(Input.GetKey(pc.GetKeybindings().status) && !pc.GetPaused())
         {
-            mapActive = !mapActive;
+            //mapActive = !mapActive;
             foreach (Transform child in transform){
-                child.gameObject.SetActive(mapActive);
+                child.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            foreach (Transform child in transform)
+            {
+                child.gameObject.SetActive(false);
             }
         }
     }
