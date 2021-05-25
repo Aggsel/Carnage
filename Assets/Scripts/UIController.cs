@@ -71,7 +71,7 @@ public class UIController : MonoBehaviour
     private void Start ()
     {
         StartCoroutine(Counter());
-        StartCoroutine(WhiteFade(false, 3f));
+        StartCoroutine(WhiteFade(false, 0.5f));
     }
 
     public void SetMaxHealth(float maxHealth)
