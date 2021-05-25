@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class MapController : MonoBehaviour
@@ -22,7 +23,7 @@ public class MapController : MonoBehaviour
     }
 
     void Update(){
-        if(Input.GetKey(pc.GetKeybindings().status) && !pc.GetPaused())
+        if(Input.GetKey(pc.GetKeybindings().status) && !pc.GetPaused() && SceneManager.GetActiveScene().name != "Actual_Hub")
         {
             //mapActive = !mapActive;
             foreach (Transform child in transform){
