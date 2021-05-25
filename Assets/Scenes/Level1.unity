@@ -121,6 +121,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &283440033 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1420478635511701223, guid: d07a2373103de454984b393284a88386,
+    type: 3}
+  m_PrefabInstance: {fileID: 1469554998}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &340396545
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +166,18 @@ MonoBehaviour:
   spawnRoomLocation: {x: 0, y: 0}
   OnFinishedGeneration:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 283440033}
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onRoomEnterFirst: {fileID: 11400000, guid: 5dcc1d4e3c35cbc40803033b6d5c23a0, type: 2}
   onCombatComplete: {fileID: 11400000, guid: e73c49666808ffd4586b1ee64c99cc40, type: 2}
   progressionUIReference: {fileID: 1387073174}
