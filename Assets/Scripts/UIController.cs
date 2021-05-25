@@ -71,8 +71,6 @@ public class UIController : MonoBehaviour
     {
         StartCoroutine(Counter());
         StartCoroutine(WhiteFade(false, 3f));
-        Debug.LogWarning("When you change scene for tutorial, change this too!");
-        //make sure to fade it in a good way when you introduce the tutorial in Level1
     }
 
     public void SetMaxHealth(float maxHealth)
