@@ -483,15 +483,33 @@ public class PauseController : MonoBehaviour
     //Tutorial
     public void ButtonTutorialQuestion ()
     {
-        UpdatePause(true);
-        UpdateUi(5);
+        if(sc == null)
+            sc = FindObjectOfType<SerializeController>();
+
+        if (tc == null)
+            tc = FindObjectOfType<TutorialController>();
+
+        //Debug.Log("hide is: " + sc.GetHideTutorial());
+
+        if(sc.GetHideTutorial() == 1) //show
+        {
+            UpdatePause(true);
+            UpdateUi(5);
+        }
+        else if(sc.GetHideTutorial() == 2) //hide
+        {
+            ButtonTutorialNo();
+        }
+        else
+        {
+            Debug.LogWarning("Tutorial playerPrefs error, this should not happen!");
+        }
     }
 
     public void ButtonTutorialYes ()
     {
         tc.TriggerTutorial();
         UpdatePause(false);
-        //FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
         UpdateUi(0);
     }
 
@@ -499,8 +517,20 @@ public class PauseController : MonoBehaviour
     {
         UpdatePause(false);
         UpdateUi(0);
-        //FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
         tc.TriggerNoTutorial();
+    }
+
+    public void ButtonTutorialNoDontShowAgain()
+    {
+        UpdatePause(false);
+        UpdateUi(0);
+        sc.SetHideTutorial(2);
+        tc.TriggerNoTutorial();
+    }
+
+    public void ButtonEnableTutorial() //button outside of options loop & saving
+    {
+        sc.SetHideTutorial(1);
     }
 
     //main pause
