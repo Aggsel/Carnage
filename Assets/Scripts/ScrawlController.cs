@@ -7,15 +7,15 @@ public class ScrawlController : MonoBehaviour
 {
     [Header("Act I:")]
     [Tooltip("The set of possible wallscrawlls that will appear during act I")]
-    [SerializeField] private Material[] collectionOne;
+    [SerializeField] private Material[] collectionOne = null;
 
     [Header("Act II:")]
     [Tooltip("The set of possible wallscrawlls that will appear during act II")]
-    [SerializeField] private Material[] collectionTwo;
+    [SerializeField] private Material[] collectionTwo = null;
 
     [Header("Act III:")]
     [Tooltip("The set of possible wallscrawlls that will appear during act III")]
-    [SerializeField] private Material[] collectionThree;
+    [SerializeField] private Material[] collectionThree = null;
 
     private Material decal = null;
     private DecalProjector decalProjector = null;
