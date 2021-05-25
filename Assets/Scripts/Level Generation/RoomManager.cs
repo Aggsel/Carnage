@@ -101,6 +101,7 @@ public class RoomManager : MonoBehaviour
             if(spawnPrefab != null) {
                 GameObject newItem = Instantiate(spawnPrefab) as GameObject;
                 newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+                newItem.transform.SetParent(transform, true);
 
                 //trail stuff
                 newItem.SetActive(false);

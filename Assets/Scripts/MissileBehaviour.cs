@@ -10,7 +10,7 @@ public class MissileBehaviour : MonoBehaviour
     [SerializeField] private float blastRadius = 0.0f;
     [SerializeField] private GameObject explosionVFX = null;
     [SerializeField] private float explosionDamage = 0.0f;
-
+    [SerializeField] private GameObject trailParticle = null;
 
     void OnCollisionEnter(Collision other)
     {
@@ -48,6 +48,7 @@ public class MissileBehaviour : MonoBehaviour
                 newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
             }
             AudioManager.Instance.PlaySound(ref AudioManager.Instance.playerExplosion, this.transform.position);
+            trailParticle.transform.SetParent(null, true);
             Destroy(gameObject);
         }
     }

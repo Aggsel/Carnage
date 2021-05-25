@@ -6,16 +6,16 @@ using UnityEngine.Rendering.HighDefinition;
 public class ScrawlController : MonoBehaviour
 {
     [Header("Act I:")]
-    [Tooltip("The set of possible wallscrawlls that will appear during act I")]
-    [SerializeField] private Material[] collectionOne;
+    [Tooltip("The set of possible wallscrawlls that will appear during act I")]
+    [SerializeField] private Material[] collectionOne = null;
 
     [Header("Act II:")]
-    [Tooltip("The set of possible wallscrawlls that will appear during act II")]
-    [SerializeField] private Material[] collectionTwo;
+    [Tooltip("The set of possible wallscrawlls that will appear during act II")]
+    [SerializeField] private Material[] collectionTwo = null;
 
     [Header("Act III:")]
-    [Tooltip("The set of possible wallscrawlls that will appear during act III")]
-    [SerializeField] private Material[] collectionThree;
+    [Tooltip("The set of possible wallscrawlls that will appear during act III")]
+    [SerializeField] private Material[] collectionThree = null;
 
     private Material decal = null;
     private DecalProjector decalProjector = null;
@@ -25,9 +25,10 @@ public class ScrawlController : MonoBehaviour
     {
         decalProjector = GetComponent<DecalProjector>();
 
-        if (PlayerPrefs.HasKey("Act"))
-        {
-            act = PlayerPrefs.GetInt("Act");
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            act = PlayerPrefs.GetInt("Act");
+            Debug.Log("Act is act " + act);
         }
         else
         {
