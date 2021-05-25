@@ -5,13 +5,12 @@ using UnityEngine;
 public class MissileBehaviour : MonoBehaviour
 {
     public GameObject player;
-
     [SerializeField] LayerMask ignoreMask = 0;
     [SerializeField] GameObject explosionDecal = null;
     [SerializeField] private float blastRadius = 0.0f;
     [SerializeField] private GameObject explosionVFX = null;
     [SerializeField] private float explosionDamage = 0.0f;
-    private AudioManager am = null;
+
 
     void OnCollisionEnter(Collision other)
     {
