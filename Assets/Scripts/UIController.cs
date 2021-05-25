@@ -60,13 +60,13 @@ public class UIController : MonoBehaviour
     [Tooltip("When no other animation curve is supplied to the text, this is the backup one to use.")]
     [SerializeField] private AnimationCurve defaultAnimationCurve = new AnimationCurve();
 
+    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
+    private bool alertActive = false;
+
     private void OnEnable()
     {
         _propBlock = new MaterialPropertyBlock();
     }
-
-    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
-    private bool alertActive = false;
 
     private void Start ()
     {
