@@ -169,7 +169,7 @@ public class MovementController : MonoBehaviour
 
     public void SetSpawnPoint(Vector3 pos) //for respawning if falling of the world
     {
-        Debug.Log("SpawnPos is: " + pos);
+        //Debug.Log("SpawnPos is: " + pos);
         spawnPoint = pos;
         spawnSet = true;
     }
