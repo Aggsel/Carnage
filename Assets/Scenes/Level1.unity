@@ -163,6 +163,7 @@ MonoBehaviour:
       m_Calls: []
   onRoomEnterFirst: {fileID: 11400000, guid: 5dcc1d4e3c35cbc40803033b6d5c23a0, type: 2}
   onCombatComplete: {fileID: 11400000, guid: e73c49666808ffd4586b1ee64c99cc40, type: 2}
+  onCombatStart: {fileID: 11400000, guid: e8f8b655958da044ab3106dfb7e89bd8, type: 2}
   progressionUIReference: {fileID: 1387073174}
   mapReference: {fileID: 389813463}
   instantiatedRooms: []
@@ -192,6 +193,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a257ac74d1fc94a45989e65215663902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &714681747 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 714681747, guid: 3c485f711dcf71345a90f25b1954812b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1170317626}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1170317626
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -207,7 +220,7 @@ PrefabInstance:
     - target: {fileID: 6285418994871541452, guid: 3c485f711dcf71345a90f25b1954812b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6285418994871541452, guid: 3c485f711dcf71345a90f25b1954812b,
         type: 3}
@@ -258,11 +271,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Post-Processing Controller
-      objectReference: {fileID: 0}
-    - target: {fileID: 6285418995139891291, guid: 3c485f711dcf71345a90f25b1954812b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c485f711dcf71345a90f25b1954812b, type: 3}
@@ -1109,6 +1117,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -30.399902
       objectReference: {fileID: 0}
+    - target: {fileID: 4797875221254084293, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 6.1000977
+      objectReference: {fileID: 0}
     - target: {fileID: 5015263837796845412, guid: d07a2373103de454984b393284a88386,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -1206,6 +1219,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d07a2373103de454984b393284a88386, type: 3}
+--- !u!1 &1531368468 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6285418994871541453, guid: 3c485f711dcf71345a90f25b1954812b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1170317626}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1531368470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1531368468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4016cdc0def988b49b629567f5fd2127, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onCombatEnter: {fileID: 11400000, guid: e8f8b655958da044ab3106dfb7e89bd8, type: 2}
+  onCombatComplete: {fileID: 11400000, guid: e73c49666808ffd4586b1ee64c99cc40, type: 2}
+  combatPostProcessingVolume: {fileID: 714681747}
 --- !u!1 &1986955220
 GameObject:
   m_ObjectHideFlags: 0
