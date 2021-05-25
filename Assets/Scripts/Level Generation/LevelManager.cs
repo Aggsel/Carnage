@@ -81,6 +81,15 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
+            {
+                PlayerPrefs.SetInt("Act", currentLevel);
+                Debug.Log("Act has been set to " + (currentLevel + 1));
+            }
+        }
+
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
