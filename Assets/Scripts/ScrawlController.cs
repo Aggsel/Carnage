@@ -28,6 +28,7 @@ public class ScrawlController : MonoBehaviour
         if (PlayerPrefs.HasKey("Act"))
         {
             act = PlayerPrefs.GetInt("Act");
+            Debug.Log("Act is act " + act);
         }
         else
         {
