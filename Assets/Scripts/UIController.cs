@@ -82,8 +82,16 @@ public class UIController : MonoBehaviour
 
     public void UpdateHealthbar()
     {
+        float hp = hc.Health;
+
         healthbar.value = hc.Health;
-        healthText.text = hc.Health + "/" + hc.MaxHealth;
+        healthText.text = hp + "/" + hc.MaxHealth;
+
+        if (hp <= 0.0f)
+        {
+            healthbar.value = hc.Health;
+            healthText.text = "0" + "/" + hc.MaxHealth;
+        }
     }
 
     public void SetMaxDashcharge(int maxCharges)
