@@ -12,12 +12,10 @@ public class MovementController : MonoBehaviour
     [Serializable]
     public struct MovementVariables
     {
-        [Tooltip("Should the player always run or run with the run key")]
-        public bool alwaysRun;
-        [Tooltip("If always run is off, the default walk speed of the player")]
-        public float defaultSpeed;
         [Tooltip("If always run is off, the run speed of the player")]
         public float runSpeed;
+        [Tooltip("The speed of which backwards movement is multiplied by from forward")]
+        public float backSpeedMultiplier;
         [Tooltip("The jumpheight of the player")]
         public float jumpForce;
         [Tooltip("The acceleration of the players speed when falling")]
@@ -86,22 +84,20 @@ public class MovementController : MonoBehaviour
     private float nextDash = 0f;
     private List<Vector3> positioningList = new List<Vector3>();
     private float fallForce = 1.5f;
-    private float charge = 3.0f;
+    public float charge = 3.0f;
     private Vector3 upMovement = Vector3.zero;
     private bool invertedControls = false;
     private float groundedTimer = 0.0f;
     private float vertical = 0.0f;
     private float horizontal = 0.0f;
     private Vector3 dir = Vector3.zero;
-    private float edgeForce = 2.0f;
+    private float edgeForce = 3.0f;
     private MotionBlur globalMotion = null;
     private float startFov = 0.0f;
     private float endFov = 0.0f;
     private float half = 0.0f;
     private CapsuleCollider cap = null;
     private Rigidbody rb = null;
-
-    //test
     private AudioManager am = null;
     private bool hasLanded = false;
 
@@ -310,8 +306,8 @@ public class MovementController : MonoBehaviour
         }
 
         //set speed
-        speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
-
+        //speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
+        
         //new movement
         if(Input.GetKey(moveForward) || Input.GetKey(moveBack))
         {
@@ -322,7 +318,7 @@ public class MovementController : MonoBehaviour
 
             if (Input.GetKey(moveBack))
             {
-                vertical = Mathf.Clamp(vertical - 1, -1.0f, 1.0f);
+                vertical = Mathf.Clamp(vertical - 1, -1.0f, 1.0f) * movementVar.backSpeedMultiplier;
             }
         }
         else
@@ -464,13 +460,5 @@ public class MovementController : MonoBehaviour
         {
             return charge;
         }
-    }
-
-    //DEBUG velocity & FPS
-    private void OnGUI ()
-    {
-        //GUI.Label(new Rect(10, 30, 100, 50), charge.ToString("F2"));
-        //GUI.Label(new Rect(10, 10, 100, 50), cc.velocity.magnitude.ToString());
-        GUI.Label(new Rect(Screen.width - 40, 30, 70, 50), (1.0f / Time.smoothDeltaTime).ToString("F2"));
     }
 }

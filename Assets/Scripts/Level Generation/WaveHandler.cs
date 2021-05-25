@@ -11,15 +11,22 @@ public class WaveHandler
     private List<EnemySpawnPoint> activeSpawnPoints = new List<EnemySpawnPoint>();
     private float roomDifficulty = 0.0f;
     private int remainingWaves = 0;
+    private GameObject player = null;
+    private float normalizedDepth = 0.0f;
 
-    public WaveHandler(UnityEvent onCombatComplete, List<EnemySpawnPoint> spawnPoints, float difficulty, int numberOfWaves){
+    public WaveHandler(UnityEvent onCombatComplete, List<EnemySpawnPoint> spawnPoints, float difficulty, int numberOfWaves, GameObject playerReference, float normalizedDepth){
         this.onCombatComplete = onCombatComplete;
         this.spawnPoints = spawnPoints;
         this.roomDifficulty = difficulty;
         this.remainingWaves = numberOfWaves;
+        this.player = playerReference;
+        this.normalizedDepth = normalizedDepth;
 
         for (int i = 0; i < spawnPoints.Count; i++){
+            if(spawnPoints[i] == null)
+                continue;
             spawnPoints[i].SetWaveHandler(this);
+            spawnPoints[i].SetPlayerReference(player);
         }
     }
     
@@ -37,12 +44,15 @@ public class WaveHandler
         if(remainingWaves <= 0)
             onCombatComplete.Invoke();
         else
-            SpawnNewWave();
+            if(SpawnNewWave() <= 0) //If by any chance the wave didn't manage to spawn any enemies, just continue to the next wave.
+                NextWave();
+
     }
 
     //Returns how many enemies were spawned.
     public int Start(){
-        return SpawnNewWave();
+        int enemyCount = SpawnNewWave();
+        return enemyCount;
     }
 
     //Returns how many enemies were spawned at this wave.
@@ -55,6 +65,8 @@ public class WaveHandler
 
         //First spawn all garanteed spawns.
         for (int i = 0; i < shuffledPoints.Count; i++){
+            if(shuffledPoints[i] == null)
+                continue;
             if(shuffledPoints[i].IsGuaranteedSpawn()){
                 shuffledPoints[i].SpawnRandomEnemy();
                 activeSpawnPoints.Add(shuffledPoints[i]);
@@ -64,14 +76,20 @@ public class WaveHandler
 
         //Then randomize the rest.
         for (int i = 0; i < shuffledPoints.Count; i++){
+            if(shuffledPoints[i] == null)
+                continue;
             //We've already spawned this one.
             if(shuffledPoints[i].IsGuaranteedSpawn())
                 continue;
 
             if(accumulatedDifficulty >= roomDifficulty)
                 break;
+            
+            float difficultyGained = shuffledPoints[i].SpawnRandomEnemy();
+            if(difficultyGained < 0.0001f)
+                continue;
                 
-            accumulatedDifficulty += shuffledPoints[i].SpawnRandomEnemy();
+            accumulatedDifficulty += difficultyGained;
             activeSpawnPoints.Add(shuffledPoints[i]);
             naturalEnemyCount++;
         }
@@ -88,6 +106,14 @@ public class WaveHandler
             originalSpawnPoints.RemoveAt(randIndex);
         }
         return shuffledPoints;
+    }
+
+    public float GetDifficulty(){
+        return this.roomDifficulty;
+    }
+
+    public float GetNormalizedDepth(){
+        return this.normalizedDepth;
     }
 
     public static float CalculateDifficulty(float normalizedDepth, Vector2 randomRange, float randomness){

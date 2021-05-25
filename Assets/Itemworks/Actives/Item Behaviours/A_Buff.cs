@@ -5,28 +5,42 @@ using UnityEngine;
 [CreateAssetMenu (menuName = "Actives/Buffs")]
 public class A_Buff : Active
 {
-    [Tooltip("The attribute which to buff when using this active.")]
-    [SerializeField] private string attributeToBuff = "firerate";
-    [Tooltip("Percentages to shift the attribute with, a value of 2.5 equals 250% modifier.")]
-    [SerializeField] private float increment = 0f;
-    private Buff reference = null;
-    private AttributeController ac;
+    [Tooltip("The array of all buffs you want this item to apply.")]
+    [SerializeField] private Buff[] buffs = null;
+    private Buff[] references = null;
+    private AttributeController ac = null;
 
     public override void Initialize(GameObject obj)
     {
         ac = obj.GetComponent<AttributeController>();
+        references = new Buff[buffs.Length];
     }
     
     public override void TriggerActive()
     {
-        reference = ac.AddBuff(attributeToBuff, increment);
+        int count = 0;
+        foreach (Buff i in buffs)
+        {
+            if (i.statTwo != "")
+            {
+                references[count] = ac.AddBuff(i.stat, i.statTwo, i.increment, i.incrementTwo);
+            }
+            else
+            {
+                references[count] = ac.AddBuff(i.stat, i.increment);
+            }
+            count++;
+        }
     }
 
     public override void DetriggerActive()
     {
-        if(reference != null)
+        foreach (Buff i in references)
         {
-            ac.RemoveBuff(reference);
+            if(i != null)
+            {
+                ac.RemoveBuff(i);
+            }
         }
     }
 }

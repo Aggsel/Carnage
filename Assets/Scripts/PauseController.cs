@@ -51,6 +51,7 @@ public struct KeyBindAsignments
     public KeyCode jump; //6
     public KeyCode melee; //7
     public KeyCode action; //8
+    public KeyCode status; //9
 }
 
 [Serializable]
@@ -65,12 +66,14 @@ public struct KeybindTexts
     public TextMeshProUGUI jumpText; //6
     public TextMeshProUGUI meleeText; //7
     public TextMeshProUGUI actionText; //8
+    public TextMeshProUGUI statusText; //9
 }
 #endregion
 
 public class PauseController : MonoBehaviour
 {
     [Header("Set things, dont touch")]
+    [SerializeField] private GameObject bulletcases = null;
     [SerializeField] private VolumeProfile profile = null;
     [SerializeField] private MovementController mc = null;
     [Tooltip("Programmer stuff, no touchy")]
@@ -85,6 +88,7 @@ public class PauseController : MonoBehaviour
     private int menuStage = 0; //nothing, pause, options, exitConfirm
     //private MovementController mc = null;
     private SerializeController sc = null; //use unityActions instead
+    private TutorialController tc = null;
 
     private bool changingKey = false;
     private int changingKeyIndex = 0;
@@ -98,8 +102,10 @@ public class PauseController : MonoBehaviour
 
     private void Start ()
     {
-        UpdatePause(false);
+        //UpdatePause(false);
+        //UpdateUi(0);
         updateKeysFunction.Invoke(keybindAssignments);
+        tc = GetComponent<TutorialController>();
         sc = FindObjectOfType<SerializeController>();
     }
 
@@ -154,9 +160,18 @@ public class PauseController : MonoBehaviour
                 keybindAssignments.action = key;
                 keybindTexts.actionText.text = key.ToString();
                 break;
+            case 9: //status
+                keybindAssignments.status = key;
+                keybindTexts.statusText.text = key.ToString();
+                break;
             default:
                 break;
         }
+    }
+
+    public bool GetPaused ()
+    {
+        return paused;
     }
 
     private void Update ()
@@ -164,6 +179,7 @@ public class PauseController : MonoBehaviour
         if(Input.GetKeyDown(keybindAssignments.pause) && !paused) //change to escape later just for testing
         {
             UpdatePause(true);
+            UpdateUi(1);
         }
 
         //change keys for shift
@@ -211,34 +227,33 @@ public class PauseController : MonoBehaviour
     {
         paused = yes;
 
-        for (int i = 0; i < scripts.Length; i++)
+        if(SceneManager.GetActiveScene().name != "Actual_Hub")
         {
-            if(i == 3)
+            for (int i = 0; i < scripts.Length; i++)
             {
-                MeleeController mc = FindObjectOfType<MeleeController>();
-
-                if (mc.inHit && !paused)
+                if (i == 3)
                 {
-                    continue;
+                    MeleeController mc = FindObjectOfType<MeleeController>();
+
+                    if (mc.inHit && !paused)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        scripts[i].enabled = !paused;
+                    }
                 }
                 else
                 {
                     scripts[i].enabled = !paused;
                 }
             }
-            else
-            {
-                scripts[i].enabled = !paused;
-            }
-        }
-
-        if(paused)
-        {
-            UpdateUi(1);
         }
         else
         {
-            UpdateUi(0);
+            //if in hub, only change movement
+            scripts[1].enabled = !paused;
         }
 
         Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
@@ -304,6 +319,9 @@ public class PauseController : MonoBehaviour
                 break;
             case 8: //action
                 keybindAssignments.action = key;
+                break;
+            case 9: //status
+                keybindAssignments.status = key;
                 break;
             default:
                 break;
@@ -445,9 +463,46 @@ public class PauseController : MonoBehaviour
             changingKeyIndex = 8;
         }
     }
+
+    public void ChangeButton_Status(TextMeshProUGUI text)
+    {
+        if (!changingKey)
+        {
+            LockCursor(false);
+
+            changingKeyText = text;
+            changingKeyText.text = "None";
+
+            changingKey = true;
+            changingKeyIndex = 9;
+        }
+    }
     #endregion
 
     #region button calls / options
+    //Tutorial
+    public void ButtonTutorialQuestion ()
+    {
+        UpdatePause(true);
+        UpdateUi(5);
+    }
+
+    public void ButtonTutorialYes ()
+    {
+        tc.TriggerTutorial();
+        UpdatePause(false);
+        //FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
+        UpdateUi(0);
+    }
+
+    public void ButtonTutorialNo ()
+    {
+        UpdatePause(false);
+        UpdateUi(0);
+        //FindObjectOfType<UIController>().StartCoroutine(FindObjectOfType<UIController>().WhiteFade(false, 0.5f));
+        tc.TriggerNoTutorial();
+    }
+
     //main pause
     public void ButtonYes () //exit confirm
     {
@@ -462,12 +517,18 @@ public class PauseController : MonoBehaviour
     public void ButtonResume ()
     {
         UpdatePause(false);
+        UpdateUi(0);
     }
 
     public void ButtonMenu()
     {
         UpdateUi(3);
         //Application.Quit();
+    }
+
+    public void ButtonCredits ()
+    {
+        UpdateUi(4);
     }
     
     public void ButtonOptions ()
@@ -478,7 +539,7 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
-        Debug.Log("SAVE");
+        //Debug.Log("SAVE");
         sc.SavePreferences();
     }
 
@@ -492,12 +553,16 @@ public class PauseController : MonoBehaviour
     public void ChangeSound(Slider slider)
     {
         //Do sound change here
+        FMOD.Studio.VCA Master = FMODUnity.RuntimeManager.GetVCA("vca:/Master");
+        Master.setVolume(slider.value * 0.01f);
         optionAssignments.soundValue.text = slider.value.ToString("F1") + "%";
     }
 
     public void ChangeMusic(Slider slider)
     {
         //Do music change here
+        FMOD.Studio.VCA Music = FMODUnity.RuntimeManager.GetVCA("vca:/Music");
+        Music.setVolume(slider.value * 0.01f);
         optionAssignments.musicValue.text = slider.value.ToString("F1") + "%";
     }
 
@@ -526,9 +591,15 @@ public class PauseController : MonoBehaviour
         switch ((int)slider.value)
         {
             case 0:
+                bulletcases.SetActive(false);
                 optionAssignments.graphicsValue.text = "Low";
                 break;
             case 1:
+                bulletcases.SetActive(true);
+                optionAssignments.graphicsValue.text = "Medium";
+                break;
+            case 2:
+                bulletcases.SetActive(true);
                 optionAssignments.graphicsValue.text = "High";
                 break;
             default:
