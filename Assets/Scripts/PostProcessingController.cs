@@ -12,6 +12,10 @@ public class PostProcessingController : MonoBehaviour
     [SerializeField] private AnimationCurve transitionCurve;
 
     void OnEnable(){
+        if(transitionCurve == null){
+            Debug.LogWarning("Transition curve in the post processing manager was not set. Applying backup curve instead.", this.gameObject);
+            transitionCurve = AnimationCurve.EaseInOut(0,0,0.5f,1.0f);
+        }
         onCombatEnter?.Subscribe(OnCombatEnter);
         onCombatComplete?.Subscribe(OnCombatComplete);
     }
@@ -22,12 +26,10 @@ public class PostProcessingController : MonoBehaviour
     }
 
     private void OnCombatEnter(){
-        FindObjectOfType<UIController>().UIAlertText("Combat Enter!");
         StartCoroutine(TransitionToCombat());
     }
     
     private void OnCombatComplete(){
-        FindObjectOfType<UIController>().UIAlertText("Combat Complete (from pp controller)!");
         StartCoroutine(TransitionFromCombat());
     }
 
