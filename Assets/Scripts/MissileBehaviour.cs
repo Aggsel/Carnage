@@ -8,10 +8,10 @@ public class MissileBehaviour : MonoBehaviour
 
     [SerializeField] LayerMask ignoreMask = 0;
     [SerializeField] GameObject explosionDecal = null;
-
     [SerializeField] private float blastRadius = 0.0f;
     [SerializeField] private GameObject explosionVFX = null;
     [SerializeField] private float explosionDamage = 0.0f;
+    private AudioManager am = null;
 
     void OnCollisionEnter(Collision other)
     {
@@ -48,7 +48,7 @@ public class MissileBehaviour : MonoBehaviour
                 float ranRot = Random.Range(-180, 180);
                 newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
             }
-
+            am.PlaySound(ref am.playerExplosion, this.transform.position);
             Destroy(gameObject);
         }
     }
