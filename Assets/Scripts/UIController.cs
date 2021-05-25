@@ -37,6 +37,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider healthbar = null;
     [SerializeField] private Slider dashCharges = null;
     [SerializeField] private Slider overheatbar = null;
+    [SerializeField] private TextMeshProUGUI healthText = null;
     [SerializeField] private GameObject winText = null;
     [SerializeField] private Renderer targetRenderer = null;
     [SerializeField] private Image fadeImage = null;
@@ -71,18 +72,18 @@ public class UIController : MonoBehaviour
     {
         StartCoroutine(Counter());
         StartCoroutine(WhiteFade(false, 3f));
-        Debug.LogWarning("When you change scene for tutorial, change this too!");
-        //make sure to fade it in a good way when you introduce the tutorial in Level1
     }
 
     public void SetMaxHealth(float maxHealth)
     {
         healthbar.maxValue = maxHealth;
+        //healthText.text = hc.Health + "/" + maxHealth;
     }
 
     public void UpdateHealthbar()
     {
         healthbar.value = hc.Health;
+        healthText.text = hc.Health + "/" + hc.MaxHealth;
     }
 
     public void SetMaxDashcharge(int maxCharges)
