@@ -235,7 +235,7 @@ public class PauseController : MonoBehaviour
                 {
                     MeleeController mc = FindObjectOfType<MeleeController>();
 
-                    if (mc.inHit && !paused)
+                    if (mc.GetHit() && !paused)
                     {
                         continue;
                     }
