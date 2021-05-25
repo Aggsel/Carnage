@@ -49,6 +49,14 @@ public class HealthController : MonoBehaviour
         }
     }
 
+    public float MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+    }
+
     public void ModifyCurrentHealth(float healthIncrease){
         currentHealth += healthIncrease;
         currentHealth = Mathf.Clamp(currentHealth, -1.0f, maxHealth);

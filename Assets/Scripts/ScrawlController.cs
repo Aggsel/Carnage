@@ -19,22 +19,21 @@ public class ScrawlController : MonoBehaviour
 
     private Material decal = null;
     private DecalProjector decalProjector = null;
-    public int act = 1;
+    private int act = 1;
 
     void Start()
     {
         decalProjector = GetComponent<DecalProjector>();
 
-        if (true /*temporary. If key exists*/)
+        if (PlayerPrefs.HasKey("Act"))
         {
-            //act = 1;
-            //act = key value
-            //find key value
+            act = PlayerPrefs.GetInt("Act");
         }
         else
         {
             act = 1;
-            //create key ?
+            PlayerPrefs.SetInt("Act", 1);
+            Debug.Log("Act has been set to 1");
         }
 
         switch (act)

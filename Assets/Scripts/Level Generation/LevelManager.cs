@@ -31,6 +31,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameEvent onRoomEnterFirst = null;
     [Tooltip("What event should be invoked when the player clears a room and the combat is complete.")]
     [SerializeField] private GameEvent onCombatComplete = null;
+    [Tooltip("What event should be invoked whenever the player enters a room and enemies spawn.")]
+    [SerializeField] private GameEvent onCombatStart = null;
 
     [Header("UI References")]
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
@@ -81,6 +83,15 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
+            {
+                PlayerPrefs.SetInt("Act", currentLevel);
+                Debug.Log("Act has been set to " + (currentLevel + 1));
+            }
+        }
+
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
@@ -113,6 +124,9 @@ public class LevelManager : MonoBehaviour
         ActivateNeighbors(spawnRoomLocation);
         UpdateProgressionUI();
         mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
+
+        FindObjectOfType<MovementController>().SetSpawnPoint(spawnRoomLocation * roomSize);
+
         OnFinishedGeneration.Invoke();
     }
 
@@ -185,7 +199,7 @@ public class LevelManager : MonoBehaviour
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
 
         newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, 
-        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, mapReference);
+        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, onCombatStart, mapReference);
 
         instantiatedRooms.Add(newRoom);
         

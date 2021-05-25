@@ -17,6 +17,8 @@ public class MeleeController : MonoBehaviour
         public int rayAmount;
         [Tooltip("The spread of the 'rayAmount' raycasts. High number means more distance between each ray, these two go hand in hand")] [Range(0.5f, 5.0f)]
         public float raySpread;
+        //[Tooltip("If you melee & it misses, this penaltyTime is added to the melee recharge")]
+        //public float penaltyTime;
     }
     #endregion
 
@@ -30,9 +32,8 @@ public class MeleeController : MonoBehaviour
     private KeyCode meleeKey = KeyCode.F;
     private Vector3 origin = Vector3.zero;
     private AudioManager am = null;
-
-    //[HideInInspector]
-    public bool inHit = false;
+    private bool inHit = false;
+    //private float penalty = 0.0f;
 
     private void Start ()
     {
@@ -55,14 +56,18 @@ public class MeleeController : MonoBehaviour
         PauseController.updateKeysFunction -= ReadKeybinds;
     }
 
+    public bool GetHit ()
+    {
+        return inHit;
+    }
+
     //main
     private void Update ()
     {
         origin = Camera.main.transform.position;
-
+        //penalty -= Time.deltaTime;
         MeleeInitiator();
 
-        //DEBUG VISUALS
         if(meleeVar.showDebug)
         {
             for (int i = -meleeVar.rayAmount; i < meleeVar.rayAmount; i++)
@@ -112,6 +117,7 @@ public class MeleeController : MonoBehaviour
                 else
                 {
                     //Debug.Log("THIS RAY HIT NOTHING");
+                    //penalty += meleeVar.penaltyTime;
                 }
             }
         }
@@ -142,7 +148,7 @@ public class MeleeController : MonoBehaviour
 
     private void MeleeInitiator()
     {
-        if (Input.GetKeyDown(meleeKey) && !inHit)
+        if (Input.GetKeyDown(meleeKey) && !inHit /*&& penalty <= 0.0f*/)
         {
             inHit = true;
 
