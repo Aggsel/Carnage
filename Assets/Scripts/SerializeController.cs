@@ -19,6 +19,7 @@ public class SerializeController : MonoBehaviour
 
     private PauseController pc;
     private string dir = "";
+    private int hideTutorial = 1; //1 is no (show it), 2 is yes (hide it)
 
     //[TextArea(15, 20)]
     //public string finLine;
@@ -29,6 +30,17 @@ public class SerializeController : MonoBehaviour
 
         string[] lines = null;
         dir = GetPreferenceDirectory();
+
+        //On gamestart get tutorial stuff
+        if(PlayerPrefs.GetInt("hideTutorial", 0) == 0)
+        {
+            PlayerPrefs.SetInt("hideTutorial", 1);
+            hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+        }
+        else
+        {
+            hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+        }
 
         //On gamestart load in or create preferences
         if (!CheckPreferenceFile(dir))
@@ -48,6 +60,20 @@ public class SerializeController : MonoBehaviour
             
             LoadPreferences(lines);
         }
+    }
+
+    //tutorial player prefs save
+    public void SetHideTutorial (int i)
+    {
+        hideTutorial = i;
+        PlayerPrefs.SetInt("hideTutorial", hideTutorial);
+        //Debug.Log("Saved as: " + hideTutorial);
+    }
+
+    public int GetHideTutorial ()
+    {
+        //Debug.Log("Loaded as: " + hideTutorial);
+        return hideTutorial;
     }
 
     #region preferences
