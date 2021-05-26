@@ -32,11 +32,12 @@ public class RageBehavior : EnemyBehavior
         chargeAttackState.SetBehaviour(this);
         postChargeAttack.SetBehaviour(this);
 
-        SetState(idleState);
+        SetState(chaseState);
     }
 
     protected override void Update() {
         base.Update();
+        Debug.Log(currentState);
     }
 
     public void AnimHookChargeStart(){
@@ -44,7 +45,7 @@ public class RageBehavior : EnemyBehavior
     }
 
     public void AnimHookChargeStop(){
-        SetState(idleState);
+        SetState(chaseState);
     }
 
     public void AnimHookAttack(){

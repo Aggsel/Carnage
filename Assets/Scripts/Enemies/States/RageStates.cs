@@ -125,11 +125,15 @@ namespace EnemyStates.Rage
                 pathRecalculationTimer = 0.0f;
             }
 
-            lineOfSightTimer += Time.deltaTime;
-            if(lineOfSightTimer >= lineOfSightFrequency){
-                if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange))
-                    behavior.SetState(behavior.preChargeAttack);
-                lineOfSightTimer = 0.0f;
+            if(timer > 2.0f){
+                Debug.Log("Timer was more!");
+                lineOfSightTimer += Time.deltaTime;
+                if(lineOfSightTimer >= lineOfSightFrequency){
+                    if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange))
+                        Debug.Log("Going to attack.");
+                        behavior.SetState(behavior.preChargeAttack);
+                    lineOfSightTimer = 0.0f;
+                }
             }
 
             if(Vector3.SqrMagnitude(behavior.GetTargetPosition() - behavior.transform.position) < attackRangeSqrd)
@@ -214,16 +218,27 @@ namespace EnemyStates.Rage
         Vector3 targetPosition = new Vector3(0,0,0);
         private float stoppingDistanceSqrd = 0.0f;
 
+        private float previousAngularSpeed = 0.0f;
+
+        private float timeBeingSlow = 0.0f;
+        private float standingStillTimeout = 0.7f;
+        private float velocityThreshold = 0.2f;
+
         public RageChargeAttack() : base(){
             stoppingDistanceSqrd = stoppingDistance * stoppingDistance;
         }
 
         public override void OnStateEnter(){
             base.OnStateEnter();
+            
+            agent.enabled = false;
 
             previousSpeed = agent.speed;
             agent.speed = movementSpeed;
-            agent.isStopped = false;
+
+            previousAngularSpeed = agent.angularSpeed;
+            agent.angularSpeed = 0.0f;
+            // agent.isStopped = false;
 
             RotateTowardsTarget(behavior.GetTargetPosition());
             RaycastHit hit;
@@ -236,31 +251,52 @@ namespace EnemyStates.Rage
                 targetPosition = behavior.transform.position + (behavior.GetTargetPosition() - behavior.transform.position).normalized * chargeLength;
             }
 
-            agent.SetDestination(targetPosition);
+            agent.transform.rotation = Quaternion.LookRotation(new Vector3(targetPosition.x - behavior.transform.position.x, 0, targetPosition.z - behavior.transform.position.z));
+            // agent.SetDestination(targetPosition);
+
             Debug.DrawLine(behavior.transform.position, targetPosition, Color.yellow, 2.0f);
         }
 
         public override void OnStateExit(){
             base.OnStateExit();
+            agent.enabled = true;
             agent.speed = previousSpeed;
+            agent.angularSpeed = previousAngularSpeed;
             anim.SetBool("charge", false);
         }
 
         public override void Update(){
             base.Update();
 
+            behavior.transform.position += behavior.transform.forward * Time.deltaTime * movementSpeed;
+
+            RaycastHit hit;
+            if (!Physics.Raycast(behavior.transform.position, -behavior.transform.up, out hit, 2.0f, ~enemyLayerMask)){
+                behavior.transform.position -= behavior.transform.forward * Time.deltaTime * movementSpeed * 5.0f;
+                Debug.Log("Switched because enemy tried to charge in the air.");
+                behavior.SetState(behavior.postChargeAttack);
+            }
+
+            if (Physics.Raycast(behavior.transform.position, behavior.transform.forward, out hit, 3.0f, ~enemyLayerMask)){
+                Debug.Log("Switched because hit wall or something lmao.");
+                behavior.SetState(behavior.postChargeAttack);
+            }
+
             //Check if player is in the way. If hit, damage the player and become stunned.
             if(Attack()){
+                Debug.Log("Switched because attack.");
                 behavior.SetState(behavior.postChargeAttack);
                 return;
             }
 
             if(Vector3.SqrMagnitude(behavior.transform.position - targetPosition) < stoppingDistance){
-                behavior.SetState(behavior.idleState);
+                Debug.Log("Switched because close to target.");
+                behavior.SetState(behavior.postChargeAttack);
             }
 
             if(this.timer > timeoutDuration){
-                behavior.SetState(behavior.chaseState);
+                Debug.Log("Switched because timeout.");
+                behavior.SetState(behavior.postChargeAttack);
             }
         }
 
