@@ -11,9 +11,11 @@ public class MainMenu : MonoBehaviour
 
     private bool mainMenu = false;
     private string version = null;
+    private SerializeController sc = null;
 
     private void Start ()
     {
+        sc = FindObjectOfType<SerializeController>();
         Time.timeScale = 1.0f;
 
         version = Application.version;
@@ -23,15 +25,22 @@ public class MainMenu : MonoBehaviour
         mainMenu = SceneManager.GetActiveScene().buildIndex == 0 ? true : false;
     }
 
-    /*private void OnGUI ()
-    {
-        GUI.Label(new Rect(Screen.width - 40, 10, 70, 50), "v " + version.ToString());
-    }*/
-
     #region mainMenu crap
     public void StartButton ()
     {
-        SceneManager.LoadScene(1);
+        if(sc.GetFirstTime() == 1)
+        {
+            sc.SetFirstTime(2);
+            SceneManager.LoadScene("Level1");
+        }
+        else if (sc.GetFirstTime() == 2)
+        {
+            SceneManager.LoadScene("Actual_Hub");
+        }
+        else
+        {
+            Debug.LogWarning("This should not happen!");
+        }
     }
 
     public void ExitButton ()
@@ -59,5 +68,4 @@ public class MainMenu : MonoBehaviour
         objects[0].SetActive(true);
     }
     #endregion
-
 }
