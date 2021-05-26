@@ -101,6 +101,9 @@ public class MovementController : MonoBehaviour
     private AudioManager am = null;
     private bool hasLanded = false;
 
+    private Vector3 spawnPoint = Vector3.zero;
+    private bool spawnSet = false;
+
     private void Start ()
     {
         am = AudioManager.Instance;
@@ -152,6 +155,7 @@ public class MovementController : MonoBehaviour
     //script
     private void Update ()
     {
+        CheckPlayerPos(); //reseting player if outside map
         Movement();
         Dash();
         CameraRotation();
@@ -160,6 +164,27 @@ public class MovementController : MonoBehaviour
         if (charge < 3.0f)
         {
             Recharge();
+        }
+    }
+
+    public void SetSpawnPoint(Vector3 pos) //for respawning if falling of the world
+    {
+        //Debug.Log("SpawnPos is: " + pos);
+        spawnPoint = pos;
+        spawnSet = true;
+    }
+
+    private void CheckPlayerPos ()
+    {
+        if(spawnSet)
+        {
+            if (transform.position.y < -5f)
+            {
+                Debug.LogWarning("Player had an unusial y-pos and is teleported back to spawn");
+                cc.enabled = false;
+                transform.position = spawnPoint;
+                cc.enabled = true;
+            }
         }
     }
 

@@ -31,6 +31,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameEvent onRoomEnterFirst = null;
     [Tooltip("What event should be invoked when the player clears a room and the combat is complete.")]
     [SerializeField] private GameEvent onCombatComplete = null;
+    [Tooltip("What event should be invoked whenever the player enters a room and enemies spawn.")]
+    [SerializeField] private GameEvent onCombatStart = null;
 
     [Header("UI References")]
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
@@ -81,6 +83,15 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
+            {
+                PlayerPrefs.SetInt("Act", currentLevel);
+                Debug.Log("Act has been set to " + (currentLevel + 1));
+            }
+        }
+
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
@@ -113,6 +124,9 @@ public class LevelManager : MonoBehaviour
         ActivateNeighbors(spawnRoomLocation);
         UpdateProgressionUI();
         mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
+
+        FindObjectOfType<MovementController>().SetSpawnPoint(playerReference.transform.position/*spawnRoomLocation * roomSize*/);
+
         OnFinishedGeneration.Invoke();
     }
 
@@ -139,38 +153,16 @@ public class LevelManager : MonoBehaviour
     }
 
     public void ActivateNeighbors(Vector2Int pos){
-        //We can only do this fancy depth check if no doors have been placed randomly.
-        if(levels[currentLevel].GetRandomDoorIterations() == 0){
-            for (int y = -2; y <= 2; y++){
-                for (int x = -2; x <= 2; x++){
-                    int posX = pos.x + x;
-                    int posY = pos.y + y;
-                    if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
-                        continue;
-                    if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
-                        this.grid[posX,posY]?.gameObject.SetActive(false);
-                    else
-                        this.grid[posX,posY]?.gameObject.SetActive(true);
-                }
-            }
-        }
-        else{   //TODO 
-            for (int y = 0; y < this.grid.GetLength(1); y++){
-                for (int x = 0; x < this.grid.GetLength(0); x++){
-                    if(x >= pos.x - 1 && x <= pos.x + 1 && y <= pos.y + 1 && y >= pos.y - 1)
-                        continue;
-                    this.grid[x,y]?.gameObject.SetActive(false);
-                }
-            }
-
-            for (int y = -1; y < 2; y++){
-                for (int x = -1; x < 2; x++){
-                    Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
-                    if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
-                        if(this.grid[newCoord.x,newCoord.y] != null && !this.grid[newCoord.x,newCoord.y].gameObject.activeInHierarchy)
-                            this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
-                    }
-                }
+        for (int y = -2; y <= 2; y++){
+            for (int x = -2; x <= 2; x++){
+                int posX = pos.x + x;
+                int posY = pos.y + y;
+                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                    continue;
+                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
+                    this.grid[posX,posY]?.gameObject.SetActive(false);
+                else
+                    this.grid[posX,posY]?.gameObject.SetActive(true);
             }
         }
     }
@@ -207,7 +199,7 @@ public class LevelManager : MonoBehaviour
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
 
         newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, 
-        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, mapReference);
+        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, onCombatStart, mapReference);
 
         instantiatedRooms.Add(newRoom);
         
@@ -267,9 +259,8 @@ public class MazeGenerator{
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
         PlaceSpecialRooms();
-        PlaceRandomDoors();
-        //Maze generation is done
-        // Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
+        if(randomDoorIterations > 0)
+            PlaceRandomDoors();
     }
 
     private void MazeCrawl(Vector2Int pos, Vector2Int dir, int depth){
@@ -315,6 +306,43 @@ public class MazeGenerator{
                     AddDoorToMask(newCoord, randDir * -1);
                 }
             }
+        }
+        RecalculateDepth(initPosition);
+    }
+
+    private void RecalculateDepth(Vector2Int pos, int depth = 0){
+        if(depth == 0){
+            this.maxDepthReached = 0;
+            for (int y = 0; y < grid.GetLength(1); y++){
+                for (int x = 0; x < grid.GetLength(0); x++){
+                    this.grid[x,y].visited = false;
+                }
+            }
+        }
+
+        if(this.grid[pos.x, pos.y].visited)
+            return;
+
+        this.maxDepthReached = this.maxDepthReached < depth ? depth : this.maxDepthReached;
+        this.grid[pos.x, pos.y].depth = Mathf.Min(grid[pos.x, pos.y].depth, depth);
+        this.grid[pos.x,pos.y].visited = true;
+
+        int mask = this.grid[pos.x, pos.y].doorMask;
+
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+        if((mask & 0b0001) == 0b0001)
+            neighbors.Add(new Vector2Int(0,1));
+        if((mask & 0b0010) == 0b0010)
+            neighbors.Add(new Vector2Int(1,0));
+        if((mask & 0b0100) == 0b0100)
+            neighbors.Add(new Vector2Int(0,-1));
+        if((mask & 0b1000) == 0b1000)
+            neighbors.Add(new Vector2Int(-1,0));
+
+        while(neighbors.Count > 0){
+            Vector2Int newPos = new Vector2Int(pos.x + neighbors[0].x, pos.y + neighbors[0].y);
+            neighbors.RemoveAt(0);
+            RecalculateDepth(newPos, depth + 1);
         }
     }
 

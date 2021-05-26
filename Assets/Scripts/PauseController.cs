@@ -73,6 +73,7 @@ public struct KeybindTexts
 public class PauseController : MonoBehaviour
 {
     [Header("Set things, dont touch")]
+    [SerializeField] private GameObject bulletcases = null;
     [SerializeField] private VolumeProfile profile = null;
     [SerializeField] private MovementController mc = null;
     [Tooltip("Programmer stuff, no touchy")]
@@ -226,35 +227,34 @@ public class PauseController : MonoBehaviour
     {
         paused = yes;
 
-        for (int i = 0; i < scripts.Length; i++)
+        if(SceneManager.GetActiveScene().name != "Actual_Hub")
         {
-            if(i == 3)
+            for (int i = 0; i < scripts.Length; i++)
             {
-                MeleeController mc = FindObjectOfType<MeleeController>();
-
-                if (mc.inHit && !paused)
+                if (i == 3)
                 {
-                    continue;
+                    MeleeController mc = FindObjectOfType<MeleeController>();
+
+                    if (mc.GetHit() && !paused)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        scripts[i].enabled = !paused;
+                    }
                 }
                 else
                 {
                     scripts[i].enabled = !paused;
                 }
             }
-            else
-            {
-                scripts[i].enabled = !paused;
-            }
-        }
-
-        /*if(paused)
-        {
-            UpdateUi(1);
         }
         else
         {
-            UpdateUi(0);
-        }*/
+            //if in hub, only change movement
+            scripts[1].enabled = !paused;
+        }
 
         Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
         LockCursor(paused);
@@ -483,8 +483,27 @@ public class PauseController : MonoBehaviour
     //Tutorial
     public void ButtonTutorialQuestion ()
     {
-        UpdatePause(true);
-        UpdateUi(5);
+        if(sc == null)
+            sc = FindObjectOfType<SerializeController>();
+
+        if (tc == null)
+            tc = FindObjectOfType<TutorialController>();
+
+        //Debug.Log("hide is: " + sc.GetHideTutorial());
+
+        if(sc.GetHideTutorial() == 1) //show
+        {
+            UpdatePause(true);
+            UpdateUi(5);
+        }
+        else if(sc.GetHideTutorial() == 2) //hide
+        {
+            ButtonTutorialNo();
+        }
+        else
+        {
+            Debug.LogWarning("Tutorial playerPrefs error, this should not happen!");
+        }
     }
 
     public void ButtonTutorialYes ()
@@ -499,6 +518,19 @@ public class PauseController : MonoBehaviour
         UpdatePause(false);
         UpdateUi(0);
         tc.TriggerNoTutorial();
+    }
+
+    public void ButtonTutorialNoDontShowAgain()
+    {
+        UpdatePause(false);
+        UpdateUi(0);
+        sc.SetHideTutorial(2);
+        tc.TriggerNoTutorial();
+    }
+
+    public void ButtonEnableTutorial() //button outside of options loop & saving
+    {
+        sc.SetHideTutorial(1);
     }
 
     //main pause
@@ -589,12 +621,15 @@ public class PauseController : MonoBehaviour
         switch ((int)slider.value)
         {
             case 0:
+                bulletcases.SetActive(false);
                 optionAssignments.graphicsValue.text = "Low";
                 break;
             case 1:
+                bulletcases.SetActive(true);
                 optionAssignments.graphicsValue.text = "Medium";
                 break;
             case 2:
+                bulletcases.SetActive(true);
                 optionAssignments.graphicsValue.text = "High";
                 break;
             default:

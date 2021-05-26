@@ -49,9 +49,17 @@ public class HealthController : MonoBehaviour
         }
     }
 
+    public float MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+    }
+
     public void ModifyCurrentHealth(float healthIncrease){
         currentHealth += healthIncrease;
-        currentHealth = Mathf.Clamp(currentHealth, -1.0f, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth, -0.5f, maxHealth);
         uiController.UpdateHealthbar();
         CheckDeathCriteria();
     }
@@ -109,9 +117,10 @@ public class HealthController : MonoBehaviour
             deathDisableScripts[i].enabled = false;
         }
 
+        Time.timeScale = 0.5f;
         weaponObj.SetActive(false);
         dead = true;
-        uiController.StartCoroutine(uiController.WhiteFade(true, 1f));
+        uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
         //am.PlaySound(am.playerDeath); //detta ljudet är balle
         StartCoroutine("DeathEffects");
@@ -122,6 +131,7 @@ public class HealthController : MonoBehaviour
         //uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
 
         yield return new WaitForSeconds(3f);
+        Time.timeScale = 1.0f;
         SceneManager.LoadScene(1);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class AlertMessage{
@@ -36,6 +37,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider healthbar = null;
     [SerializeField] private Slider dashCharges = null;
     [SerializeField] private Slider overheatbar = null;
+    [SerializeField] private TextMeshProUGUI healthText = null;
     [SerializeField] private GameObject winText = null;
     [SerializeField] private Renderer targetRenderer = null;
     [SerializeField] private Image fadeImage = null;
@@ -56,29 +58,40 @@ public class UIController : MonoBehaviour
     [Tooltip("When very short texts using dynamic duration is used, what will be the shortest duration allowed?")]
     [SerializeField] private float minTextDisplayDuration = 1.0f;
     [Tooltip("When no other animation curve is supplied to the text, this is the backup one to use.")]
-    [SerializeField] private AnimationCurve defaultAnimationCurve;
+    [SerializeField] private AnimationCurve defaultAnimationCurve = new AnimationCurve();
+
+    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
+    private bool alertActive = false;
 
     private void OnEnable()
     {
         _propBlock = new MaterialPropertyBlock();
     }
 
-    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
-    private bool alertActive = false;
-
     private void Start ()
     {
         StartCoroutine(Counter());
+        StartCoroutine(WhiteFade(false, 0.5f));
     }
 
     public void SetMaxHealth(float maxHealth)
     {
         healthbar.maxValue = maxHealth;
+        //healthText.text = hc.Health + "/" + maxHealth;
     }
 
     public void UpdateHealthbar()
     {
+        float hp = hc.Health;
+
         healthbar.value = hc.Health;
+        healthText.text = hp + "/" + hc.MaxHealth;
+
+        if (hp <= 0.0f)
+        {
+            healthbar.value = hc.Health;
+            healthText.text = "0" + "/" + hc.MaxHealth;
+        }
     }
 
     public void SetMaxDashcharge(int maxCharges)
@@ -101,7 +114,7 @@ public class UIController : MonoBehaviour
         if(curve == null)
             curve = defaultAnimationCurve;
         if(duration < 0.0f)
-            duration = Mathf.Max(1.0f, (text.Split(' ').Length / 3.0f) + 0.5f);
+            duration = Mathf.Max(minTextDisplayDuration, text.Split(' ').Length / wordsPerSecond);
         if(color == null)
             color = winText.GetComponent<TMPro.TextMeshProUGUI>().color;
 
@@ -192,17 +205,18 @@ public class UIController : MonoBehaviour
     //white effect for fading in and out
     public IEnumerator WhiteFade (bool fadeIn, float time) //fadeIn is if its out or in, time should be around 1
     {
-        float elapsedTime = 0.0f;
         fadeImage.gameObject.SetActive(true);
+        float fade = 0.0f;
 
         if (fadeIn)
         {
             fadeImage.color = new Color(1, 1, 1, 0);
 
-            while (elapsedTime < time)
+            while (fadeImage.color.a < 1.0f)
             {
-                fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime * time);
-                elapsedTime += Time.deltaTime * time;
+                fade = fadeImage.color.a + (Time.deltaTime * time);
+                fadeImage.color = new Color(1, 1, 1, fade);
+                //fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 1), Time.deltaTime * time);
                 yield return null;
             }
         }
@@ -210,12 +224,15 @@ public class UIController : MonoBehaviour
         {
             fadeImage.color = new Color(1, 1, 1, 1);
 
-            while (elapsedTime < time)
+            while (fadeImage.color.a > 0.0f)
             {
-                fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 0), Time.deltaTime * time);
-                elapsedTime += Time.deltaTime * time;
+                fade = fadeImage.color.a - (Time.deltaTime * time);
+                fadeImage.color = new Color(1, 1, 1, fade);
+                //fadeImage.color = Color.Lerp(fadeImage.color, new Color(1, 1, 1, 0), Time.deltaTime * time);
                 yield return null;
             }
+
+            fadeImage.gameObject.SetActive(false);
         }
     }
 }

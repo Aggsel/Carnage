@@ -27,6 +27,7 @@ public class RoomManager : MonoBehaviour
     
     private GameEvent onRoomEnterFirstGameEvent;
     private GameEvent onCombatCompleteGameEvent;
+    private GameEvent onCombatStartGameEvent;
 
     private UIController uic;
     private AudioManager am;
@@ -74,6 +75,7 @@ public class RoomManager : MonoBehaviour
             OpenDoors(false);
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+            onCombatStartGameEvent?.Invoke();
         }else{  //No enemies were spawned, consider the room completed.
             parentLevelManager?.IncrementCompletedRooms();
         }
@@ -99,6 +101,7 @@ public class RoomManager : MonoBehaviour
             if(spawnPrefab != null) {
                 GameObject newItem = Instantiate(spawnPrefab) as GameObject;
                 newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+                newItem.transform.SetParent(transform, true);
 
                 //trail stuff
                 newItem.SetActive(false);
@@ -117,7 +120,7 @@ public class RoomManager : MonoBehaviour
 
     public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, 
     LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f,
-    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, MapDrawer mapReference = null){
+    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, GameEvent onCombatStart = null, MapDrawer mapReference = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
@@ -127,6 +130,7 @@ public class RoomManager : MonoBehaviour
         this.difficultyMultiplier = difficultyMultiplier;
         this.onRoomEnterFirstGameEvent = onRoomEnterFirstTime;
         this.onCombatCompleteGameEvent = onCombatComplete;
+        this.onCombatStartGameEvent = onCombatStart;
         this.mapReference = mapReference;
         MergeMeshes();
     }
@@ -202,6 +206,7 @@ public class RoomManager : MonoBehaviour
         for (int j = 0; j < validMaterials.Length; j++){
             GameObject roomMesh = new GameObject(string.Format("RoomMesh {0}", j), typeof(MeshFilter), typeof(MeshRenderer));
             roomMesh.transform.SetParent(this.transform);
+            roomMesh.isStatic = true;
 
             Quaternion oldRot = transform.rotation;
             Vector3 oldPos = transform.position;

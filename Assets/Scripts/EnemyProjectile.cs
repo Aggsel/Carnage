@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class EnemyProjectile : MonoBehaviour
 {
-    [Tooltip("The speed of the projectile....")]
-    [SerializeField] private float speedMin, speedMax = 30.0f;
+    [Tooltip("The min speed of the projectile....")]
+    [SerializeField] private float speedMin = 30.0f;
+    [Tooltip("The max speed of the projectile....")]
+    [SerializeField] private float speedMax = 60.0f;
     [Tooltip("For fast the projectile accelerates per second")]
     [SerializeField] private float accelerationSpeed = 5.0f;
     [SerializeField] private float damage = 2.0f;
