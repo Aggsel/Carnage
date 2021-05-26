@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace EnemyStates.Rage
 {
@@ -124,15 +125,18 @@ namespace EnemyStates.Rage
                 agent.SetDestination(behavior.GetTargetPosition());
                 pathRecalculationTimer = 0.0f;
             }
+        
+            lineOfSightTimer += Time.deltaTime;
 
-            if(timer > 2.0f){
-                Debug.Log("Timer was more!");
-                lineOfSightTimer += Time.deltaTime;
+            NavMeshHit hit;
+            NavMesh.FindClosestEdge(behavior.transform.position, out hit, NavMesh.AllAreas);
+            if(hit.distance > 0.5f){
                 if(lineOfSightTimer >= lineOfSightFrequency){
-                    if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange))
+                    if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange)){
                         Debug.Log("Going to attack.");
                         behavior.SetState(behavior.preChargeAttack);
-                    lineOfSightTimer = 0.0f;
+                        lineOfSightTimer = 0.0f;
+                    }
                 }
             }
 
