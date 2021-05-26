@@ -21,6 +21,7 @@ public class TutorialController : MonoBehaviour
     private int tutorialIndex = -1;
 
     private Color startColor = new Color(0, 0, 0, 0);
+    private bool tutorialOn = false;
 
     private void Start()
     {
@@ -88,13 +89,20 @@ public class TutorialController : MonoBehaviour
         }
     }
 
+    public bool GetTutorial ()
+    {
+        return tutorialOn;
+    }
+
     public void TriggerNoTutorial()
     {
+        tutorialOn = false;
         tutorialObject.SetActive(false);
     }
 
     public void TriggerTutorial ()
     {
+        tutorialOn = true;
         tutorialObject.SetActive(true);
         TriggerNextTutorial();
     }
