@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
 
 [Serializable]
@@ -19,7 +20,10 @@ public class SerializeController : MonoBehaviour
 
     private PauseController pc;
     private string dir = "";
+
+    //simple player prefs saving
     private int hideTutorial = 1; //1 is no (show it), 2 is yes (hide it)
+    private int firstTime = 1; //1 is first time, 2 is not first time
 
     private void OnEnable()
     {
@@ -36,19 +40,45 @@ public class SerializeController : MonoBehaviour
         }
         else
         {
-            hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            if(PlayerPrefs.GetInt("hideTutorial") == 1)
+            {
+                PlayerPrefs.SetInt("hideTutorial", 2);
+                hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            }
+            else if (PlayerPrefs.GetInt("hideTutorial") == 2)
+            {
+                hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            }
+            else
+            {
+                Debug.LogWarning("This should not happen!");
+            }
         }
 
-        //On gamestart load in or create preferences
-        if (!CheckPreferenceFile(dir))
+        //First time playing
+        if (PlayerPrefs.GetInt("firstTime", 0) == 0)
         {
-            Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
-            CreateNewPreferences();
+            PlayerPrefs.SetInt("firstTime", 1);
+            firstTime = PlayerPrefs.GetInt("firstTime");
         }
         else
         {
-            lines = System.IO.File.ReadAllLines(dir);
-            LoadPreferences(lines);
+            firstTime = PlayerPrefs.GetInt("firstTime");
+        }
+
+        //On gamestart load in or create preferences
+        if(SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            if (!CheckPreferenceFile(dir))
+            {
+                Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
+                CreateNewPreferences();
+            }
+            else
+            {
+                lines = System.IO.File.ReadAllLines(dir);
+                LoadPreferences(lines);
+            }
         }
     }
 
@@ -57,17 +87,24 @@ public class SerializeController : MonoBehaviour
     {
         hideTutorial = i;
         PlayerPrefs.SetInt("hideTutorial", hideTutorial);
-        //Debug.Log("Saved as: " + hideTutorial);
     }
 
     public int GetHideTutorial ()
     {
-        //Debug.Log("Loaded as: " + hideTutorial);
         return hideTutorial;
     }
 
     //first time playing
+    public void SetFirstTime (int i)
+    {
+        firstTime = i;
+        PlayerPrefs.SetInt("firstTime", firstTime);
+    }
 
+    public int GetFirstTime ()
+    {
+        return firstTime;
+    }
 
     #region preferences
     private void CreateNewPreferences()
