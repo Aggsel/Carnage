@@ -111,6 +111,15 @@ public class MovementController : MonoBehaviour
         cap = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
         speed = movementVar.runSpeed;
+
+        //think this fixed motionblur bug
+        if (!profile.TryGet<MotionBlur>(out var motion))
+        {
+            Debug.LogWarning("THIS SHOULD NOT HAPPEN");
+            motion = profile.Add<MotionBlur>(false);
+        }
+
+        motion.active = false;
     }
 
     #region options related
