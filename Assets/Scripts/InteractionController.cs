@@ -14,9 +14,19 @@ public class InteractionController : MonoBehaviour
 
     private KeyCode interactionKey = KeyCode.E;
     private bool interact = false;
+    private UIController uc = null;
+    private MovementController mc = null;
+    private PauseController pc = null;
 
     //hardcoded im so sorry
     private int interactLayer = 11;
+
+    private void Start ()
+    {
+        uc = FindObjectOfType<UIController>();
+        mc = FindObjectOfType<MovementController>();
+        pc = FindObjectOfType<PauseController>();
+    }
 
     private void ReadKeybinds(KeyBindAsignments keys)
     {
@@ -39,6 +49,16 @@ public class InteractionController : MonoBehaviour
         interactText.text = text;
     }
 
+    private IEnumerator InteractionDelay ()
+    {
+        mc.enabled = false;
+        pc.enabled = false;
+        uc.StartCoroutine(uc.WhiteFade(true, 1f));
+
+        yield return new WaitForSeconds(1f);
+        SceneManager.LoadScene("Level1");
+    }
+
     private void LateUpdate ()
     {
         RaycastHit hit;
@@ -55,7 +75,7 @@ public class InteractionController : MonoBehaviour
 
                 if (Input.GetKeyDown(interactionKey))
                 {
-                    SceneManager.LoadScene("Level1");
+                    StartCoroutine(InteractionDelay());
                 }
             }
         }
