@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
 
 [Serializable]
@@ -20,8 +21,9 @@ public class SerializeController : MonoBehaviour
     private PauseController pc;
     private string dir = "";
 
-    //[TextArea(15, 20)]
-    //public string finLine;
+    //simple player prefs saving
+    private int hideTutorial = 1; //1 is no (show it), 2 is yes (hide it)
+    private int firstTime = 1; //1 is first time, 2 is not first time
 
     private void OnEnable()
     {
@@ -30,24 +32,78 @@ public class SerializeController : MonoBehaviour
         string[] lines = null;
         dir = GetPreferenceDirectory();
 
-        //On gamestart load in or create preferences
-        if (!CheckPreferenceFile(dir))
+        //On gamestart get tutorial stuff
+        if(PlayerPrefs.GetInt("hideTutorial", 0) == 0)
         {
-            Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
-            CreateNewPreferences();
+            PlayerPrefs.SetInt("hideTutorial", 1);
+            hideTutorial = PlayerPrefs.GetInt("hideTutorial");
         }
         else
         {
-            lines = System.IO.File.ReadAllLines(dir);
-
-            //before load check for weird shit
-            /*for (int i = 0; i < lines.Length; i++)
+            if(PlayerPrefs.GetInt("hideTutorial") == 1)
             {
-                lines[i] = Regex.Replace(lines[i], "[^\\w\\._]", "");
-            }*/
-            
-            LoadPreferences(lines);
+                PlayerPrefs.SetInt("hideTutorial", 2);
+                hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            }
+            else if (PlayerPrefs.GetInt("hideTutorial") == 2)
+            {
+                hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            }
+            else
+            {
+                Debug.LogWarning("This should not happen!");
+            }
         }
+
+        //First time playing
+        if (PlayerPrefs.GetInt("firstTime", 0) == 0)
+        {
+            PlayerPrefs.SetInt("firstTime", 1);
+            firstTime = PlayerPrefs.GetInt("firstTime");
+        }
+        else
+        {
+            firstTime = PlayerPrefs.GetInt("firstTime");
+        }
+
+        //On gamestart load in or create preferences
+        if(SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            if (!CheckPreferenceFile(dir))
+            {
+                Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
+                CreateNewPreferences();
+            }
+            else
+            {
+                lines = System.IO.File.ReadAllLines(dir);
+                LoadPreferences(lines);
+            }
+        }
+    }
+
+    //tutorial player prefs save
+    public void SetHideTutorial (int i)
+    {
+        hideTutorial = i;
+        PlayerPrefs.SetInt("hideTutorial", hideTutorial);
+    }
+
+    public int GetHideTutorial ()
+    {
+        return hideTutorial;
+    }
+
+    //first time playing
+    public void SetFirstTime (int i)
+    {
+        firstTime = i;
+        PlayerPrefs.SetInt("firstTime", firstTime);
+    }
+
+    public int GetFirstTime ()
+    {
+        return firstTime;
     }
 
     #region preferences

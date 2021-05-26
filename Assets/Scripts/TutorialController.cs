@@ -19,7 +19,6 @@ public class TutorialController : MonoBehaviour
     private bool skipTutorial = false; //save this
     private PauseController pc;
     private int tutorialIndex = -1;
-    private int sceneIndex = 0;
 
     private Color startColor = new Color(0, 0, 0, 0);
 
@@ -27,14 +26,13 @@ public class TutorialController : MonoBehaviour
     {
         tutorialObject.SetActive(false);
         startColor = nextText.color;
-        sceneIndex = SceneManager.GetActiveScene().buildIndex;
         pc = GetComponent<PauseController>();
 
         tutorialIndex = -1;
         tutorialText.text = "";
         previousText.color = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
-        if (!skipTutorial && sceneIndex == 1)
+        if (!skipTutorial && SceneManager.GetActiveScene().name == "Level1")
         {
             pc.ButtonTutorialQuestion();
         }
