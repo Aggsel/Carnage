@@ -188,10 +188,10 @@ MonoBehaviour:
     maximumLODLevelQualityLevel: 0
     materialQuality: 0
   m_RenderPipelineSettings:
-    supportShadowMask: 1
+    supportShadowMask: 0
     supportSSR: 0
     supportSSAO: 1
-    supportSubsurfaceScattering: 1
+    supportSubsurfaceScattering: 0
     increaseSssSampleCount: 0
     supportVolumetrics: 1
     increaseResolutionOfVolumetrics: 0
@@ -288,7 +288,7 @@ MonoBehaviour:
       dynResType: 1
       upsampleFilter: 1
       forceResolution: 0
-      forcedPercentage: 100
+      forcedPercentage: 10
     lowresTransparentSettings:
       enabled: 1
       checkerboardDepthBuffer: 1
@@ -310,10 +310,10 @@ MonoBehaviour:
       - 13
       DoFResolution: 040000000200000001000000
       DoFHighQualityFiltering: 000101
-      MotionBlurSampleCount: 0c0000000c0000000c000000
-      BloomRes: 020000000200000002000000
-      BloomHighQualityFiltering: 010101
-      ChromaticAberrationMaxSamples: 0c0000000c0000000c000000
+      MotionBlurSampleCount: 040000000600000008000000
+      BloomRes: 040000000400000004000000
+      BloomHighQualityFiltering: 000000
+      ChromaticAberrationMaxSamples: 06000000080000000c000000
     lightSettings:
       useContactShadow:
         m_Values: 000000
