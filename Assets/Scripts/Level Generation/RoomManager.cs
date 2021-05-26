@@ -101,6 +101,7 @@ public class RoomManager : MonoBehaviour
             if(spawnPrefab != null) {
                 GameObject newItem = Instantiate(spawnPrefab) as GameObject;
                 newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+                newItem.transform.SetParent(transform, true);
 
                 //trail stuff
                 newItem.SetActive(false);
@@ -205,6 +206,7 @@ public class RoomManager : MonoBehaviour
         for (int j = 0; j < validMaterials.Length; j++){
             GameObject roomMesh = new GameObject(string.Format("RoomMesh {0}", j), typeof(MeshFilter), typeof(MeshRenderer));
             roomMesh.transform.SetParent(this.transform);
+            roomMesh.isStatic = true;
 
             Quaternion oldRot = transform.rotation;
             Vector3 oldPos = transform.position;

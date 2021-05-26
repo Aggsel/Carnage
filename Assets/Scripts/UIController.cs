@@ -60,18 +60,18 @@ public class UIController : MonoBehaviour
     [Tooltip("When no other animation curve is supplied to the text, this is the backup one to use.")]
     [SerializeField] private AnimationCurve defaultAnimationCurve = new AnimationCurve();
 
+    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
+    private bool alertActive = false;
+
     private void OnEnable()
     {
         _propBlock = new MaterialPropertyBlock();
     }
 
-    private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
-    private bool alertActive = false;
-
     private void Start ()
     {
         StartCoroutine(Counter());
-        StartCoroutine(WhiteFade(false, 3f));
+        StartCoroutine(WhiteFade(false, 0.5f));
     }
 
     public void SetMaxHealth(float maxHealth)
@@ -82,8 +82,16 @@ public class UIController : MonoBehaviour
 
     public void UpdateHealthbar()
     {
+        float hp = hc.Health;
+
         healthbar.value = hc.Health;
-        healthText.text = hc.Health + "/" + hc.MaxHealth;
+        healthText.text = hp + "/" + hc.MaxHealth;
+
+        if (hp <= 0.0f)
+        {
+            healthbar.value = hc.Health;
+            healthText.text = "0" + "/" + hc.MaxHealth;
+        }
     }
 
     public void SetMaxDashcharge(int maxCharges)

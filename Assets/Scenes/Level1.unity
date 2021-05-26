@@ -210,18 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a257ac74d1fc94a45989e65215663902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &714681747 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 714681747, guid: 3c485f711dcf71345a90f25b1954812b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1170317626}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1170317626
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -395,7 +383,7 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 0
   m_AreaLightShape: 0
-  m_Intensity: 0.2
+  m_Intensity: 0.15
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -498,7 +486,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0.15
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -599,7 +587,7 @@ MonoBehaviour:
   m_PointlightHDType: 0
   m_SpotLightShape: 0
   m_AreaLightShape: 0
-  m_Intensity: 0.2
+  m_Intensity: 0.15
   m_EnableSpotReflector: 0
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -702,7 +690,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0.15
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -882,7 +870,12 @@ PrefabInstance:
     - target: {fileID: 1420478635511701220, guid: d07a2373103de454984b393284a88386,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.88
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1420478636933904083, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: far clip plane
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 2099106581458710494, guid: d07a2373103de454984b393284a88386,
         type: 3}
@@ -953,6 +946,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4158066616121671786, guid: d07a2373103de454984b393284a88386,
+        type: 3}
+      propertyPath: far clip plane
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4158066616322069817, guid: d07a2373103de454984b393284a88386,
         type: 3}
@@ -1052,7 +1050,7 @@ PrefabInstance:
     - target: {fileID: 4158066617535324497, guid: d07a2373103de454984b393284a88386,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4158066617535324497, guid: d07a2373103de454984b393284a88386,
         type: 3}
@@ -1236,27 +1234,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d07a2373103de454984b393284a88386, type: 3}
---- !u!1 &1531368468 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6285418994871541453, guid: 3c485f711dcf71345a90f25b1954812b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1170317626}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1531368470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1531368468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4016cdc0def988b49b629567f5fd2127, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onCombatEnter: {fileID: 11400000, guid: e8f8b655958da044ab3106dfb7e89bd8, type: 2}
-  onCombatComplete: {fileID: 11400000, guid: e73c49666808ffd4586b1ee64c99cc40, type: 2}
-  combatPostProcessingVolume: {fileID: 714681747}
 --- !u!1 &1986955220
 GameObject:
   m_ObjectHideFlags: 0
