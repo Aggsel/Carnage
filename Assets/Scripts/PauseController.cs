@@ -536,7 +536,7 @@ public class PauseController : MonoBehaviour
     //main pause
     public void ButtonYes () //exit confirm
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void ButtonNo () //exit confirm
