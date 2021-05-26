@@ -21,9 +21,6 @@ public class SerializeController : MonoBehaviour
     private string dir = "";
     private int hideTutorial = 1; //1 is no (show it), 2 is yes (hide it)
 
-    //[TextArea(15, 20)]
-    //public string finLine;
-
     private void OnEnable()
     {
         pc = FindObjectOfType<PauseController>();
@@ -51,13 +48,6 @@ public class SerializeController : MonoBehaviour
         else
         {
             lines = System.IO.File.ReadAllLines(dir);
-
-            //before load check for weird shit
-            /*for (int i = 0; i < lines.Length; i++)
-            {
-                lines[i] = Regex.Replace(lines[i], "[^\\w\\._]", "");
-            }*/
-            
             LoadPreferences(lines);
         }
     }
@@ -75,6 +65,9 @@ public class SerializeController : MonoBehaviour
         //Debug.Log("Loaded as: " + hideTutorial);
         return hideTutorial;
     }
+
+    //first time playing
+
 
     #region preferences
     private void CreateNewPreferences()
