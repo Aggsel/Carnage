@@ -32,6 +32,7 @@ public class RoomManager : MonoBehaviour
     private UIController uic;
     private AudioManager am;
     private MapDrawer mapReference;
+    private TutorialController tc = null;
 
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -46,6 +47,9 @@ public class RoomManager : MonoBehaviour
         am = AudioManager.Instance;
         if(uic == null) 
             uic = FindObjectOfType<UIController>();
+
+        if (tc == null)
+            tc = FindObjectOfType<TutorialController>();
     }
 
     void OnDisable(){
@@ -62,6 +66,15 @@ public class RoomManager : MonoBehaviour
 
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
+        //disable tutorial if enabled
+        if(tc == null)
+            tc = FindObjectOfType<TutorialController>();
+
+        if(tc.GetTutorial())
+        {
+            tc.TriggerNoTutorial();
+        }
+
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
         difficulty = difficulty * difficultyMultiplier;
         //playerReference should NEVER be null here, but just to be sure.

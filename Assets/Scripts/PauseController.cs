@@ -579,7 +579,6 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
-        //Debug.Log("SAVE");
         sc.SavePreferences();
     }
 

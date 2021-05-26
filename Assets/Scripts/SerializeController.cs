@@ -42,7 +42,7 @@ public class SerializeController : MonoBehaviour
         {
             if(PlayerPrefs.GetInt("hideTutorial") == 1)
             {
-                PlayerPrefs.SetInt("hideTutorial", 2);
+                //PlayerPrefs.SetInt("hideTutorial", 2);
                 hideTutorial = PlayerPrefs.GetInt("hideTutorial");
             }
             else if (PlayerPrefs.GetInt("hideTutorial") == 2)
@@ -71,7 +71,7 @@ public class SerializeController : MonoBehaviour
         {
             if (!CheckPreferenceFile(dir))
             {
-                Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
+                //Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
                 CreateNewPreferences();
             }
             else
@@ -86,11 +86,14 @@ public class SerializeController : MonoBehaviour
     public void SetHideTutorial (int i)
     {
         hideTutorial = i;
+        //Debug.Log("SET: " + i);
         PlayerPrefs.SetInt("hideTutorial", hideTutorial);
     }
 
     public int GetHideTutorial ()
     {
+        //Debug.Log("GET: " + hideTutorial);
+        hideTutorial = PlayerPrefs.GetInt("hideTutorial");
         return hideTutorial;
     }
 
