@@ -206,6 +206,7 @@ public class RoomManager : MonoBehaviour
         for (int j = 0; j < validMaterials.Length; j++){
             GameObject roomMesh = new GameObject(string.Format("RoomMesh {0}", j), typeof(MeshFilter), typeof(MeshRenderer));
             roomMesh.transform.SetParent(this.transform);
+            roomMesh.isStatic = true;
 
             Quaternion oldRot = transform.rotation;
             Vector3 oldPos = transform.position;
