@@ -24,9 +24,11 @@ public class BloodParticle : MonoBehaviour
         int colAmount = particle.GetCollisionEvents(other, colEvents);
         //Debug.Log("COLLIDED WITH: " + other.transform.name);
 
-        if(Random.Range(0, 5) == 1)
+        bc.SpawnBlood(colEvents[0].intersection, other);
+
+        if (Random.Range(0, 5) == 1)
         {
-            bc.SpawnBlood(colEvents[0].intersection, other);
+            
         }
     }
 }

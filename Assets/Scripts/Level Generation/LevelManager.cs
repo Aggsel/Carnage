@@ -125,7 +125,7 @@ public class LevelManager : MonoBehaviour
         UpdateProgressionUI();
         mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
 
-        FindObjectOfType<MovementController>().SetSpawnPoint(spawnRoomLocation * roomSize);
+        FindObjectOfType<MovementController>().SetSpawnPoint(playerReference.transform.position/*spawnRoomLocation * roomSize*/);
 
         OnFinishedGeneration.Invoke();
     }
