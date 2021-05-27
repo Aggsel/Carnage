@@ -100,7 +100,17 @@ public class AudioManager : MonoBehaviour
         eventContainer.Play(sourceObject);
     }
 
+    public void PlaySound(EventContainer eventContainer, GameObject sourceObject)
+    {
+        eventContainer.Play(sourceObject);
+    }
+
     public void StopSound(ref EventContainer eventContainer){
+        eventContainer.Stop();
+    }
+
+    public void StopSound(EventContainer eventContainer)
+    {
         eventContainer.Stop();
     }
 

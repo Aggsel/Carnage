@@ -16,13 +16,24 @@ public class MainMenu : MonoBehaviour
     private void Start ()
     {
         sc = FindObjectOfType<SerializeController>();
+
         Time.timeScale = 1.0f;
 
         version = Application.version;
         versionText.text = "v " + version.ToString();
 
         //useful later
-        mainMenu = SceneManager.GetActiveScene().buildIndex == 0 ? true : false;
+        mainMenu = SceneManager.GetActiveScene().name == "MainMenu" ? true : false;
+
+        if (mainMenu)
+        {
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.ambManager);
+            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "Battle", 0.0f);
+            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "State", 0.0f);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     #region mainMenu crap

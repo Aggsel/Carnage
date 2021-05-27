@@ -132,6 +132,9 @@ public class HealthController : MonoBehaviour
 
         yield return new WaitForSeconds(3f);
         Time.timeScale = 1.0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         SceneManager.LoadScene(1);
     }
 }
