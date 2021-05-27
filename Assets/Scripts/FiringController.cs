@@ -43,6 +43,10 @@ public class FiringController : MonoBehaviour
             timeToFire = Time.time + 1f / attributeInstance.weaponAttributesResultant.fireRate;
             FireWeapon();
         }
+        else if (Input.GetButton("Fire1") && overheated == true)
+        {
+            am.PlaySound(am.playerShooting);
+        }
     }
 
     void FireWeapon()
@@ -74,7 +78,7 @@ public class FiringController : MonoBehaviour
         ss.RecoilCall();
 
         //play sound
-        am.PlaySound(am.playerShooting);
+        am.PlaySound(ref am.playerShooting);
 
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, shotLayerMask))
         {
@@ -94,11 +98,13 @@ public class FiringController : MonoBehaviour
     public void Overheated()
     {
         overheated = true;
+        am.SetParameterByName(ref am.playerShooting, "Gun Upgrades", 1.0f);
     }
 
     public void Cooled()
     {
         overheated = false;
+        am.SetParameterByName(ref am.playerShooting, "Gun Upgrades", 0.0f);
     }
 
     public void InitializeProjectile()
