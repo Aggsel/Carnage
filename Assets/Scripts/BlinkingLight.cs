@@ -12,7 +12,7 @@ public class BlinkingLight : MonoBehaviour
     private int startQueue = 5;
     private float lastValue = 0.0f;
 
-    private void Start ()
+    private void Start()
     {
         lightData = GetComponent<HDAdditionalLightData>();
         l = GetComponent<Light>();
@@ -22,14 +22,14 @@ public class BlinkingLight : MonoBehaviour
         StartCoroutine(Blink());
     }
 
-    private void Update ()
+    private void Update()
     {
-        if(lightData == null)
+        if (lightData == null)
         {
             return;
         }
 
-        while(queue.Count >= startQueue)
+        while (queue.Count >= startQueue)
         {
             lastValue -= queue.Dequeue();
         }
@@ -41,7 +41,7 @@ public class BlinkingLight : MonoBehaviour
         lightData.intensity = lastValue / (float)queue.Count;
     }
 
-    IEnumerator Blink ()
+    IEnumerator Blink()
     {
         float randomTime = Random.Range(1.5f, 6.0f);
 

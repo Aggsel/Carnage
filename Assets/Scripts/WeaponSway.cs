@@ -29,8 +29,17 @@ public class WeaponSway : MonoBehaviour
     private Vector3 up = Vector3.zero;
     private float mouseX = 0f;
     private float mouseY = 0f;
-
     private MovementController mc;
+    private float vertical = 0.0f;
+    private float horizontal = 0.0f;
+
+    //keys
+    private KeyCode moveForward;
+    private KeyCode moveBack;
+    private KeyCode moveRight;
+    private KeyCode moveLeft;
+    private KeyCode dash;
+    private KeyCode jump;
 
     private void Start ()
     {
@@ -71,11 +80,68 @@ public class WeaponSway : MonoBehaviour
         transform.localRotation = Quaternion.Slerp(transform.localRotation, dest, step);
     }
 
+    #region read keybind
+    //update keybinds
+    private void ReadKeybinds(KeyBindAsignments keys)
+    {
+        moveForward = keys.moveForward;
+        moveBack = keys.moveBack;
+        moveRight = keys.moveRight;
+        moveLeft = keys.moveLeft;
+        dash = keys.dash;
+        jump = keys.jump;
+    }
+
+    private void Awake()
+    {
+        PauseController.updateKeysFunction += ReadKeybinds;
+    }
+
+    private void OnDestroy()
+    {
+        PauseController.updateKeysFunction -= ReadKeybinds;
+    }
+    #endregion
+
     //weaponsway from movement (changes position)
     private void MovementSway ()
     {
-        var horizontal = Input.GetAxis("Horizontal");
-        var vertical = Input.GetAxis("Vertical");
+        //var horizontal = Input.GetAxis("Horizontal");
+        //var vertical = Input.GetAxis("Vertical");
+
+        if (Input.GetKey(moveForward) || Input.GetKey(moveBack))
+        {
+            if (Input.GetKey(moveForward))
+            {
+                vertical = Mathf.Clamp(vertical + 1, -1.0f, 1.0f);
+            }
+
+            if (Input.GetKey(moveBack))
+            {
+                vertical = Mathf.Clamp(vertical - 1, -1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            vertical = 0.0f;
+        }
+
+        if (Input.GetKey(moveRight) || Input.GetKey(moveLeft))
+        {
+            if (Input.GetKey(moveRight))
+            {
+                horizontal = Mathf.Clamp(horizontal + 1, -1.0f, 1.0f);
+            }
+
+            if (Input.GetKey(moveLeft))
+            {
+                horizontal = Mathf.Clamp(horizontal - 1, -1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            horizontal = 0.0f;
+        }
 
         right = horizontal * Vector3.right * (movementAmount * 0.1f);
         forward = vertical * Vector3.forward * (movementAmount * 0.1f);
