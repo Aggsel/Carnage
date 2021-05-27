@@ -14,14 +14,14 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField] protected float health = 10.0f;
     [SerializeField] protected float difficulty = 1.0f;
 
-    [HideInInspector] protected EnemyBaseState currentState = null;
+    protected EnemyBaseState currentState = null;
     [HideInInspector] public AudioManager am;
     [HideInInspector] protected NavMeshAgent agent;
     [HideInInspector] protected GameObject player;
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
-    private Collider collider = null;
+    private Collider enemyCollider = null;
 
     protected virtual void Start(){
         bc = FindObjectOfType<BloodController>();
@@ -33,7 +33,7 @@ public class EnemyBehavior : MonoBehaviour
 
         this.player = GameObject.Find("Player"); //Don't do this.
         am = AudioManager.Instance;
-        collider = GetComponentInChildren<Collider>();
+        enemyCollider = GetComponentInChildren<Collider>();
     }
 
     protected virtual void Update(){
@@ -48,17 +48,21 @@ public class EnemyBehavior : MonoBehaviour
         return this.agent;
     }
 
-    public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition, float range = Mathf.Infinity){
+    public static bool CheckLineOfSight(Vector3 originPos, Vector3 targetPosition, float range = Mathf.Infinity, bool ignoreEnemies = true){
         RaycastHit hit;
-        // Debug.DrawLine(originPos, targetPosition, Color.blue, 0.5f);
-        if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, range)){
+        if (Physics.Raycast(originPos, (targetPosition - originPos).normalized, out hit, range, ignoreEnemies ? ~LayerMask.GetMask("Enemy") : ~0)){
+            Debug.DrawLine(originPos, hit.point, Color.blue, 0.5f);
             //Should this mask passed as an function argument instead?
             if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0)
                 return true;
+                
+            Debug.DrawLine(originPos, targetPosition, Color.red, 0.5f);
             return false;
         }
-        else
+        else{
+            Debug.DrawLine(originPos, targetPosition, Color.red, 0.5f);
             return false;
+        }
     }
 
     public void SetState(EnemyBaseState newState){
@@ -106,6 +110,6 @@ public class EnemyBehavior : MonoBehaviour
         parentSpawn?.ReportDeath(this);
         onDeath?.Invoke();
         Destroy(this.gameObject);
-        collider.enabled = false;
+        enemyCollider.enabled = false;
     }
 }
