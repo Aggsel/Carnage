@@ -23,11 +23,14 @@ public class MainMenu : MonoBehaviour
         versionText.text = "v " + version.ToString();
 
         //useful later
-        mainMenu = SceneManager.GetActiveScene().buildIndex == 0 ? true : false;
+        mainMenu = SceneManager.GetActiveScene().name == "MainMenu" ? true : false;
 
         if (mainMenu)
         {
-            Debug.Log("Release mouse");
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.ambManager);
+            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "Battle", 0.0f);
+            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "State", 0.0f);
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
