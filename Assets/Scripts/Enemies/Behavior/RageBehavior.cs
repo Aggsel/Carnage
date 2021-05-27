@@ -37,7 +37,7 @@ public class RageBehavior : EnemyBehavior
 
     protected override void Update() {
         base.Update();
-        Debug.Log(currentState);
+        // Debug.Log(currentState);
     }
 
     public void AnimHookChargeStart(){

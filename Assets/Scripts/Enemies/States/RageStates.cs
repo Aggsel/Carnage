@@ -133,7 +133,7 @@ namespace EnemyStates.Rage
             if(hit.distance > 0.5f){
                 if(lineOfSightTimer >= lineOfSightFrequency){
                     if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange)){
-                        Debug.Log("Going to attack.");
+                        // Debug.Log("Going to attack.");
                         behavior.SetState(behavior.preChargeAttack);
                         lineOfSightTimer = 0.0f;
                     }
@@ -275,32 +275,38 @@ namespace EnemyStates.Rage
             behavior.transform.position += behavior.transform.forward * Time.deltaTime * movementSpeed;
 
             RaycastHit hit;
-            if (!Physics.Raycast(behavior.transform.position, -behavior.transform.up, out hit, 2.0f, ~enemyLayerMask)){
-                behavior.transform.position -= behavior.transform.forward * Time.deltaTime * movementSpeed * 5.0f;
-                Debug.Log("Switched because enemy tried to charge in the air.");
+            if (!Physics.Raycast(behavior.transform.position + behavior.transform.forward, -behavior.transform.up, out hit, agent.height, ~enemyLayerMask)){
+                behavior.transform.position -= behavior.transform.forward * Time.deltaTime * movementSpeed;
+                // Debug.Log("Switched because enemy tried to charge in the air.");
+                NavMeshHit navMeshHit;
+                NavMesh.FindClosestEdge(behavior.transform.position, out navMeshHit, NavMesh.AllAreas);
                 behavior.SetState(behavior.postChargeAttack);
+                return;
             }
 
             if (Physics.Raycast(behavior.transform.position, behavior.transform.forward, out hit, 3.0f, ~enemyLayerMask)){
-                Debug.Log("Switched because hit wall or something lmao.");
+                // Debug.Log("Switched because hit wall or something lmao.");
                 behavior.SetState(behavior.postChargeAttack);
+                return;
             }
 
             //Check if player is in the way. If hit, damage the player and become stunned.
             if(Attack()){
-                Debug.Log("Switched because attack.");
+                // Debug.Log("Switched because attack.");
                 behavior.SetState(behavior.postChargeAttack);
                 return;
             }
 
             if(Vector3.SqrMagnitude(behavior.transform.position - targetPosition) < stoppingDistance){
-                Debug.Log("Switched because close to target.");
+                // Debug.Log("Switched because close to target.");
                 behavior.SetState(behavior.postChargeAttack);
+                return;
             }
 
             if(this.timer > timeoutDuration){
-                Debug.Log("Switched because timeout.");
+                // Debug.Log("Switched because timeout.");
                 behavior.SetState(behavior.postChargeAttack);
+                return;
             }
         }
 
