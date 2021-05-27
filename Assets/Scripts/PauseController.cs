@@ -256,6 +256,16 @@ public class PauseController : MonoBehaviour
             scripts[1].enabled = !paused;
         }
 
+        //think this fixed motionblur bug
+        if (!profile.TryGet<MotionBlur>(out var motion))
+        {
+            Debug.LogWarning("THIS SHOULD NOT HAPPEN");
+            motion = profile.Add<MotionBlur>(false);
+            motion.active = false;
+        }
+
+        motion.active = false;
+
         Time.timeScale = paused ? 0.0f : 1.0f; //maybe not
         LockCursor(paused);
     }
@@ -569,7 +579,6 @@ public class PauseController : MonoBehaviour
     public void ButtonBack ()
     {
         UpdateUi(1);
-        //Debug.Log("SAVE");
         sc.SavePreferences();
     }
 

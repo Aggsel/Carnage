@@ -16,6 +16,13 @@ public class MainMenu : MonoBehaviour
     private void Start ()
     {
         sc = FindObjectOfType<SerializeController>();
+
+        if(mainMenu)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
         Time.timeScale = 1.0f;
 
         version = Application.version;
