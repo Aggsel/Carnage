@@ -29,6 +29,8 @@ public class EnemyProjectile : MonoBehaviour
             col = GetComponent<Collider>();
         if (hitDecal == null)
             Debug.LogWarning("No hitdecal is set for fireball!");
+
+        //AudioManager.Instance.PlaySound(AudioManager.Instance.patientProjectile, gameObject);
     }
 
     void Update(){
@@ -67,33 +69,7 @@ public class EnemyProjectile : MonoBehaviour
             Destroy(newEffect, 2f);
         }
 
+        //AudioManager.Instance.StopSound(AudioManager.Instance.patientProjectile);
         Destroy(this.gameObject);
     }
-
-    /*void OnTriggerEnter(Collider other){
-        if(other.transform.parent == null)
-            return;
-        if(other.transform.parent.gameObject == sourceEnemy)
-            return;
-        if(other.gameObject.layer == 12){
-            Vector3 shotdir = rb.velocity.normalized;
-            other.gameObject.GetComponent<HealthController>()?.OnShot(new HitObject(shotdir, transform.position, damage));
-        }
-
-        if((hitEffectLm.value & (1 << other.transform.gameObject.layer)) > 0)
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.forward, out hit))
-            {
-                GameObject newDecal = Instantiate(hitDecal) as GameObject;
-                newDecal.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(hit.normal));
-                newDecal.transform.SetParent(other.transform, true);
-
-                float ranRot = Random.Range(-180, 180);
-                newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
-            }
-        }
-
-        Destroy(this.gameObject);
-    }*/
 }

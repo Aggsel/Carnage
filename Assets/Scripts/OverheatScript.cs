@@ -14,12 +14,15 @@ public class OverheatScript : MonoBehaviour
     public bool overheated = false;
     private float coolingInitializeRemaining = 0f;
     private Buff buffReferenceOne = null;
+    private AudioManager am = null;
 
     void Start()
     {
         uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIController>();
         attributeInstance = player.GetComponent<AttributeController>();
         heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
+        am = AudioManager.Instance;
+        am.PlaySound(ref am.playerOverheat);
     }
 
     void Update()
@@ -36,6 +39,7 @@ public class OverheatScript : MonoBehaviour
         {
             heatValue -= attributeInstance.weaponAttributesResultant.coolingRate * Time.deltaTime;
             heatValue = Mathf.Clamp(heatValue, 0f, attributeInstance.weaponAttributesResultant.heatMaximum);
+            am.SetParameterByName(ref am.playerOverheat, "Overheating", Mathf.Clamp((heatValue / 100.0f), 0.0f, 0.99f));
 
             if (heatValue == 0 && overheated == true)
             {
@@ -44,7 +48,6 @@ public class OverheatScript : MonoBehaviour
                 attributeInstance.RemoveBuff(buffReferenceOne);
             }
         }
-
     }
 
     public void Heat(float heatGeneration)
@@ -52,7 +55,8 @@ public class OverheatScript : MonoBehaviour
         uiController.SetMaxHeat(attributeInstance.weaponAttributesResultant.heatMaximum);
         heatMax = attributeInstance.weaponAttributesResultant.heatMaximum;
         heatValue += heatGeneration;
-        if(heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
+        am.SetParameterByName(ref am.playerOverheat, "Overheating", Mathf.Clamp((heatValue / 100.0f), 0.0f, 0.99f));
+        if (heatValue >= attributeInstance.weaponAttributesResultant.heatMaximum)
         {
             buffReferenceOne = attributeInstance.AddBuff("coolinginitialize", "coolingrate", 1.75f, 1.5f);
             player.GetComponent<FiringController>().Overheated();
@@ -77,10 +81,4 @@ public class OverheatScript : MonoBehaviour
             return heatValue / heatMax;
         }
     }
-
-    /*private void OnGUI()
-    {
-        GUI.Label(new Rect(10, 60, 100, 50), heatValue.ToString("F0"));
-    }*/
-
 }

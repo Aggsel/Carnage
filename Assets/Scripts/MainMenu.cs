@@ -23,13 +23,25 @@ public class MainMenu : MonoBehaviour
         versionText.text = "v " + version.ToString();
 
         //useful later
-        mainMenu = SceneManager.GetActiveScene().buildIndex == 0 ? true : false;
+        mainMenu = SceneManager.GetActiveScene().name == "MainMenu" ? true : false;
 
         if (mainMenu)
         {
-            Debug.Log("Release mouse");
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.ambManager);
+            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "Battle", 0.0f);
+            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "State", 0.0f);
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+    }
+
+    private void Update ()
+    {
+        //DEBUG, RESET FIRST TIME
+        if(Input.GetKeyDown(KeyCode.Comma))
+        {
+            sc.SetFirstTime(1);
         }
     }
 
@@ -39,7 +51,7 @@ public class MainMenu : MonoBehaviour
         if(sc.GetFirstTime() == 1)
         {
             sc.SetFirstTime(2);
-            SceneManager.LoadScene("Level1");
+            SceneManager.LoadScene("Alexander");
         }
         else if (sc.GetFirstTime() == 2)
         {

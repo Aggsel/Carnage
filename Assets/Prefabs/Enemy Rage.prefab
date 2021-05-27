@@ -1276,15 +1276,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4511915545017099012}
-  m_LocalRotation: {x: -0, y: 0.99758905, z: -0, w: -0.069397524}
-  m_LocalPosition: {x: -2.3, y: 1.47, z: 8.2}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1639755017355316859}
   - {fileID: 7397117106393786436}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 187.95898, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!195 &8220016745988412259
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1326,6 +1326,12 @@ MonoBehaviour:
   difficulty: 1.7
   am: {fileID: 0}
   anim: {fileID: 0}
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 4096
   chaseState:
     rotationSpeed: 15
     chaseSpeed: 8
@@ -1343,18 +1349,15 @@ MonoBehaviour:
     dashRaycastCount: 9
     raySpread: 4.6
     attackRange: 5
-    enemyLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
     damage: 0
     knockback: 0
     timeoutDuration: 2
   preChargeAttack:
     rotationSpeed: 15
   chargeAttackState:
-    rotationSpeed: 15
-    movementSpeed: 15
-    chargeLength: 18
+    rotationSpeed: 0
+    movementSpeed: 20
+    chargeLength: 22
     dashAttackRange: 1.8
     timeoutDuration: 2
     stoppingDistance: 2
@@ -1362,20 +1365,11 @@ MonoBehaviour:
     knockback: 5
     dashRaycastCount: 7
     raySpread: 4.6
-    playerLayer:
-      serializedVersion: 2
-      m_Bits: 4096
-    enemyLayerMask:
-      serializedVersion: 2
-      m_Bits: 8192
   postChargeAttack:
     rotationSpeed: 15
     dashRaycastCount: 7
     raySpread: 4.6
     dashAttackRange: 3
-    enemyLayerMask:
-      serializedVersion: 2
-      m_Bits: 0
     damage: 1
     knockback: 0
 --- !u!1 &4866515669811099692
