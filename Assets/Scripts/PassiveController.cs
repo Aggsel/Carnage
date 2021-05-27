@@ -17,14 +17,12 @@ public class PassiveController : MonoBehaviour
         //passive ui
         if (passiveList.Contains(addedPassive))
         {
-            Debug.Log("Exists");
             int currentAmount = int.Parse(passivePrefabList[passiveList.IndexOf(addedPassive)].GetComponentInChildren<TextMeshProUGUI>().text);
             currentAmount++;
             passivePrefabList[passiveList.IndexOf(addedPassive)].GetComponentInChildren<TextMeshProUGUI>().text = currentAmount.ToString();
         }
         else
         {
-            Debug.Log("Doesnt Exist");
             GameObject newPassive = Instantiate(passivePrefab) as GameObject;
             newPassive.transform.SetParent(passiveParent, false);
             passivePrefabList.Add(newPassive);
