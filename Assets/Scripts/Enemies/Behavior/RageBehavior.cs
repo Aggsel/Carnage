@@ -5,6 +5,10 @@ using EnemyStates.Rage;
 
 public class RageBehavior : EnemyBehavior
 {
+    [Header("Layers")]
+    [SerializeField] public LayerMask enemyLayerMask;
+    [SerializeField] public LayerMask playerLayer;
+ 
     [Header("States")]
     [Tooltip("Attributes when the enemy is chasing the player.")]
     [SerializeField] public RageChase chaseState = new RageChase();
@@ -20,6 +24,7 @@ public class RageBehavior : EnemyBehavior
     [SerializeField] public RageChargeAttack chargeAttackState = new RageChargeAttack();
     [Tooltip("Attributes when the enemy has hit something and is attacking.")]
     [SerializeField] public RagePostChargeAttack postChargeAttack = new RagePostChargeAttack();
+
 
     protected override void Start(){
         base.Start();

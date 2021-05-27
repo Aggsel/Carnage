@@ -29,8 +29,6 @@ namespace EnemyStates.Rage
         [SerializeField] private float raySpread = 4.6f;
         [SerializeField] private float attackRange = 1.5f;
 
-        [SerializeField] private LayerMask enemyLayerMask = 0;
-
         [SerializeField] private float damage = 30.0f;
         [SerializeField] private float knockback = 0.0f;
 
@@ -64,7 +62,7 @@ namespace EnemyStates.Rage
                 Vector3 point = new Vector3(x,0,z) * attackRange;
                 Debug.DrawRay(agent.transform.position + new Vector3(0, 0.5f, 0), point, Color.red);
                 RaycastHit hit;
-                if (Physics.Raycast(agent.transform.position + new Vector3(0, 0.5f, 0), point, out hit, attackRange, ~enemyLayerMask)){
+                if (Physics.Raycast(agent.transform.position + new Vector3(0, 0.5f, 0), point, out hit, attackRange, ~behavior.enemyLayerMask)){
                     if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0){
                         HitObject hitObject = new HitObject((hit.point - agent.transform.position).normalized, hit.point, damage, knockback, HitType.Melee);
                         hit.collider.gameObject.GetComponent<HealthController>().OnShot(hitObject);
@@ -128,14 +126,22 @@ namespace EnemyStates.Rage
         
             lineOfSightTimer += Time.deltaTime;
 
-            NavMeshHit hit;
-            NavMesh.FindClosestEdge(behavior.transform.position, out hit, NavMesh.AllAreas);
-            if(hit.distance > 0.5f){
+            //We ONLY want to charge if:
+            // *We're not too close to an edge
+            // *
+            NavMeshHit navMeshHit;
+            NavMesh.FindClosestEdge(behavior.transform.position, out navMeshHit, NavMesh.AllAreas);
+            if(navMeshHit.distance > 0.5f){
                 if(lineOfSightTimer >= lineOfSightFrequency){
-                    if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange)){
-                        // Debug.Log("Going to attack.");
-                        behavior.SetState(behavior.preChargeAttack);
-                        lineOfSightTimer = 0.0f;
+                    RaycastHit hit;
+                    if(Physics.Raycast(behavior.transform.position + behavior.transform.forward, -behavior.transform.up, out hit, agent.height, ~behavior.enemyLayerMask)){
+                        if(Vector3.Dot(Vector3.up, hit.normal) > 0.9f){
+                            if(EnemyBehavior.CheckLineOfSight(behavior.transform.position, behavior.GetTargetPosition(), visionRange)){
+                                // Debug.Log("Going to attack.");
+                                behavior.SetState(behavior.preChargeAttack);
+                                lineOfSightTimer = 0.0f;
+                            }
+                        }
                     }
                 }
             }
@@ -215,9 +221,6 @@ namespace EnemyStates.Rage
         [Tooltip("Unintuitively, smaller value = more spread")]
         [SerializeField] private float raySpread = 5.0f;
 
-        [SerializeField] private LayerMask playerLayer = 0;
-        [SerializeField] private LayerMask enemyLayerMask = 0;
-
         private float previousSpeed = 0.0f;
         Vector3 targetPosition = new Vector3(0,0,0);
         private float stoppingDistanceSqrd = 0.0f;
@@ -242,11 +245,10 @@ namespace EnemyStates.Rage
 
             previousAngularSpeed = agent.angularSpeed;
             agent.angularSpeed = 0.0f;
-            // agent.isStopped = false;
 
             RotateTowardsTarget(behavior.GetTargetPosition());
             RaycastHit hit;
-            if (Physics.Raycast(behavior.transform.position, (behavior.GetTargetPosition() - behavior.transform.position).normalized, out hit, chargeLength, ~playerLayer)){
+            if (Physics.Raycast(behavior.transform.position, (behavior.GetTargetPosition() - behavior.transform.position).normalized, out hit, chargeLength, ~behavior.playerLayer)){
                 targetPosition = hit.point;
                 //Remove the agent radius from the target position to prevent target from being inside walls.
                 targetPosition = targetPosition + (behavior.transform.position - targetPosition).normalized * agent.radius * 2.0f;
@@ -256,7 +258,6 @@ namespace EnemyStates.Rage
             }
 
             agent.transform.rotation = Quaternion.LookRotation(new Vector3(targetPosition.x - behavior.transform.position.x, 0, targetPosition.z - behavior.transform.position.z));
-            // agent.SetDestination(targetPosition);
 
             Debug.DrawLine(behavior.transform.position, targetPosition, Color.yellow, 2.0f);
         }
@@ -275,7 +276,7 @@ namespace EnemyStates.Rage
             behavior.transform.position += behavior.transform.forward * Time.deltaTime * movementSpeed;
 
             RaycastHit hit;
-            if (!Physics.Raycast(behavior.transform.position + behavior.transform.forward, -behavior.transform.up, out hit, agent.height, ~enemyLayerMask)){
+            if (!Physics.Raycast(behavior.transform.position + behavior.transform.forward, -behavior.transform.up, out hit, agent.height, ~behavior.enemyLayerMask)){
                 behavior.transform.position -= behavior.transform.forward * Time.deltaTime * movementSpeed;
                 // Debug.Log("Switched because enemy tried to charge in the air.");
                 NavMeshHit navMeshHit;
@@ -284,7 +285,7 @@ namespace EnemyStates.Rage
                 return;
             }
 
-            if (Physics.Raycast(behavior.transform.position, behavior.transform.forward, out hit, 3.0f, ~enemyLayerMask)){
+            if (Physics.Raycast(behavior.transform.position, behavior.transform.forward, out hit, 3.0f, ~behavior.enemyLayerMask)){
                 // Debug.Log("Switched because hit wall or something lmao.");
                 behavior.SetState(behavior.postChargeAttack);
                 return;
@@ -318,7 +319,7 @@ namespace EnemyStates.Rage
                 Vector3 point = new Vector3(x,0,z) * dashAttackRange;
                 Debug.DrawRay(agent.transform.position + new Vector3(0, 0.5f, 0), point, Color.red);
                 RaycastHit hit;
-                if (Physics.Raycast(agent.transform.position + new Vector3(0, 0.5f, 0), point, out hit, dashAttackRange, ~enemyLayerMask)){
+                if (Physics.Raycast(agent.transform.position + new Vector3(0, 0.5f, 0), point, out hit, dashAttackRange, ~behavior.enemyLayerMask)){
                     if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0){
                         HitObject hitObject = new HitObject((hit.point - agent.transform.position).normalized, hit.point, damage, knockback, HitType.Melee);
                         hit.collider.gameObject.GetComponent<HealthController>().OnShot(hitObject);
@@ -340,8 +341,6 @@ namespace EnemyStates.Rage
         [Tooltip("Unintuitively, smaller value = more spread")]
         [SerializeField] private float raySpread = 4.6f;
         [SerializeField] private float dashAttackRange = 1.5f;
-
-        [SerializeField] private LayerMask enemyLayerMask = 0;
 
         [SerializeField] private float damage = 30.0f;
         [SerializeField] private float knockback = 0.0f;
@@ -370,7 +369,7 @@ namespace EnemyStates.Rage
                 Vector3 point = new Vector3(x,0,z) * dashAttackRange;
                 Debug.DrawRay(agent.transform.position + new Vector3(0, 0.5f, 0), point, Color.red);
                 RaycastHit hit;
-                if (Physics.Raycast(agent.transform.position + new Vector3(0, 0.5f, 0), point, out hit, dashAttackRange, ~enemyLayerMask)){
+                if (Physics.Raycast(agent.transform.position + new Vector3(0, 0.5f, 0), point, out hit, dashAttackRange, ~behavior.enemyLayerMask)){
                     if(((1<<hit.collider.gameObject.layer) & LayerMask.GetMask("Player")) != 0){
                         HitObject hitObject = new HitObject((hit.point - agent.transform.position).normalized, hit.point, damage, knockback, HitType.Melee);
                         hit.collider.gameObject.GetComponent<HealthController>().OnShot(hitObject);
