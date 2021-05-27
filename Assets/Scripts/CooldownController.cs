@@ -22,6 +22,7 @@ public class CooldownController : MonoBehaviour
     private float activeActuationTimeLeft;
     private bool activeActuated;
     private KeyCode activate;
+    private AudioManager am = null;
 
     private void ReadKeybinds(KeyBindAsignments keys)
     {
@@ -43,6 +44,7 @@ public class CooldownController : MonoBehaviour
         uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         flashImage = flashImageGO.GetComponent<RawImage>();
+        am = AudioManager.Instance;
         Initialize(active, player);
     }
 
@@ -97,6 +99,7 @@ public class CooldownController : MonoBehaviour
 
     private void Triggered()
     {
+        am.PlaySound(ref am.itemsActivate);
         flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
         uic.StartCoroutine(uic.FadeImage(flashImage, 0.85f, true));
         activeActuated = true;
