@@ -119,6 +119,7 @@ public class HealthController : MonoBehaviour
 
         Time.timeScale = 0.5f;
         weaponObj.SetActive(false);
+        GetComponentInChildren<CooldownController>().enabled = false;
         dead = true;
         uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
