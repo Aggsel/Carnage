@@ -18,6 +18,7 @@ public class NextLevelTrigger : MonoBehaviour
         {
             uc.StartCoroutine(uc.WhiteFade(false, 0.5f));
             GoToNextLevel();
+            this.enabled = false;
         }
     }
 
