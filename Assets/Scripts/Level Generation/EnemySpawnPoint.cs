@@ -34,11 +34,14 @@ public class EnemySpawnPoint : MonoBehaviour
             while(Vector3.Distance(this.transform.position, player.transform.position) <= spawnSafeZoneRadius){
                 yield return new WaitForSeconds(Random.Range(0.5f, 1.0f));
             }
-            GameObject newEnemy = enemySpawnQueue.Dequeue();
-            newEnemy = Instantiate(newEnemy, transform);
-            EnemyBehavior enemy = newEnemy.GetComponent<EnemyBehavior>();
-            enemy.SetParentSpawn(this);
-            spawnedEnemies.Add(enemy);
+            if(enemySpawnQueue.Count > 0)
+            {
+                GameObject newEnemy = enemySpawnQueue.Dequeue();
+                newEnemy = Instantiate(newEnemy, transform);
+                EnemyBehavior enemy = newEnemy.GetComponent<EnemyBehavior>();
+                enemy.SetParentSpawn(this);
+                spawnedEnemies.Add(enemy);
+            }
         }
     }
 
