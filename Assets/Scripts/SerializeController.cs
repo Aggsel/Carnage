@@ -73,6 +73,8 @@ public class SerializeController : MonoBehaviour
             {
                 //Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
                 CreateNewPreferences();
+                lines = System.IO.File.ReadAllLines(dir);
+                LoadPreferences(lines);
             }
             else
             {
