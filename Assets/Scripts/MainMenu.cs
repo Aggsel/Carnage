@@ -17,12 +17,6 @@ public class MainMenu : MonoBehaviour
     {
         sc = FindObjectOfType<SerializeController>();
 
-        if(mainMenu)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
         Time.timeScale = 1.0f;
 
         version = Application.version;
@@ -30,6 +24,13 @@ public class MainMenu : MonoBehaviour
 
         //useful later
         mainMenu = SceneManager.GetActiveScene().buildIndex == 0 ? true : false;
+
+        if (mainMenu)
+        {
+            Debug.Log("Release mouse");
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     #region mainMenu crap
