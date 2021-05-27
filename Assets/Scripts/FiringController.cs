@@ -16,7 +16,6 @@ public class FiringController : MonoBehaviour
 
     [SerializeField] private LayerMask shotLayerMask = 0;
     [SerializeField] private LayerMask hitEffectLayerMask = 0;
-    //private ProjectileShotController psc;
     private Screenshake ss = null;
     private AttributeController attributeInstance = null;
     private AudioManager am = null;
