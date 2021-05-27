@@ -21,7 +21,7 @@ public class EnemyBehavior : MonoBehaviour
 
     [HideInInspector] public Animator anim = null;
     private BloodController bc = null;
-    private Collider collider = null;
+    private Collider enemyCollider = null;
 
     protected virtual void Start(){
         bc = FindObjectOfType<BloodController>();
@@ -33,12 +33,11 @@ public class EnemyBehavior : MonoBehaviour
 
         this.player = GameObject.Find("Player"); //Don't do this.
         am = AudioManager.Instance;
-        collider = GetComponentInChildren<Collider>();
+        enemyCollider = GetComponentInChildren<Collider>();
     }
 
     protected virtual void Update(){
         currentState?.Update();
-        Debug.Log(currentState, this.gameObject);
     }
 
     public Vector3 GetTargetPosition(){
@@ -111,6 +110,6 @@ public class EnemyBehavior : MonoBehaviour
         parentSpawn?.ReportDeath(this);
         onDeath?.Invoke();
         Destroy(this.gameObject);
-        collider.enabled = false;
+        enemyCollider.enabled = false;
     }
 }
