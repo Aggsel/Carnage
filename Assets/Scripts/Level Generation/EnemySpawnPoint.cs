@@ -6,7 +6,7 @@ public class EnemySpawnPoint : MonoBehaviour
 {
     [Tooltip("A asset describing which enemies can spawn on this")]
     [SerializeField] private EnemySpawnPointAsset spawnPointData = null;
-    [SerializeField] private float spawnSafeZoneRadius = 8.0f;
+    private float spawnSafeZoneRadius = 8.0f;
     private List<EnemyBehavior> spawnedEnemies = new List<EnemyBehavior>();
     private WaveHandler waveHandler;
     private Queue<GameObject> enemySpawnQueue = new Queue<GameObject>();
@@ -32,6 +32,7 @@ public class EnemySpawnPoint : MonoBehaviour
         while(enemySpawnQueue.Count > 0){
             yield return new WaitForSeconds(Random.Range(0.0f, 3.0f));
             while(Vector3.Distance(this.transform.position, player.transform.position) <= spawnSafeZoneRadius){
+                spawnSafeZoneRadius -= 0.3f;
                 yield return new WaitForSeconds(Random.Range(0.5f, 1.0f));
             }
             if(enemySpawnQueue.Count > 0)
