@@ -136,6 +136,6 @@ public class HealthController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Actual_Hub");
     }
 }
