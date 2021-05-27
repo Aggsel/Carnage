@@ -18,7 +18,9 @@ public class MissileBehaviour : MonoBehaviour
         {
             player.GetComponent<Screenshake>().StartCoroutine(player.GetComponent<Screenshake>().Shake(1.6f, 0.35f));
             ContactPoint contact = other.contacts[0];
-            Instantiate(explosionVFX, transform.position, Quaternion.FromToRotation(Vector3.up, contact.normal));
+            GameObject newExplosion = Instantiate(explosionVFX) as GameObject;
+            newExplosion.transform.SetPositionAndRotation(transform.position, Quaternion.FromToRotation(Vector3.up, contact.normal));
+            Destroy(newExplosion, 5);
 
             Collider[] colliders = Physics.OverlapSphere(transform.position, blastRadius);
             foreach (Collider obj in colliders)
@@ -49,6 +51,7 @@ public class MissileBehaviour : MonoBehaviour
             }
             AudioManager.Instance.PlaySound(ref AudioManager.Instance.playerExplosion, this.transform.position);
             trailParticle.transform.SetParent(null, true);
+            Destroy(trailParticle, 5f);
             Destroy(gameObject);
         }
     }
