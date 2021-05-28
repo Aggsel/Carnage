@@ -159,10 +159,35 @@ public class LevelManager : MonoBehaviour
                 int posY = pos.y + y;
                 if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
                     continue;
-                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
-                    this.grid[posX,posY]?.gameObject.SetActive(false);
+
+                if(this.grid[posX,posY] == null)
+                    continue;
+
+                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1){
+                    if(this.grid[posX,posY].gameObject.activeInHierarchy)
+                        this.grid[posX,posY].gameObject.SetActive(false);
+                }
                 else
-                    this.grid[posX,posY]?.gameObject.SetActive(true);
+                    this.grid[posX,posY].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void SetOnlyRoomActive(Vector2Int pos){
+        for (int y = -2; y <= 2; y++){
+            for (int x = -2; x <= 2; x++){
+                int posX = pos.x + x;
+                int posY = pos.y + y;
+                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                    continue;
+
+                if(this.grid[posX,posY] == null)
+                    continue;
+
+                if(posX == pos.x && posY == pos.y)
+                    this.grid[posX,posY].gameObject.SetActive(true);
+                else if(this.grid[posX,posY].gameObject.activeInHierarchy)
+                    this.grid[posX,posY].gameObject.SetActive(false);
             }
         }
     }

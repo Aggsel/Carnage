@@ -114,6 +114,8 @@ namespace EnemyStates.ConstraintRanged
         [Tooltip("How often the enemy should check if the player is in sight (per second). Lower value increases enemy responsiveness at a slight performance cost.")]
         [SerializeField] private float lineOfSightCheckFrequency = 0.5f;
         private float lineOfSightTimer = 0.0f;
+        [SerializeField] private float navPathRecalculationFrequency = 0.5f;
+        private float navPathTimer = 0.0f;
 
         private float previousStoppingDistance = 0.0f;
         private float previousSpeed = 0.0f;
@@ -128,6 +130,7 @@ namespace EnemyStates.ConstraintRanged
             base.agent.speed = chaseSpeed;
 
             lineOfSightTimer = lineOfSightCheckFrequency;
+            navPathTimer = navPathRecalculationFrequency;
         }
 
         public override void OnStateExit(){
@@ -137,7 +140,11 @@ namespace EnemyStates.ConstraintRanged
 
         public override void Update(){
             base.Update();
-            agent.SetDestination(behavior.GetTargetPosition());
+            navPathTimer += Time.deltaTime;
+            if(navPathTimer > navPathRecalculationFrequency){
+                agent.SetDestination(behavior.GetTargetPosition());
+                navPathTimer = 0.0f;
+            }
 
             lineOfSightTimer += Time.deltaTime;
             if(lineOfSightTimer > lineOfSightCheckFrequency){
