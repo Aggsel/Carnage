@@ -41,10 +41,16 @@ public class EnemyProjectile : MonoBehaviour
         speed += Time.deltaTime * accelerationSpeed;
         speed = Mathf.Clamp(speed, speedMin, speedMax);
         rb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
+
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(sound, this.transform, rb);
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
         FMOD.Studio.PLAYBACK_STATE fmodPbState;
         sound.getPlaybackState(out fmodPbState);
-        if(fmodPbState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+        if (fmodPbState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
         {
             sound.start();
         }
@@ -82,7 +88,7 @@ public class EnemyProjectile : MonoBehaviour
             Destroy(newEffect, 2f);
         }
 
-        AudioManager.Instance.StopSound(AudioManager.Instance.patientProjectile);
+        sound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         Destroy(this.gameObject);
     }
 }
