@@ -142,7 +142,6 @@ namespace EnemyStates.ConstraintRanged
             lineOfSightTimer += Time.deltaTime;
             if(lineOfSightTimer > lineOfSightCheckFrequency){
                 lineOfSightTimer = 0.0f;
-                behavior.transform.rotation = Quaternion.LookRotation(behavior.GetTargetPosition() - behavior.transform.position, Vector3.up);
                 if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
                     return;
                 }
