@@ -8,6 +8,7 @@ public class BloodParticle : MonoBehaviour
     private List<ParticleCollisionEvent> colEvents = new List<ParticleCollisionEvent>();
 
     private BloodController bc = null;
+    private int spawnProcentage = 0;
 
     private void Start ()
     { 
@@ -22,6 +23,17 @@ public class BloodParticle : MonoBehaviour
     private void OnParticleCollision (GameObject other)
     {
         int colAmount = particle.GetCollisionEvents(other, colEvents);
-        bc.SpawnBlood(colEvents[0].intersection, other);
+
+        float ran = Random.value;
+        spawnProcentage = bc.GetBloodSpawnProcentage();
+
+        //????????????????????????????????????????????????????????????????????????????????
+        Debug.Log(spawnProcentage);
+        Debug.Log(ran.ToString("F2") + " < " + (spawnProcentage / 100));
+
+        if(ran < (spawnProcentage / 100))
+        {
+            bc.SpawnBlood(colEvents[0].intersection, other);
+        }
     }
 }
