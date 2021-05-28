@@ -14,21 +14,19 @@ public class FiringController : MonoBehaviour
     [SerializeField] private GameObject overheatObject = null;
     [SerializeField] private VisualEffect muzzleFlash = null;
 
-    private ProjectileShotController psc;
-    private Screenshake ss;
-
-    private int bitmask;
-    private AttributeController attributeInstance;
+    [SerializeField] private LayerMask shotLayerMask = 0;
+    [SerializeField] private LayerMask hitEffectLayerMask = 0;
+    private Screenshake ss = null;
+    private AttributeController attributeInstance = null;
+    private AudioManager am = null;
     private float timeToFire = 0f;
     private bool overheated = false;
 
     void Start()
     {
-        GameObject player = this.gameObject;
-        attributeInstance = player.GetComponent<AttributeController>();
+        attributeInstance = this.gameObject.GetComponent<AttributeController>();
         ss = FindObjectOfType<Screenshake>();
-        int playerLayer = 12;
-        bitmask = ~(1 << playerLayer);
+        am = AudioManager.Instance;
     }
 
     void Update()
@@ -43,6 +41,10 @@ public class FiringController : MonoBehaviour
             muzzleFlash.Play();
             timeToFire = Time.time + 1f / attributeInstance.weaponAttributesResultant.fireRate;
             FireWeapon();
+        }
+        else if (Input.GetButton("Fire1") && overheated == true)
+        {
+            am.PlaySound(am.playerShooting);
         }
     }
 
@@ -74,14 +76,20 @@ public class FiringController : MonoBehaviour
         //recoil
         ss.RecoilCall();
 
-        if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, bitmask))
+        //play sound
+        am.PlaySound(ref am.playerShooting);
+
+        if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, shotLayerMask))
         {
             //draw line
             Debug.DrawLine(bulletCam.transform.position, bulletHit.point, Color.green, 1.5f);
             bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject(transform.position, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
             //bulletHit.transform.GetComponentInParent<EnemyBehavior>()?.OnShot(new HitObject((bulletHit.point - bulletCam.transform.position).normalized, bulletHit.point, attributeInstance.weaponAttributesResultant.damage));
-            GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
-            Destroy(impact, 2f);
+            if (((1 << bulletHit.transform.gameObject.layer) & hitEffectLayerMask) != 0)
+            {
+                GameObject impact = Instantiate(hitEffect, bulletHit.point + bulletHit.normal * 0.2f, Quaternion.LookRotation(bulletHit.normal));
+                Destroy(impact, 2f);
+            }
         }
         overheatObject.GetComponent<OverheatScript>().Heat(attributeInstance.weaponAttributesResultant.heatGeneration);
     }
@@ -89,11 +97,13 @@ public class FiringController : MonoBehaviour
     public void Overheated()
     {
         overheated = true;
+        am.SetParameterByName(ref am.playerShooting, "Gun Upgrades", 1.0f);
     }
 
     public void Cooled()
     {
         overheated = false;
+        am.SetParameterByName(ref am.playerShooting, "Gun Upgrades", 0.0f);
     }
 
     public void InitializeProjectile()

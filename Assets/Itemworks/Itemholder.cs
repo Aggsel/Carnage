@@ -8,7 +8,23 @@ public class Itemholder : MonoBehaviour
 
     void Awake()
     {
-        itemholder = Resources.Load<Itemhold>("Itemhold");
+        itemholder = Resources.Load<Itemhold>("Itemhold");  //säkert asfult och tungt vid load time men om det fungerar så BRYR JAG MIG INTE HAHAH SUG PÅ DEN CARL! jk actually bad fixa sen 
+        foreach(Active i in itemholder.actives)
+        {
+            i.dontSpawn = false;
+        }
+        foreach (Passive i in itemholder.passives)
+        {
+            if(i == null)
+            {
+                Debug.LogWarning("Item index bug currently not fixed, this message will remain until it is fixed!");
+                //Vikberg fixa detta jävla bugget innan jag hoppar av min balkong mvh
+            }
+            else
+            {
+                i.dontSpawn = false;
+            }
+        }
     }
 
     public void DepoolItemActive(int itemIndex)

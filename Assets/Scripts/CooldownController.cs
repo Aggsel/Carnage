@@ -1,11 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CooldownController : MonoBehaviour
 {
+    [Header("UI")]
+    [SerializeField] private Image activeImage = null;
+    //[SerializeField] private Image frameImage = null;
+
+    [Header("Other stuff?")]
     public Active active;
     [SerializeField] private GameObject player = null;
+    private UIController uic = null;
+    private GameObject flashImageGO = null;
+    private RawImage flashImage = null;
     private float cooldownDuration;
     private float readyTime;
     private float cooldownTimeLeft;
@@ -13,6 +22,7 @@ public class CooldownController : MonoBehaviour
     private float activeActuationTimeLeft;
     private bool activeActuated;
     private KeyCode activate;
+    private AudioManager am = null;
 
     private void ReadKeybinds(KeyBindAsignments keys)
     {
@@ -31,6 +41,10 @@ public class CooldownController : MonoBehaviour
 
     void Start()
     {
+        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
+        flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
+        flashImage = flashImageGO.GetComponent<RawImage>();
+        am = AudioManager.Instance;
         Initialize(active, player);
     }
 
@@ -40,11 +54,20 @@ public class CooldownController : MonoBehaviour
         active = selectedActive;
         if(active != null)
         {
+            activeImage.enabled = true;
+            activeImage.sprite = active.sprite;
             cooldownDuration = active.cooldown;
             activeActuationTime = active.buffTime;
             activeActuationTimeLeft = activeActuationTime;
-            cooldownTimeLeft = cooldownDuration;
+            cooldownTimeLeft = 0.0f;
+            activeActuated = false;
+            readyTime = 0.0f;
+            activeImage.fillAmount = 1.0f - (cooldownTimeLeft / cooldownDuration);
             active.Initialize(player);
+        }
+        else
+        {
+            activeImage.enabled = false;
         }
         ActiveReady();
     }
@@ -70,11 +93,15 @@ public class CooldownController : MonoBehaviour
         else
         {
             ActuationCooldown();
+            activeImage.fillAmount = (activeActuationTimeLeft / activeActuationTime);
         }
     }
 
     private void Triggered()
     {
+        am.PlaySound(ref am.itemsActivate);
+        flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
+        uic.StartCoroutine(uic.FadeImage(flashImage, 0.85f, true));
         activeActuated = true;
         activeActuationTimeLeft = activeActuationTime;
         cooldownTimeLeft = cooldownDuration;
@@ -94,12 +121,15 @@ public class CooldownController : MonoBehaviour
     private void ActiveReady()
     {
         //UI stuff probably...
+        activeImage.color = new Color32(255, 255, 255, 255);
     }
 
     private void Cooldown()
     {
         cooldownTimeLeft -= Time.deltaTime;
         float roundedFloat = Mathf.Round(cooldownTimeLeft);
+        activeImage.fillAmount = 1.0f - (cooldownTimeLeft / cooldownDuration);
+        activeImage.color = new Color32(100, 100, 100, 255);
         //write to UI... probably...
     }
 

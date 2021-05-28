@@ -12,12 +12,10 @@ public class MovementController : MonoBehaviour
     [Serializable]
     public struct MovementVariables
     {
-        [Tooltip("Should the player always run or run with the run key")]
-        public bool alwaysRun;
-        [Tooltip("If always run is off, the default walk speed of the player")]
-        public float defaultSpeed;
         [Tooltip("If always run is off, the run speed of the player")]
         public float runSpeed;
+        [Tooltip("The speed of which backwards movement is multiplied by from forward")]
+        public float backSpeedMultiplier;
         [Tooltip("The jumpheight of the player")]
         public float jumpForce;
         [Tooltip("The acceleration of the players speed when falling")]
@@ -86,29 +84,42 @@ public class MovementController : MonoBehaviour
     private float nextDash = 0f;
     private List<Vector3> positioningList = new List<Vector3>();
     private float fallForce = 1.5f;
-    private float charge = 3.0f;
+    public float charge = 3.0f;
     private Vector3 upMovement = Vector3.zero;
     private bool invertedControls = false;
     private float groundedTimer = 0.0f;
     private float vertical = 0.0f;
     private float horizontal = 0.0f;
     private Vector3 dir = Vector3.zero;
-    private float edgeForce = 2.0f;
-
-    //test
+    private float edgeForce = 3.0f;
     private MotionBlur globalMotion = null;
     private float startFov = 0.0f;
     private float endFov = 0.0f;
     private float half = 0.0f;
     private CapsuleCollider cap = null;
     private Rigidbody rb = null;
+    private AudioManager am = null;
+    private bool hasLanded = false;
+
+    private Vector3 spawnPoint = Vector3.zero;
+    private bool spawnSet = false;
 
     private void Start ()
     {
+        am = AudioManager.Instance;
         cc = GetComponent<CharacterController>();
         cap = GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
         speed = movementVar.runSpeed;
+
+        //think this fixed motionblur bug
+        if (!profile.TryGet<MotionBlur>(out var motion))
+        {
+            Debug.LogWarning("THIS SHOULD NOT HAPPEN");
+            motion = profile.Add<MotionBlur>(false);
+        }
+
+        motion.active = false;
     }
 
     #region options related
@@ -153,6 +164,7 @@ public class MovementController : MonoBehaviour
     //script
     private void Update ()
     {
+        CheckPlayerPos(); //reseting player if outside map
         Movement();
         Dash();
         CameraRotation();
@@ -161,6 +173,27 @@ public class MovementController : MonoBehaviour
         if (charge < 3.0f)
         {
             Recharge();
+        }
+    }
+
+    public void SetSpawnPoint(Vector3 pos) //for respawning if falling of the world
+    {
+        //Debug.Log("SpawnPos is: " + pos);
+        spawnPoint = pos;
+        spawnSet = true;
+    }
+
+    private void CheckPlayerPos ()
+    {
+        if(spawnSet)
+        {
+            if (transform.position.y < -5f)
+            {
+                Debug.LogWarning("Player had an unusial y-pos and is teleported back to spawn");
+                cc.enabled = false;
+                transform.position = spawnPoint;
+                cc.enabled = true;
+            }
         }
     }
 
@@ -197,6 +230,9 @@ public class MovementController : MonoBehaviour
             //effects: fov & motionblur
             motion.active = true;
             globalMotion = motion;
+
+            //audio
+            am.PlaySound(am.playerDash);
 
             //dash stuff
             if (!Physics.Raycast(ray, out hit, (dashVar.dashLength / 2)))
@@ -304,8 +340,8 @@ public class MovementController : MonoBehaviour
         }
 
         //set speed
-        speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
-
+        //speed = movementVar.alwaysRun ? movementVar.runSpeed : (Input.GetKey(KeyCode.LeftShift) ? movementVar.runSpeed : movementVar.defaultSpeed);
+        
         //new movement
         if(Input.GetKey(moveForward) || Input.GetKey(moveBack))
         {
@@ -316,7 +352,7 @@ public class MovementController : MonoBehaviour
 
             if (Input.GetKey(moveBack))
             {
-                vertical = Mathf.Clamp(vertical - 1, -1.0f, 1.0f);
+                vertical = Mathf.Clamp(vertical - 1, -1.0f, 1.0f) * movementVar.backSpeedMultiplier;
             }
         }
         else
@@ -361,6 +397,8 @@ public class MovementController : MonoBehaviour
         //jump key
         if (Input.GetKeyDown(jump) && groundedTimer > 0.0f)
         {
+            hasLanded = false;
+            am.PlaySound(am.playerJump);
             verticalVelocity = movementVar.jumpForce;
         }
 
@@ -413,10 +451,18 @@ public class MovementController : MonoBehaviour
             //slope jitter fix
             RaycastHit hit;
             Ray ray = new Ray(transform.position, Vector3.down);
-            //Debug.DrawRay(transform.position, Vector3.down * 2.0f, Color.cyan);
 
             if (Physics.Raycast(ray, out hit, 2.0f, wallLayermask))
             {
+                //land sound
+                if(!cc.isGrounded && verticalVelocity < 0.0f && !hasLanded)
+                {
+                    hasLanded = true;
+                    am.PlaySound(am.playerLand);
+                    //Debug.Log("Land");
+                }
+
+                //jitter fix
                 if(hit.normal != Vector3.up)
                 {
                     //HACK
@@ -442,11 +488,11 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    //DEBUG velocity & FPS
-    private void OnGUI ()
+    public float Charge
     {
-        GUI.Label(new Rect(10, 30, 100, 50), charge.ToString("F2"));
-        GUI.Label(new Rect(10, 10, 100, 50), cc.velocity.magnitude.ToString());
-        GUI.Label(new Rect(Screen.width - 40, 30, 70, 50), (1.0f / Time.smoothDeltaTime).ToString("F2"));
+        get
+        {
+            return charge;
+        }
     }
 }

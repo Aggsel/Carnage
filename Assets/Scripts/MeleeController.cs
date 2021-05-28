@@ -17,18 +17,28 @@ public class MeleeController : MonoBehaviour
         public int rayAmount;
         [Tooltip("The spread of the 'rayAmount' raycasts. High number means more distance between each ray, these two go hand in hand")] [Range(0.5f, 5.0f)]
         public float raySpread;
+        //[Tooltip("If you melee & it misses, this penaltyTime is added to the melee recharge")]
+        //public float penaltyTime;
     }
     #endregion
 
     [Tooltip("Dont change")]
     [SerializeField] private Animator anim = null;
+    [SerializeField] private LayerMask lm = new LayerMask();
     [Tooltip("For programmers, scripts that are disabled while using melee")]
     [SerializeField] private MonoBehaviour[] scripts = null;
     [SerializeField] private MeleeVariables meleeVar = new MeleeVariables();
 
-    private bool inHit = false;
     private KeyCode meleeKey = KeyCode.F;
     private Vector3 origin = Vector3.zero;
+    private AudioManager am = null;
+    private bool inHit = false;
+    //private float penalty = 0.0f;
+
+    private void Start ()
+    {
+        am = AudioManager.Instance;
+    }
 
     //read keybinds
     private void ReadKeybinds(KeyBindAsignments keys)
@@ -46,14 +56,18 @@ public class MeleeController : MonoBehaviour
         PauseController.updateKeysFunction -= ReadKeybinds;
     }
 
+    public bool GetHit ()
+    {
+        return inHit;
+    }
+
     //main
     private void Update ()
     {
         origin = Camera.main.transform.position;
-
+        //penalty -= Time.deltaTime;
         MeleeInitiator();
 
-        //DEBUG VISUALS
         if(meleeVar.showDebug)
         {
             for (int i = -meleeVar.rayAmount; i < meleeVar.rayAmount; i++)
@@ -83,7 +97,7 @@ public class MeleeController : MonoBehaviour
                 RaycastHit hit;
                 Ray ray = new Ray(origin, dir);
 
-                if (Physics.Raycast(ray, out hit, meleeVar.range))
+                if (Physics.Raycast(ray, out hit, meleeVar.range, lm))
                 {
                     float dist = Vector3.Distance(origin, hit.point);
 
@@ -103,6 +117,7 @@ public class MeleeController : MonoBehaviour
                 else
                 {
                     //Debug.Log("THIS RAY HIT NOTHING");
+                    //penalty += meleeVar.penaltyTime;
                 }
             }
         }
@@ -110,11 +125,12 @@ public class MeleeController : MonoBehaviour
         if(hitObj != null)
         {
             StartCoroutine(GetComponent<Screenshake>().Shake(4f, 0.2f));
+            am.PlaySound(am.playerMelee);
 
             //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
-            if(hitObj.GetComponentInParent<EnemyBehavior>() != null)
+            if (hitObj.GetComponentInParent<EnemyBehavior>() != null)
             {
-                HitObject obj = new HitObject(transform.position, lateHit.point, 100.0f, 0.0f); //set high melee damage
+                HitObject obj = new HitObject(transform.position, lateHit.point, 120.0f, 0.0f, type: HitType.Melee); //set high melee damage
                 hitObj.GetComponentInParent<EnemyBehavior>().OnShot(obj);
             }
         }
@@ -132,7 +148,7 @@ public class MeleeController : MonoBehaviour
 
     private void MeleeInitiator()
     {
-        if (Input.GetKeyDown(meleeKey) && !inHit)
+        if (Input.GetKeyDown(meleeKey) && !inHit /*&& penalty <= 0.0f*/)
         {
             inHit = true;
 

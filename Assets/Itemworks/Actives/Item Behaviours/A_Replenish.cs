@@ -2,23 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "Actives/Mechanical/Replenish")]
 public class A_Replenish : Active
 {
-    [Tooltip("Choose between Heat or Health values to replenish.")]
-    [SerializeField] private string toReplenish = "health";
     [Tooltip("The amount of health to be replenished.")]
-    [SerializeField] private float replenishAmount = 0f;
+    [SerializeField] private float replenishAmount = 0.3f;
 
-    private AttributeController ac;
+    private HealthController hc;
+    private CooldownController cc;
+    private GameObject player;
+    private AudioManager am = null;
 
     public override void Initialize(GameObject obj)
     {
-        ac = obj.GetComponent<AttributeController>();
+        player = obj;
+        hc = player.GetComponent<HealthController>();
+        cc = player.GetComponentInChildren<CooldownController>(); ;
+        am = AudioManager.Instance;
     }
 
     public override void TriggerActive()
     {
-        
+        hc.ModifyCurrentHealthProcent(replenishAmount);
+        cc.active = null;
+        cc.Initialize(null, player);
+        am.PlaySound(ref am.itemsHealing);
     }
 
     public override void DetriggerActive()

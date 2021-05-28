@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using UnityEngine.SceneManagement;
 using System.Text.RegularExpressions;
 
 [Serializable]
@@ -20,8 +21,9 @@ public class SerializeController : MonoBehaviour
     private PauseController pc;
     private string dir = "";
 
-    //[TextArea(15, 20)]
-    //public string finLine;
+    //simple player prefs saving
+    private int hideTutorial = 1; //1 is no (show it), 2 is yes (hide it)
+    private int firstTime = 1; //1 is first time, 2 is not first time
 
     private void OnEnable()
     {
@@ -30,24 +32,83 @@ public class SerializeController : MonoBehaviour
         string[] lines = null;
         dir = GetPreferenceDirectory();
 
-        //On gamestart load in or create preferences
-        if (!CheckPreferenceFile(dir))
+        //On gamestart get tutorial stuff
+        if(PlayerPrefs.GetInt("hideTutorial", 0) == 0)
         {
-            Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
-            CreateNewPreferences();
+            PlayerPrefs.SetInt("hideTutorial", 1);
+            hideTutorial = PlayerPrefs.GetInt("hideTutorial");
         }
         else
         {
-            lines = System.IO.File.ReadAllLines(dir);
-
-            //before load check for weird shit
-            /*for (int i = 0; i < lines.Length; i++)
+            if(PlayerPrefs.GetInt("hideTutorial") == 1)
             {
-                lines[i] = Regex.Replace(lines[i], "[^\\w\\._]", "");
-            }*/
-            
-            LoadPreferences(lines);
+                //PlayerPrefs.SetInt("hideTutorial", 2);
+                hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            }
+            else if (PlayerPrefs.GetInt("hideTutorial") == 2)
+            {
+                hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+            }
+            else
+            {
+                Debug.LogWarning("This should not happen!");
+            }
         }
+
+        //First time playing
+        if (PlayerPrefs.GetInt("firstTime", 0) == 0)
+        {
+            PlayerPrefs.SetInt("firstTime", 1);
+            firstTime = PlayerPrefs.GetInt("firstTime");
+        }
+        else
+        {
+            firstTime = PlayerPrefs.GetInt("firstTime");
+        }
+
+        //On gamestart load in or create preferences
+        if(SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            if (!CheckPreferenceFile(dir))
+            {
+                //Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
+                CreateNewPreferences();
+                lines = System.IO.File.ReadAllLines(dir);
+                LoadPreferences(lines);
+            }
+            else
+            {
+                lines = System.IO.File.ReadAllLines(dir);
+                LoadPreferences(lines);
+            }
+        }
+    }
+
+    //tutorial player prefs save
+    public void SetHideTutorial (int i)
+    {
+        hideTutorial = i;
+        //Debug.Log("SET: " + i);
+        PlayerPrefs.SetInt("hideTutorial", hideTutorial);
+    }
+
+    public int GetHideTutorial ()
+    {
+        //Debug.Log("GET: " + hideTutorial);
+        hideTutorial = PlayerPrefs.GetInt("hideTutorial");
+        return hideTutorial;
+    }
+
+    //first time playing
+    public void SetFirstTime (int i)
+    {
+        firstTime = i;
+        PlayerPrefs.SetInt("firstTime", firstTime);
+    }
+
+    public int GetFirstTime ()
+    {
+        return firstTime;
     }
 
     #region preferences
@@ -82,8 +143,8 @@ public class SerializeController : MonoBehaviour
     //kinda disgusting
     private void LoadPreferences (string[] lines)
     {
-        //0            1       2      3    4      5     6        7     8      9      10    11    12     13
-        //sensitivity, sounds, music, fov, gamma, dash, forward, back, pause, right, left, jump, melee, action
+        //0            1       2      3    4      5        6     7        8     9      10      11    12    13     14      15
+        //sensitivity, sounds, music, fov, gamma, graphics dash, forward, back, pause, right, left, jump, melee, action, status
         //this does not check if the preferences is valid
 
         OptionAssignments oa = pc.GetOptions();
@@ -104,11 +165,16 @@ public class SerializeController : MonoBehaviour
         oa.gammaSlider.value = float.Parse(lines[4]);
         pc.ChangeGamma(oa.gammaSlider);
 
+        oa.graphicsSlider.value = float.Parse(lines[5]);
+        pc.ChangeGraphics(oa.graphicsSlider);
+
+        //Debug.Log("Loaded graphics as " + oa.graphicsSlider.value);
+
         //Keybindings
-        for (int i = 5; i < lines.Length; i++)
+        for (int i = 6; i < lines.Length; i++)
         {
             KeyCode newKey = (KeyCode)System.Enum.Parse(typeof(KeyCode), lines[i]);
-            pc.SetKeyBindings(i - 5, newKey);
+            pc.SetKeyBindings(i - 6, newKey);
         }
     }
 
@@ -123,6 +189,7 @@ public class SerializeController : MonoBehaviour
             oa.musicSlider.value.ToString() + "\n" +
             oa.fovSlider.value.ToString() + "\n" +
             oa.gammaSlider.value.ToString() + "\n" +
+            oa.graphicsSlider.value.ToString() + "\n" +
 
             //keybindings
             ka.moveForward.ToString() + "\n" +
@@ -133,8 +200,10 @@ public class SerializeController : MonoBehaviour
             ka.pause.ToString() + "\n" +
             ka.jump.ToString() + "\n" +
             ka.melee.ToString() + "\n" +
-            ka.action.ToString();
+            ka.action.ToString() + "\n" +
+            ka.status.ToString();
 
+        //Debug.Log("Saved graphics as " + oa.graphicsSlider.value.ToString());
         WriteToPreferences(saveString);
     }
     #endregion

@@ -12,8 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b2d5ca99db1ac04280a005d8990e772, type: 3}
   m_Name: A_MassiveDamage
   m_EditorClassIdentifier: 
-  activeName: MassiveDamage
+  activeName: Onslaught
+  activeDescription: Massively empowers damage and lowers heatgeneration
   cooldown: 45
   buffTime: 10
-  attributeToBuff: damage
-  increment: 2.5
+  depool: 1
+  sprite: {fileID: 21300000, guid: 8ab28a024fea7f549865fa6c82da3b36, type: 3}
+  modelPrefab: {fileID: 7306960401702900304, guid: 259787804c81906419f7e9644c1bb071,
+    type: 3}
+  dontSpawn: 0
+  buffs:
+  - stat: damage
+    increment: 2.5
+    statTwo: heatgeneration
+    incrementTwo: 0.25

@@ -50,27 +50,40 @@ public class Screenshake : MonoBehaviour
 
     private float recoil = 0.0f;
     private Vector3 noise = Vector3.zero;
+    private float fireRateAmount = 0.0f;
+    private AttributeController ac = null;
 
     private void Start ()
     {
+        ac = FindObjectOfType<AttributeController>();
+
         startPos = shakeOrigin.localPosition;
         mainStartPos = mainOrigin.localPosition;
 
         startRot = shakeOrigin.localEulerAngles;
     }
 
+    public void SetRecoilIncrease(float increment)
+    {
+        recoilVar.reocilIncrease = increment;
+    }
+
     private void Update ()
     {
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            StartCoroutine(Shake(shakeVar.shakeAmount, shakeVar.shakeTime));
-        }
-
         Recoil();
     }
 
     public void RecoilCall ()
     {
+        //little bit slow
+        fireRateAmount = ac.weaponAttributesResultant.fireRate;
+
+        if (fireRateAmount >= 8.0f)
+            recoilVar.reocilIncrease = 0.05f;
+
+        if (fireRateAmount < 8.0f)
+            recoilVar.reocilIncrease = 0.085f;
+
         noise = new Vector3(UnityEngine.Random.Range(-recoilVar.recoilNoise.x, recoilVar.recoilNoise.x),
                 UnityEngine.Random.Range(-recoilVar.recoilNoise.y, recoilVar.recoilNoise.y),
                 UnityEngine.Random.Range(-recoilVar.recoilNoise.z, recoilVar.recoilNoise.z)) * 0.5f;
@@ -102,8 +115,7 @@ public class Screenshake : MonoBehaviour
             mainOrigin.transform.localRotation = Quaternion.Slerp(mainOrigin.transform.localRotation, Quaternion.Euler(startRot), Time.deltaTime * recoilVar.recoilSpeed * 10.0f);
         }
     }
-
-    #region screenshake
+    
     public IEnumerator Shake (float shakeAmount, float shakeTime)
     {
         float time = 0.0f;
@@ -143,7 +155,6 @@ public class Screenshake : MonoBehaviour
         shakeOrigin.localEulerAngles = startRot;
         StartCoroutine(ReturnHome(step, motion));
     }
-    #endregion
 
     //smooth the return to startPos, infinite loop lol
     private IEnumerator ReturnHome (float step, MotionBlur motion)
