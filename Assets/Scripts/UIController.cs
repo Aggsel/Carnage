@@ -68,7 +68,7 @@ public class UIController : MonoBehaviour
         _propBlock = new MaterialPropertyBlock();
     }
 
-    private void Start ()
+    private void Start()
     {
         StartCoroutine(Counter());
         StartCoroutine(WhiteFade(false, 0.5f));
@@ -110,24 +110,24 @@ public class UIController : MonoBehaviour
         winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
     }
 
-    public void UIAlertText(string text, float duration = -1.0f, AnimationCurve curve = null, Color? color = null){
-        if(curve == null)
+    public void UIAlertText(string text, float duration = -1.0f, AnimationCurve curve = null, Color? color = null) {
+        if (curve == null)
             curve = defaultAnimationCurve;
-        if(duration < 0.0f)
+        if (duration < 0.0f)
             duration = Mathf.Max(minTextDisplayDuration, text.Split(' ').Length / wordsPerSecond);
-        if(color == null)
+        if (color == null)
             color = winText.GetComponent<TMPro.TextMeshProUGUI>().color;
 
         alertQueue.Enqueue(new AlertMessage(text, duration, color, curve));
-        if(!alertActive)
+        if (!alertActive)
             StartCoroutine(DisplayNextAlert());
     }
 
-    private IEnumerator DisplayNextAlert(){
+    private IEnumerator DisplayNextAlert() {
         alertActive = true;
         TextMeshProUGUI textRef = winText.GetComponent<TMPro.TextMeshProUGUI>();
 
-        while(alertQueue.Count > 0){
+        while (alertQueue.Count > 0) {
             AlertMessage currentAlert = alertQueue.Dequeue();
             AnimationCurve curve = currentAlert.GetCurve();
             float time = 0.0f;
@@ -135,11 +135,11 @@ public class UIController : MonoBehaviour
 
             winText.SetActive(true);
             textRef.text = currentAlert.GetMessage();
-            Color fadeColor = currentAlert.GetColor();;
+            Color fadeColor = currentAlert.GetColor(); ;
 
-            float fadeDuration = curve.keys[curve.length-1].time;
+            float fadeDuration = curve.keys[curve.length - 1].time;
             //Fade in.
-            while(time < fadeDuration){
+            while (time < fadeDuration) {
                 fadeColor.a = fade;
                 textRef.color = fadeColor;
                 yield return null;
@@ -151,7 +151,7 @@ public class UIController : MonoBehaviour
 
             //Fade out using same curve but in reverse.
             time = fadeDuration;
-            while(time > 0.0f){
+            while (time > 0.0f) {
                 fadeColor.a = fade;
                 textRef.color = fadeColor;
                 yield return null;
@@ -162,7 +162,7 @@ public class UIController : MonoBehaviour
             textRef.text = "";
         }
         alertActive = false;
-    } 
+    }
 
     void Update()
     {
@@ -187,9 +187,9 @@ public class UIController : MonoBehaviour
     }
 
     //Carls andra försök på fps counter :(
-    private IEnumerator Counter ()
+    private IEnumerator Counter()
     {
-        for(; ; ) //while true
+        for (; ; ) //while true
         {
             int lastFrameCount = Time.frameCount;
             float lastTime = Time.realtimeSinceStartup;
@@ -203,6 +203,11 @@ public class UIController : MonoBehaviour
     }
 
     //white effect for fading in and out
+    public void ResetWhiteFade()
+    {
+        fadeImage.gameObject.SetActive(false);
+    }
+
     public IEnumerator WhiteFade (bool fadeIn, float time) //fadeIn is if its out or in, time should be around 1
     {
         fadeImage.gameObject.SetActive(true);

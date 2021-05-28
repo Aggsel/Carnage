@@ -15,11 +15,11 @@ public class NextLevelTrigger : MonoBehaviour
 
     private IEnumerator LevelLoadDelay ()
     {
-        uc.StartCoroutine(uc.WhiteFade(false, 0.1f));
-        //string endText = "Cast from shackles which bound them, this bell shall ring out hope for the mentally ill and victory over mental illness";
-        //uc.UIAlertText(endText, 4.0f);
+        AudioManager.Instance.PlaySound(ref AudioManager.Instance.endOfLevelBell);
+        uc.StartCoroutine(uc.WhiteFade(true, 0.5f));
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(4f);
+        AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
         GoToNextLevel();
     }
 
@@ -33,7 +33,8 @@ public class NextLevelTrigger : MonoBehaviour
     private void GoToNextLevel(){
         if(levelManager == null)
             levelManager = FindObjectOfType<LevelManager>();
-        
+
+        Debug.Log("NEW LEVEL");
         levelManager.GoToNextLevel();
     }
 }
