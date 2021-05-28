@@ -19,6 +19,7 @@ public class BloodController : MonoBehaviour
     [SerializeField] private Texture[] texs = null;
 
     private Queue<DecalProjector> decalPool = new Queue<DecalProjector>();
+    private Vector3 decalDefaultScale = Vector3.zero;
 
     private void Start ()
     {
@@ -68,19 +69,13 @@ public class BloodController : MonoBehaviour
                 selectedDecal.transform.position = hit;
                 selectedDecal.transform.rotation = decalRot;
 
-                //randomize scale and rotation
-                float ranScale = Random.Range(-0.5f, 3.5f);
-                Vector3 scale = selectedDecal.size + new Vector3(ranScale, ranScale, 0);
-                selectedDecal.size = scale;
-
-                float ranRot = Random.Range(-180, 180);
-                selectedDecal.transform.RotateAround(selectedDecal.transform.position, Vector3.up, ranRot);
                 decalPool.Enqueue(selectedDecal);
             }
             else
             {
                 DecalProjector newDecal = Instantiate(decal) as DecalProjector;
                 decalPool.Enqueue(newDecal);
+                decalDefaultScale = newDecal.size;
 
                 if ((lm.value & (1 << obj.layer)) > 0)
                 {
@@ -93,7 +88,7 @@ public class BloodController : MonoBehaviour
 
                 //randomize scale and rotation
                 float ranScale = Random.Range(-0.5f, 3.5f);
-                Vector3 scale = newDecal.size + new Vector3(ranScale, ranScale, 0);
+                Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
                 newDecal.size = scale;
 
                 float ranRot = Random.Range(-180, 180);
@@ -104,6 +99,7 @@ public class BloodController : MonoBehaviour
         {
             DecalProjector newDecal = Instantiate(decal) as DecalProjector;
             decalPool.Enqueue(newDecal);
+            decalDefaultScale = newDecal.size;
 
             if ((lm.value & (1 << obj.layer)) > 0)
             {
@@ -116,7 +112,7 @@ public class BloodController : MonoBehaviour
 
             //randomize scale and rotation
             float ranScale = Random.Range(-0.5f, 3.5f);
-            Vector3 scale = newDecal.size + new Vector3(ranScale, ranScale, 0);
+            Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
             newDecal.size = scale;
 
             float ranRot = Random.Range(-180, 180);
