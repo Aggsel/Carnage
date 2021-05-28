@@ -50,6 +50,7 @@ namespace EnemyStates.ConstraintMelee
         public void Attack(){
             RaycastHit hit;
             if (Physics.Raycast(agent.transform.position, (behavior.GetTargetPosition() - agent.transform.position).normalized, out hit, attackRange)){
+                Debug.DrawLine(agent.transform.position, hit.point, Color.red, 0.8f);
                 Vector3 dir = agent.transform.position - hit.point;
                 hit.collider.GetComponent<HealthController>()?.OnShot(new HitObject(dir, hit.point, damage: damage));
                 behavior.am.PlaySound(ref behavior.am.patientMelee, behavior.transform.position);

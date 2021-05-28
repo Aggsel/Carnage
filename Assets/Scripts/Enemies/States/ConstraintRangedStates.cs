@@ -23,13 +23,16 @@ namespace EnemyStates.ConstraintRanged
     [System.Serializable]
     public class ConstraintRangedAttack : ConstraintRangedBaseState
     {
-        private float timeOutOfSight = 0.0f;
         [Tooltip("How long after the player is out of sight the enemy should wait before starting to chase the player.")]
         [SerializeField] private float patienceTimer = 2.0f;
         [SerializeField] private GameObject projectilePrefab = null;
         [SerializeField] private Transform projectileSpawnPosition = null;
         [SerializeField] private VisualEffect chargeEffect = null;
+        [Tooltip("How far to the sides of the enemy must be unobstructed in order to attack the player.")]
+        [SerializeField] private float sightThreshold = 0.4f;
         private bool isAttacking = true;
+        [SerializeField] private float lineOfSightCheckFrequency = 0.5f;
+        private float lineOfSightTimer = 0.0f;
 
         public ConstraintRangedAttack() : base(){}
 
@@ -43,6 +46,7 @@ namespace EnemyStates.ConstraintRanged
 
             anim.SetTrigger("attack");
             isAttacking = true;
+            lineOfSightTimer = lineOfSightCheckFrequency;
         }
 
         public override void OnStateExit(){
@@ -56,17 +60,29 @@ namespace EnemyStates.ConstraintRanged
 
             RotateTowardsTarget(behavior.GetTargetPosition());
 
-            if(!isAttacking){
-                bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position + new Vector3(0, agent.height, 0), behavior.GetTargetPosition());
-                timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
-            }
+            lineOfSightTimer += Time.deltaTime;
+            if(!isAttacking && lineOfSightTimer >= lineOfSightCheckFrequency){
+                lineOfSightTimer = 0.0f;
 
-            if(timeOutOfSight >= patienceTimer){
-                SetState(behavior.chaseState);
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    SetState(behavior.chaseState);
+                    return;
+                }
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    SetState(behavior.chaseState);
+                    return;
+                }
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position - agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    SetState(behavior.chaseState);
+                    return;
+                }
             }
         }
 
         public void Attack(){
+            lineOfSightTimer = lineOfSightCheckFrequency;
             FireProjectile(projectilePrefab, projectileSpawnPosition);
         }
 
@@ -110,6 +126,8 @@ namespace EnemyStates.ConstraintRanged
 
             previousSpeed = base.agent.speed;
             base.agent.speed = chaseSpeed;
+
+            lineOfSightTimer = lineOfSightCheckFrequency;
         }
 
         public override void OnStateExit(){
@@ -122,10 +140,8 @@ namespace EnemyStates.ConstraintRanged
             agent.SetDestination(behavior.GetTargetPosition());
 
             lineOfSightTimer += Time.deltaTime;
-            lineOfSightTimer = lineOfSightCheckFrequency + 1.0f;
             if(lineOfSightTimer > lineOfSightCheckFrequency){
                 lineOfSightTimer = 0.0f;
-                behavior.transform.rotation = Quaternion.LookRotation(behavior.GetTargetPosition() - behavior.transform.position, Vector3.up);
                 if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
                     return;
                 }
