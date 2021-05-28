@@ -311,39 +311,48 @@ public class MazeGenerator{
         RecalculateDepth(initPosition);
     }
 
-    private void RecalculateDepth(Vector2Int pos, int depth = 0){
-        if(depth == 0){
-            this.maxDepthReached = 0;
-            for (int y = 0; y < grid.GetLength(1); y++){
-                for (int x = 0; x < grid.GetLength(0); x++){
-                    this.grid[x,y].visited = false;
-                }
+    private void RecalculateDepth(Vector2Int pos){
+        for (int y = 0; y < grid.GetLength(1); y++){
+            for (int x = 0; x < grid.GetLength(0); x++){
+                this.grid[x,y].visited = false;
             }
         }
 
-        if(this.grid[pos.x, pos.y].visited)
-            return;
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        queue.Enqueue(pos);
+        grid[pos.x, pos.y].visited = true;
+        int depth = 0;
+        this.maxDepthReached = 0;
 
-        this.maxDepthReached = this.maxDepthReached < depth ? depth : this.maxDepthReached;
-        this.grid[pos.x, pos.y].depth = Mathf.Min(grid[pos.x, pos.y].depth, depth);
-        this.grid[pos.x,pos.y].visited = true;
+        while(queue.Count > 0){
+            int depthLength = queue.Count;
 
-        int mask = this.grid[pos.x, pos.y].doorMask;
+            while(depthLength > 0){
+                Vector2Int newPos = queue.Dequeue();
+                roomCount++;
 
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-        if((mask & 0b0001) == 0b0001)
-            neighbors.Add(new Vector2Int(0,1));
-        if((mask & 0b0010) == 0b0010)
-            neighbors.Add(new Vector2Int(1,0));
-        if((mask & 0b0100) == 0b0100)
-            neighbors.Add(new Vector2Int(0,-1));
-        if((mask & 0b1000) == 0b1000)
-            neighbors.Add(new Vector2Int(-1,0));
+                grid[newPos.x, newPos.y].visited = true;
+                grid[newPos.x, newPos.y].depth = depth;
+                this.maxDepthReached = depth > this.maxDepthReached ? depth : this.maxDepthReached;
 
-        while(neighbors.Count > 0){
-            Vector2Int newPos = new Vector2Int(pos.x + neighbors[0].x, pos.y + neighbors[0].y);
-            neighbors.RemoveAt(0);
-            RecalculateDepth(newPos, depth + 1);
+                int mask = this.grid[newPos.x, newPos.y].doorMask;
+                List<Vector2Int> neighbors = new List<Vector2Int>();
+                if((mask & 0b0001) == 0b0001)
+                    neighbors.Add(new Vector2Int(0,1) + newPos);
+                if((mask & 0b0010) == 0b0010)
+                    neighbors.Add(new Vector2Int(1,0) + newPos);
+                if((mask & 0b0100) == 0b0100)
+                    neighbors.Add(new Vector2Int(0,-1) + newPos);
+                if((mask & 0b1000) == 0b1000)
+                    neighbors.Add(new Vector2Int(-1,0) + newPos);
+                for (int i = 0; i < neighbors.Count; i++){
+                    if(!grid[neighbors[i].x, neighbors[i].y].visited){
+                        queue.Enqueue(neighbors[i]);
+                    }
+                }
+                depthLength--;
+            }
+            depth++;
         }
     }
 
