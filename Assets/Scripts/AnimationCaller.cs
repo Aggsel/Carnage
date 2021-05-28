@@ -16,7 +16,7 @@ public class AnimationCaller : MonoBehaviour
     public void FiendFootSteps ()
     {
         //am.SetParameterByName(ref am.patientFootsteps, "surface", 1.0f);
-        am.PlaySound(ref am.patientFootsteps, transform.gameObject);
+        am.PlaySound(am.patientFootsteps, transform.gameObject);
     }
 
     //melee fiend

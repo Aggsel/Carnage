@@ -77,7 +77,7 @@ public class FiringController : MonoBehaviour
         ss.RecoilCall();
 
         //play sound
-        am.PlaySound(ref am.playerShooting);
+        am.PlaySound(am.playerShooting);
 
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, shotLayerMask))
         {
