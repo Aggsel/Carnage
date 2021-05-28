@@ -85,7 +85,7 @@ public class UIController : MonoBehaviour
         float hp = hc.Health;
 
         healthbar.value = hc.Health;
-        healthText.text = hp + "/" + hc.MaxHealth;
+        healthText.text = hp.ToString("F0") + "/" + hc.MaxHealth;
 
         if (hp <= 0.0f)
         {

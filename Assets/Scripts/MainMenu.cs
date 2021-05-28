@@ -36,13 +36,22 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    private void Update ()
+    {
+        //DEBUG, RESET FIRST TIME
+        if(Input.GetKeyDown(KeyCode.Comma))
+        {
+            sc.SetFirstTime(1);
+        }
+    }
+
     #region mainMenu crap
     public void StartButton ()
     {
         if(sc.GetFirstTime() == 1)
         {
             sc.SetFirstTime(2);
-            SceneManager.LoadScene("Level1");
+            SceneManager.LoadScene("Alexander");
         }
         else if (sc.GetFirstTime() == 2)
         {
