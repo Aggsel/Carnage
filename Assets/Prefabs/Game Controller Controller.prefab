@@ -3344,7 +3344,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.19995117, y: 6.0999756}
+  m_AnchoredPosition: {x: -0.19995117, y: 6.0998535}
   m_SizeDelta: {x: 52.94568, y: 50.636475}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6695319695037050480
@@ -4337,6 +4337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9113bb46ac2968a43b44274492fa613f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poolBlood: 1
+  poolSize: 100
+  bloodSpawnProcentage: 50
   decal: {fileID: 1099489180470404075, guid: a634fe900566378439449b167688cb5c, type: 3}
   splatEffect: {fileID: 2341241155663937959, guid: dadd93da56750ef4ebbfafe9006fa142,
     type: 3}
@@ -4366,27 +4369,13 @@ MonoBehaviour:
   nextText: {fileID: 7214558690016540064}
   previousText: {fileID: 2238008718053806130}
   tutorialInfo:
-  - You move the character with WASD (default), and look around by moving the mouse
-  - The character also wields a jumping ability by pressing SPACE (default)
-  - To avoid enemies or ranged attacks you can use the dash function. Move in a direction
-    of your liking and press LEFT SHIFT (default)
-  - You wield a ranged weapon, it can be fired using MOUSE 1 (default)
-  - The weapon does not have any ammuntion but watch out so that it does not overheat
-    after a long haul of bullets (see crosshair indicator)
-  - If the enemy ever comes to close for comfort you can melee them by pressing V
-    (default)
-  - The game can be paused at anytime by pressing ESCAPE (default), in the pausemenu
-    you can change keybindings and other options
-  - Navigating the asylum can be difficult at times, by pressing TAB (default) you
-    can enable a map to easier find your way to the end of the level or to rooms
-    with interesting items
-  - The game has activatable and passive items, when you pick up an activatable item
-    it shows you that specific item in the bottom right corner. To activate it press
-    E (defaut). It is activated for a certain duration and will then take a while
-    to recharge
-  - If the item that you pick up is a passive one it appears in your map/status view
-    when you press TAB (default). You can stack passive items and how many of each
-    specific passive item you have stacked is shown by the number next to it
+  - Move by using the WASD-keys, and look around with the mouse.
+  - Click the left mouse button to shoot and press V to use a meele-attack.
+  - Press left SHIFT while moving to use dash and SPACE to jump.
+  - Hold TAB to view map and aquired passive items. To use an active item, press
+    E.
+  - Press ESC to get to the pause menu. Under Options you can change keybindings
+    and different settings.
 --- !u!1 &4158066615946849937
 GameObject:
   m_ObjectHideFlags: 0
@@ -17956,7 +17945,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Do you want to play through the tutorial?
+  m_text: 'Do you want a text-tutorial on how to play?
 
 '
   m_isRightToLeft: 0
@@ -19270,7 +19259,8 @@ PrefabInstance:
         type: 3}
       propertyPath: active
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: f244942de1287f647899e31bea2e8b1a,
+        type: 2}
     - target: {fileID: 5065991170005627374, guid: ee42cd0995687dc41b167485bca81841,
         type: 3}
       propertyPath: frameImage

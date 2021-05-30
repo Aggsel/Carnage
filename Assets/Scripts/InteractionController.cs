@@ -54,6 +54,7 @@ public class InteractionController : MonoBehaviour
         mc.enabled = false;
         pc.enabled = false;
         uc.StartCoroutine(uc.WhiteFade(true, 1f));
+        AudioManager.Instance.StopSound(ref AudioManager.Instance.hubMusic);
 
         yield return new WaitForSeconds(1f);
         SceneManager.LoadScene("Level1");

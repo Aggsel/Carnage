@@ -27,10 +27,14 @@ public class MainMenu : MonoBehaviour
 
         if (mainMenu)
         {
-            AudioManager.Instance.PlaySound(ref AudioManager.Instance.ambManager);
-            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "Battle", 0.0f);
-            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "State", 0.0f);
-
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.mainMenuMusic);
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else if (SceneManager.GetActiveScene().name == "Actual_Hub")
+        {
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.hubMusic);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
@@ -48,8 +52,10 @@ public class MainMenu : MonoBehaviour
     #region mainMenu crap
     public void StartButton ()
     {
-        if(sc.GetFirstTime() == 1)
+        AudioManager.Instance.StopSound(ref AudioManager.Instance.mainMenuMusic);
+        if (sc.GetFirstTime() == 1)
         {
+            
             sc.SetFirstTime(2);
             SceneManager.LoadScene("Alexander");
         }
