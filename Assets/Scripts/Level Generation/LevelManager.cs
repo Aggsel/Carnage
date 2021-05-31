@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -75,9 +76,12 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public int GetCurrentLevel(){
+        return currentLevel;
+    }
+
     //Called by other object whenever level should progress.
     public void GoToNextLevel(){
-        uic.StartCoroutine(uic.WhiteFade(false, 0.5f));
         roomCounter = 0;
         completedRooms = 0;
 
@@ -101,11 +105,10 @@ public class LevelManager : MonoBehaviour
         this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
         GenerateLevel();
         this.gameObject.transform.position = playerReference.transform.position; //Teleport level to player instead of player to level lol.
-        uic.UIAlertText("Going to next level!", 1.0f);
     }
 
     private void EndOfFinalLevel(){
-        uic.UIAlertText("End of final level!", 2.0f);
+        SceneManager.LoadScene("Actual_Hub");
     }
 
     [ContextMenu("Generate Level")]
@@ -236,10 +239,6 @@ public class LevelManager : MonoBehaviour
         completedRooms++;
         UpdateProgressionUI();
     }
-
-    // public void ProgressionUISetActive(bool enabled){
-    //     progressionUIReference?.gameObject.SetActive(enabled);
-    // }
 
     private void UpdateProgressionUI(){
         if(progressionUIReference != null)
