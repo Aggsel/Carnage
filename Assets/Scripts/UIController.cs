@@ -5,11 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+[System.Serializable]
 public class AlertMessage{
-    string message;
-    float timer;
-    AnimationCurve fadeCurve;
-    Color color;
+    [SerializeField] string message;
+    [SerializeField] float timer;
+    [SerializeField] AnimationCurve fadeCurve;
+    [SerializeField] Color color;
     public AlertMessage(string message, float timer, Color? color = null, AnimationCurve fadeCurve = null){
         this.message = message;
         this.timer = timer;
@@ -41,6 +42,13 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject winText = null;
     [SerializeField] private Renderer targetRenderer = null;
     [SerializeField] private Image fadeImage = null;
+
+    [Header("Poem")]
+    [SerializeField] private GameObject poemText = null;
+    [SerializeField] private GameObject poemTextAuthor = null;
+    [SerializeField] private AlertMessage[] poems = new AlertMessage[3];
+    private LevelManager levelManager = null;
+
 
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc = null;
@@ -104,10 +112,105 @@ public class UIController : MonoBehaviour
         overheatbar.maxValue = maxHeat;
     }
 
-    public void SetWinText(string text, bool state)
-    {
-        winText.SetActive(state);
-        winText.GetComponent<TMPro.TextMeshProUGUI>().text = text;
+    public float DisplayPoemText(){
+        if(levelManager == null)
+            levelManager = FindObjectOfType<LevelManager>();
+
+        int currentLevel = levelManager.GetCurrentLevel();
+        if(currentLevel < 0 || currentLevel >= poems.Length)
+            return -1.0f;
+        StartCoroutine(DisplayPoem());
+        
+        AnimationCurve transition = poems[currentLevel].GetCurve();
+        float combinedTransitionDuration = transition.keys[transition.length - 1].time * 4.0f;
+        return poems[currentLevel].GetTimer() + combinedTransitionDuration;
+    }
+
+    private IEnumerator DisplayPoem(){
+        TextMeshProUGUI textRef = poemText.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI authorTextRef = poemTextAuthor.GetComponent<TextMeshProUGUI>();
+        Color oldColor = fadeImage.color;
+        Color backgroundColor = new Color(0,0,0,0);
+        fadeImage.color = backgroundColor;
+
+        if(levelManager == null)
+            levelManager = FindObjectOfType<LevelManager>();
+        int currentLevel = levelManager.GetCurrentLevel();
+
+        AlertMessage currentAlert =  poems[currentLevel];
+        AnimationCurve curve = currentAlert.GetCurve();
+
+        fadeImage.gameObject.SetActive(true);
+
+        float fadeDuration = curve.keys[curve.length - 1].time;
+
+        //Fade in background.
+        float time = 0.0f;
+        float fade = curve.Evaluate(time);
+        while (time < fadeDuration) {
+            backgroundColor.a = fade;
+            fadeImage.color = backgroundColor;
+            yield return null;
+            time += Time.deltaTime;
+            fade = curve.Evaluate(time);
+        }
+
+        //Fade in text.
+        textRef.text = currentAlert.GetMessage().Replace("\\n", "\n");
+        Color fadeColor = currentAlert.GetColor();
+        authorTextRef.color = fadeColor;
+        poemTextAuthor.SetActive(true);
+        poemText.SetActive(true);
+
+        time = 0.0f;
+        fade = curve.Evaluate(time);
+        while (time < fadeDuration) {
+            fadeColor.a = fade;
+
+            textRef.color = fadeColor;
+            authorTextRef.color = fadeColor;
+
+            yield return null;
+            time += Time.deltaTime;
+            fade = curve.Evaluate(time);
+        }
+
+        yield return new WaitForSeconds(currentAlert.GetTimer());
+
+        //Fade out text.
+        time = fadeDuration;
+        fade = curve.Evaluate(time);
+        while (time > 0.0f) {
+            fadeColor.a = fade;
+
+            textRef.color = fadeColor;
+            authorTextRef.color = fadeColor;
+
+            yield return null;
+            time -= Time.deltaTime;
+            fade = curve.Evaluate(time);
+        }
+        textRef.color = new Color(0,0,0,0);
+        authorTextRef.color = new Color(0,0,0,0);
+
+        //Fade out background.
+        time = fadeDuration;
+        fade = curve.Evaluate(time);
+        while (time > 0.0f) {
+            backgroundColor.a = fade;
+
+            fadeImage.color = backgroundColor;
+
+            yield return null;
+            time -= Time.deltaTime;
+            fade = curve.Evaluate(time);
+        }
+
+        textRef.text = "";
+        fadeImage.color = oldColor;
+        poemText.SetActive(false);
+        poemTextAuthor.SetActive(false);
+        fadeImage.gameObject.SetActive(false);
     }
 
     public void UIAlertText(string text, float duration = -1.0f, AnimationCurve curve = null, Color? color = null) {
@@ -135,7 +238,7 @@ public class UIController : MonoBehaviour
 
             winText.SetActive(true);
             textRef.text = currentAlert.GetMessage();
-            Color fadeColor = currentAlert.GetColor(); ;
+            Color fadeColor = currentAlert.GetColor();
 
             float fadeDuration = curve.keys[curve.length - 1].time;
             //Fade in.

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6036809721941660359}
   - component: {fileID: 1318496588223491686}
   - component: {fileID: 2354283350539528200}
+  - component: {fileID: 7687036939112579927}
   - component: {fileID: 3050247449119326166}
   m_Layer: 0
   m_Name: Bell
@@ -43,7 +44,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8205162165054054945}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -56,11 +57,24 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8205162165054054945}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 0.8, z: 0.75}
   m_Center: {x: 0, y: 0.65, z: 0}
+--- !u!65 &7687036939112579927
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8205162165054054945}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 3, z: 2}
+  m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!114 &3050247449119326166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,6 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e068929f075de614e99c17106be37123, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triggerCollider: {fileID: 7687036939112579927}
 --- !u!1001 &2178554423407350936
 PrefabInstance:
   m_ObjectHideFlags: 0
