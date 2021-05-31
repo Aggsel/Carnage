@@ -85,6 +85,8 @@ namespace EnemyStates.ConstraintMelee
         [SerializeField] public float stoppingDistance = 1.0f;
         private float previousStoppingDistance = 0.0f;
         private float previousSpeed = 0.0f;
+        [SerializeField] private float navPathRecalculationFrequency = 0.2f;
+        private float navPathTimer = 0.0f;
         
         public ConstraintMeleeChase() : base(){}
 
@@ -106,6 +108,12 @@ namespace EnemyStates.ConstraintMelee
 
         public override void Update(){
             base.Update();
+
+            navPathTimer += Time.deltaTime;
+            if(navPathTimer > navPathRecalculationFrequency){
+                agent.SetDestination(behavior.GetTargetPosition());
+                navPathTimer = 0.0f;
+            }
 
             agent.SetDestination(behavior.GetTargetPosition());
 
