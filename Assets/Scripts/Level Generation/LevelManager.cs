@@ -77,6 +77,7 @@ public class LevelManager : MonoBehaviour
 
     //Called by other object whenever level should progress.
     public void GoToNextLevel(){
+        uic.StartCoroutine(uic.WhiteFade(false, 0.5f));
         roomCounter = 0;
         completedRooms = 0;
 
