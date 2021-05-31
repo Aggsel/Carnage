@@ -8,10 +8,6 @@ public class BloodController : MonoBehaviour
     [Header("Blood options: ")]
     [SerializeField] private bool poolBlood = false;
     [SerializeField] private int poolSize = 0;
-    //[Range(0, 100)]
-    //[SerializeField] private int bloodSpawnProcentage = 100;
-    [SerializeField] private int bloodAmount = 5;
-    [SerializeField] private int bloodSpread = 5;
 
     [Header("Assignables: ")]
     [SerializeField] private Texture[] bloodTextures = null;
@@ -54,7 +50,7 @@ public class BloodController : MonoBehaviour
     }
 
     //spawn blood decal but optimized!
-    public void SpawnBloodOptimized (GameObject enemyOrigin)
+    public void SpawnBloodOptimized (int bloodAmount, float bloodScale, float bloodSpread, GameObject enemyOrigin)
     {
         for (int i = 0; i < bloodAmount; i++)
         {
@@ -62,6 +58,7 @@ public class BloodController : MonoBehaviour
 
             RaycastHit hit;
             Ray forwardRay = new Ray(enemyOrigin.transform.position + offset, -enemyOrigin.transform.up);
+            Debug.DrawRay(enemyOrigin.transform.position + offset, -enemyOrigin.transform.up, Color.magenta);
 
             if (Physics.Raycast(forwardRay, out hit, 100f, lm)) //lm is a layermask and 0.5f is the ray lenght
             {
@@ -85,7 +82,7 @@ public class BloodController : MonoBehaviour
                         decalPool.Enqueue(newDecal);
                         decalDefaultScale = newDecal.size;
 
-                        Quaternion decalRot = Quaternion.LookRotation(Vector3.down/*dir*/);
+                        Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
                         newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                         newDecal.transform.position = hit.point;
                         newDecal.transform.rotation = decalRot;
@@ -93,7 +90,7 @@ public class BloodController : MonoBehaviour
                         newDecal.transform.SetParent(hit.transform, true);
 
                         //randomize scale and rotation
-                        float ranScale = Random.Range(-0.5f, 3.5f);
+                        float ranScale = Random.Range(-bloodScale, bloodScale);
                         Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
                         newDecal.size = scale;
 
@@ -107,7 +104,7 @@ public class BloodController : MonoBehaviour
                     decalPool.Enqueue(newDecal);
                     decalDefaultScale = newDecal.size;
 
-                    Quaternion decalRot = Quaternion.LookRotation(Vector3.down/*dir*/);
+                    Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
                     newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                     newDecal.transform.position = hit.point;
                     newDecal.transform.rotation = decalRot;
@@ -115,7 +112,7 @@ public class BloodController : MonoBehaviour
                     newDecal.transform.SetParent(hit.transform, true);
 
                     //randomize scale and rotation
-                    float ranScale = Random.Range(-0.5f, 3.5f);
+                    float ranScale = Random.Range(-bloodScale, bloodScale);
                     Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
                     newDecal.size = scale;
 
