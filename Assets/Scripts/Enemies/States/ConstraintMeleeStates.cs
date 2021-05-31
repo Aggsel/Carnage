@@ -17,6 +17,19 @@ namespace EnemyStates.ConstraintMelee
         public virtual void SetState(ConstraintMeleeBaseState newState){
             behavior.SetState(newState);
         }
+
+        public override void OnShot(HitObject hit)
+        {
+            base.OnShot(hit);
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientHurt, this.behavior.transform.position);
+        }
+
+        public override void OnDeath()
+        {
+            base.OnDeath();
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientDeath, this.behavior.transform.position);
+        }
+
     }
 
     [System.Serializable]
@@ -141,10 +154,6 @@ namespace EnemyStates.ConstraintMelee
 
             if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= enemyVisionDistance)
                 SetState(behavior.chaseState);
-        }
-
-        public override void OnShot(HitObject hit){
-            behavior.SetState(behavior.chaseState);
         }
     }
 }

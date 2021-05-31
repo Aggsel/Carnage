@@ -18,6 +18,18 @@ namespace EnemyStates.ConstraintRanged
         public virtual void SetState(ConstraintRangedBaseState newState){
             behavior.SetState(newState);
         }
+
+        public override void OnShot(HitObject hit)
+        {
+            base.OnShot(hit);
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientHurt, this.behavior.transform.position);
+        }
+
+        public override void OnDeath()
+        {
+            base.OnDeath();
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientDeath, this.behavior.transform.position);
+        }
     }
 
     [System.Serializable]

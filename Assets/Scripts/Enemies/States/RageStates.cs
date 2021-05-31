@@ -18,6 +18,19 @@ namespace EnemyStates.Rage
         public virtual void SetState(RageBaseState newState){
             behavior.SetState(newState);
         }
+
+        public override void OnShot(HitObject hit)
+        {
+            base.OnShot(hit);
+            AudioManager.Instance.PlaySound(AudioManager.Instance.rageHurt, this.behavior.gameObject);
+        }
+
+        public override void OnDeath()
+        {
+            base.OnDeath();
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.rageDeath, this.behavior.transform.position);
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientDeath, this.behavior.transform.position);
+        }
     }
 
     [System.Serializable]
@@ -41,6 +54,7 @@ namespace EnemyStates.Rage
             anim.SetTrigger("attack");
             // behavior.transform.rotation = Quaternion.LookRotation((behavior.GetTargetPosition() - behavior.transform.position).normalized, Vector3.up);
             agent.isStopped = true;
+            AudioManager.Instance.PlaySound(AudioManager.Instance.rageMelee, this.behavior.gameObject);
         }
 
         public override void Update(){
@@ -349,6 +363,7 @@ namespace EnemyStates.Rage
             base.OnStateEnter();
             agent.isStopped = true;
             anim.SetBool("charge", false);
+
         }
 
         public override void OnStateExit(){
