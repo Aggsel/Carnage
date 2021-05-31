@@ -8,31 +8,36 @@ public class BloodController : MonoBehaviour
     [Header("Blood options: ")]
     [SerializeField] private bool poolBlood = false;
     [SerializeField] private int poolSize = 0;
-    [Range(0, 100)]
-    [SerializeField] private int bloodSpawnProcentage = 100;
+
+    [SerializeField] private int rayAmount = 0;
+    [SerializeField] private int raySpread = 0;
 
     [Header("Assignables: ")]
+    [SerializeField] private Texture[] bloodTextures = null;
     [SerializeField] private DecalProjector decal = null;
     [SerializeField] private GameObject splatEffect = null;
     [SerializeField] private GameObject dieEffect = null;
     [SerializeField] private LayerMask lm = new LayerMask();
-    [SerializeField] private Texture[] texs = null;
 
     private Queue<DecalProjector> decalPool = new Queue<DecalProjector>();
     private Vector3 decalDefaultScale = Vector3.zero;
+    private GameObject player = null;
 
     private void Start ()
     {
-        if(texs.Length == 0)
+        if (player == null)
+            player = FindObjectOfType<MovementController>().gameObject;
+
+        if(bloodTextures.Length == 0)
         {
             Debug.LogWarning("WARNING, No decal texture on bloodcontroller.cs");
         }
     }
 
-    public int GetBloodSpawnProcentage ()
+    /*public int GetBloodSpawnProcentage ()
     {
         return bloodSpawnProcentage;
-    }
+    }*/
 
     #region bloodSpawning
     //when an enemy dies
@@ -50,8 +55,159 @@ public class BloodController : MonoBehaviour
         Destroy(par, 2.0f);
     }
 
+    //spawn blood decal but optimized!
+    public void SpawnBloodOptimized (float bloodChance, float bloodScale, float bloodSpread, GameObject enemyOrigin)
+    {
+        for (int i = -rayAmount; i < rayAmount; i++)
+        {
+            for (int j = -rayAmount; j < rayAmount; j++)
+            {
+                Vector3 dir = (-enemyOrigin.transform.up + enemyOrigin.transform.rotation * new Vector3(j * (raySpread * 0.1f), 0, i * (raySpread * 0.1f))).normalized;
+
+                RaycastHit hit;
+                Ray ray = new Ray(enemyOrigin.transform.position, dir);
+
+                if (Physics.Raycast(ray, out hit, 3f, lm))
+                {
+                    if(Random.value > bloodChance)
+                    {
+                        if (poolBlood)
+                        {
+                            if (decalPool.Count > poolSize)
+                            {
+                                DecalProjector selectedDecal = decalPool.Dequeue();
+
+                                Quaternion decalRot = Quaternion.LookRotation(hit.normal);
+                                selectedDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
+                                selectedDecal.transform.position = hit.point;
+                                selectedDecal.transform.rotation = decalRot;
+                                selectedDecal.transform.SetParent(hit.transform, true);
+
+                                decalPool.Enqueue(selectedDecal);
+                            }
+                            else
+                            {
+                                DecalProjector newDecal = Instantiate(decal) as DecalProjector;
+                                decalPool.Enqueue(newDecal);
+                                decalDefaultScale = newDecal.size;
+
+                                Quaternion decalRot = Quaternion.LookRotation(hit.normal);
+                                newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
+                                newDecal.transform.position = hit.point;
+                                newDecal.transform.rotation = decalRot;
+
+                                newDecal.transform.SetParent(hit.transform, true);
+
+                                //randomize scale and rotation
+                                float ranScale = Random.Range(-bloodScale, bloodScale);
+                                Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
+                                newDecal.size = scale;
+
+                                float ranRot = Random.Range(-180, 180);
+                                newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
+                            }
+                        }
+                        else
+                        {
+                            DecalProjector newDecal = Instantiate(decal) as DecalProjector;
+                            decalPool.Enqueue(newDecal);
+                            decalDefaultScale = newDecal.size;
+
+                            Quaternion decalRot = Quaternion.LookRotation(hit.normal);
+                            newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
+                            newDecal.transform.position = hit.point;
+                            newDecal.transform.rotation = decalRot;
+
+                            newDecal.transform.SetParent(hit.transform, true);
+
+                            //randomize scale and rotation
+                            float ranScale = Random.Range(-bloodScale, bloodScale);
+                            Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
+                            newDecal.size = scale;
+
+                            float ranRot = Random.Range(-180, 180);
+                            newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.Log("THIS RAY HIT NOTHING");
+                }
+            }
+        }
+
+        /*for (int i = 0; i < bloodAmount; i++)
+        {
+            RaycastHit hit;
+            Ray forwardRay = new Ray(enemyOrigin.transform.position, -enemyOrigin.transform.up);
+
+            if (Physics.Raycast(forwardRay, out hit, 100f, lm)) //lm is a layermask and 0.5f is the ray lenght
+            {
+                if (poolBlood)
+                {
+                    if (decalPool.Count > poolSize)
+                    {
+                        DecalProjector selectedDecal = decalPool.Dequeue();
+
+                        Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
+                        selectedDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
+                        selectedDecal.transform.position = hit.point;
+                        selectedDecal.transform.rotation = decalRot;
+                        selectedDecal.transform.SetParent(hit.transform, true);
+
+                        decalPool.Enqueue(selectedDecal);
+                    }
+                    else
+                    {
+                        DecalProjector newDecal = Instantiate(decal) as DecalProjector;
+                        decalPool.Enqueue(newDecal);
+                        decalDefaultScale = newDecal.size;
+
+                        Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
+                        newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
+                        newDecal.transform.position = hit.point;
+                        newDecal.transform.rotation = decalRot;
+
+                        newDecal.transform.SetParent(hit.transform, true);
+
+                        //randomize scale and rotation
+                        float ranScale = Random.Range(-bloodScale, bloodScale);
+                        Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
+                        newDecal.size = scale;
+
+                        float ranRot = Random.Range(-180, 180);
+                        newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
+                    }
+                }
+                else
+                {
+                    DecalProjector newDecal = Instantiate(decal) as DecalProjector;
+                    decalPool.Enqueue(newDecal);
+                    decalDefaultScale = newDecal.size;
+
+                    Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
+                    newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
+                    newDecal.transform.position = hit.point;
+                    newDecal.transform.rotation = decalRot;
+
+                    newDecal.transform.SetParent(hit.transform, true);
+
+                    //randomize scale and rotation
+                    float ranScale = Random.Range(-bloodScale, bloodScale);
+                    Vector3 scale = decalDefaultScale + new Vector3(ranScale, ranScale, newDecal.size.z);
+                    newDecal.size = scale;
+
+                    float ranRot = Random.Range(-180, 180);
+                    newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
+                }
+            }
+        }*/
+    }
+
+    //Removed for performance
     //spawn a blood decal, is called from particle system in BloodParticle.cs
-    public void SpawnBlood (Vector3 hit, GameObject obj)
+    /*public void SpawnBlood (Vector3 hit, GameObject obj)
     {
         if(poolBlood)
         {
@@ -65,7 +221,7 @@ public class BloodController : MonoBehaviour
                     selectedDecal.transform.SetParent(obj.transform, true);
                 }
 
-                Quaternion decalRot = Quaternion.LookRotation(Vector3.down/*dir*/);
+                Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
                 selectedDecal.transform.position = hit;
                 selectedDecal.transform.rotation = decalRot;
 
@@ -82,7 +238,7 @@ public class BloodController : MonoBehaviour
                     newDecal.transform.SetParent(obj.transform, true);
                 }
 
-                Quaternion decalRot = Quaternion.LookRotation(Vector3.down/*dir*/);
+                Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
                 newDecal.transform.position = hit;
                 newDecal.transform.rotation = decalRot;
 
@@ -106,7 +262,7 @@ public class BloodController : MonoBehaviour
                 newDecal.transform.SetParent(obj.transform, true);
             }
 
-            Quaternion decalRot = Quaternion.LookRotation(Vector3.down/*dir*/);
+            Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
             newDecal.transform.position = hit;
             newDecal.transform.rotation = decalRot;
 
@@ -118,7 +274,7 @@ public class BloodController : MonoBehaviour
             float ranRot = Random.Range(-180, 180);
             newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
         }
-    }
+    }*/
 
     //smaller hit effect of blood comming from the enemy
     public void InstantiateBlood (Vector3 hit, Vector3 dirPos)
