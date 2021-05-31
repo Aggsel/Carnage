@@ -89,6 +89,7 @@ public class EnemyProjectile : MonoBehaviour
         }
 
         sound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        sound.release();
         Destroy(this.gameObject);
     }
 }
