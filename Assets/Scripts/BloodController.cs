@@ -77,7 +77,7 @@ public class BloodController : MonoBehaviour
                             {
                                 DecalProjector selectedDecal = decalPool.Dequeue();
 
-                                Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
+                                Quaternion decalRot = Quaternion.LookRotation(hit.normal);
                                 selectedDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                                 selectedDecal.transform.position = hit.point;
                                 selectedDecal.transform.rotation = decalRot;
@@ -91,7 +91,7 @@ public class BloodController : MonoBehaviour
                                 decalPool.Enqueue(newDecal);
                                 decalDefaultScale = newDecal.size;
 
-                                Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
+                                Quaternion decalRot = Quaternion.LookRotation(hit.normal);
                                 newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                                 newDecal.transform.position = hit.point;
                                 newDecal.transform.rotation = decalRot;
@@ -113,7 +113,7 @@ public class BloodController : MonoBehaviour
                             decalPool.Enqueue(newDecal);
                             decalDefaultScale = newDecal.size;
 
-                            Quaternion decalRot = Quaternion.LookRotation(Vector3.down);
+                            Quaternion decalRot = Quaternion.LookRotation(hit.normal);
                             newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                             newDecal.transform.position = hit.point;
                             newDecal.transform.rotation = decalRot;
