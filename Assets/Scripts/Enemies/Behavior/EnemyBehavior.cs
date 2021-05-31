@@ -27,7 +27,7 @@ public class EnemyBehavior : MonoBehaviour
         bc = FindObjectOfType<BloodController>();
         anim = GetComponentInChildren<Animator>();
         am = AudioManager.Instance;
-        am.PlaySound(ref am.patientSpawn, this.gameObject);
+        am.PlaySound(am.patientSpawn, this.gameObject);
         if(this.agent == null)
             this.agent = GetComponent<NavMeshAgent>();
 
