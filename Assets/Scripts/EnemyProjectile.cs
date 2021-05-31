@@ -20,6 +20,10 @@ public class EnemyProjectile : MonoBehaviour
     Collider col = null;
     float speed = 0.0f;
 
+    [FMODUnity.EventRef]
+    public string selectsound;
+    FMOD.Studio.EventInstance sound;
+
     void OnEnable(){
         speed = speedMin;
 
@@ -30,13 +34,26 @@ public class EnemyProjectile : MonoBehaviour
         if (hitDecal == null)
             Debug.LogWarning("No hitdecal is set for fireball!");
 
-        //AudioManager.Instance.PlaySound(AudioManager.Instance.patientProjectile, gameObject);
+        sound = FMODUnity.RuntimeManager.CreateInstance(selectsound);
     }
 
     void Update(){
         speed += Time.deltaTime * accelerationSpeed;
         speed = Mathf.Clamp(speed, speedMin, speedMax);
         rb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
+
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(sound, this.transform, rb);
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
+        FMOD.Studio.PLAYBACK_STATE fmodPbState;
+        sound.getPlaybackState(out fmodPbState);
+        if (fmodPbState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+        {
+            sound.start();
+        }
     }
 
     private void OnCollisionEnter (Collision other)
@@ -66,10 +83,13 @@ public class EnemyProjectile : MonoBehaviour
             newEffect.transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(-other.contacts[0].normal));
             newEffect.transform.SetParent(other.transform, true);
 
+            sound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+
             Destroy(newEffect, 2f);
         }
 
-        //AudioManager.Instance.StopSound(AudioManager.Instance.patientProjectile);
+        sound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        sound.release();
         Destroy(this.gameObject);
     }
 }
