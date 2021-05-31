@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BloodParticle : MonoBehaviour
 {
+    private enum BloodType { NORMAL, DEATH}
+
+    [SerializeField] private BloodType bloodType = BloodType.NORMAL;
     private ParticleSystem particle = null;
     private List<ParticleCollisionEvent> colEvents = new List<ParticleCollisionEvent>();
 
@@ -13,7 +16,19 @@ public class BloodParticle : MonoBehaviour
     private void Start ()
     { 
         particle = GetComponent<ParticleSystem>();
-        bc.SpawnBloodOptimized(gameObject);
+
+        switch (bloodType)
+        {
+            //kinda hardcoded per what type of particle
+            case BloodType.NORMAL:
+                bc.SpawnBloodOptimized(0.05f, 1.0f, 0.0f, gameObject);
+                break;
+            case BloodType.DEATH:
+                bc.SpawnBloodOptimized(0.25f, 1.5f, 0.5f, gameObject);
+                break;
+            default:
+                break;
+        }
     }
 
     public void SetBloodController (BloodController bc)
