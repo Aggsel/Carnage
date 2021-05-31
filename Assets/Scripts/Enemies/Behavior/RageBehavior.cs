@@ -37,6 +37,8 @@ public class RageBehavior : EnemyBehavior
         chargeAttackState.SetBehaviour(this);
         postChargeAttack.SetBehaviour(this);
 
+        am.PlaySound(am.rageSpawn, this.gameObject);
+
         SetState(chaseState);
     }
 

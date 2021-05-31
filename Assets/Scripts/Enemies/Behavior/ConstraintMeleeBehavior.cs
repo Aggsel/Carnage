@@ -14,6 +14,7 @@ public class ConstraintMeleeBehavior : EnemyBehavior
         chaseState.SetBehaviour(this);
         patrolState.SetBehaviour(this);
         attackState.SetBehaviour(this);
+        am.PlaySound(am.patientSpawn, this.gameObject);
         SetState(chaseState);
     }
 

@@ -18,6 +18,18 @@ namespace EnemyStates.Rage
         public virtual void SetState(RageBaseState newState){
             behavior.SetState(newState);
         }
+
+        public override void OnShot(HitObject hit)
+        {
+            base.OnShot(hit);
+            AudioManager.Instance.PlaySound(AudioManager.Instance.rageHurt, this.behavior.gameObject);
+        }
+
+        public override void OnDeath()
+        {
+            base.OnDeath();
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.rageDeath, this.behavior.transform.position);
+        }
     }
 
     [System.Serializable]

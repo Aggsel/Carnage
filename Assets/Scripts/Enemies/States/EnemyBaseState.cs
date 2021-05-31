@@ -20,6 +20,8 @@ public class EnemyBaseState
 
     public virtual void OnShot(HitObject hit){}
 
+    public virtual void OnDeath(){}
+
     public virtual void OnStateEnter(){}
 
     public virtual void OnStateExit(){
