@@ -32,6 +32,11 @@ public class BloodController : MonoBehaviour
         }
     }
 
+    public void ClearDecalPool ()
+    {
+        decalPool.Clear();
+    }
+
     #region bloodSpawning
     //when an enemy dies
     public void InstantiateDeathBlood (Vector3 hit)

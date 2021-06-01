@@ -34,7 +34,6 @@ public class MeleeController : MonoBehaviour
     private Vector3 origin = Vector3.zero;
     private AudioManager am = null;
     private bool inHit = false;
-    //private float penalty = 0.0f;
 
     private void Start ()
     {
@@ -62,11 +61,9 @@ public class MeleeController : MonoBehaviour
         return inHit;
     }
 
-    //main
     private void Update ()
     {
         origin = Camera.main.transform.position;
-        //penalty -= Time.deltaTime;
         MeleeInitiator();
 
         if(meleeVar.showDebug)
@@ -84,7 +81,6 @@ public class MeleeController : MonoBehaviour
 
     public void StartMelee ()
     {
-        //raycast here
         float temp = 69.0f;
         Transform hitObj = null;
         RaycastHit lateHit = new RaycastHit();
@@ -118,7 +114,6 @@ public class MeleeController : MonoBehaviour
                 else
                 {
                     //Debug.Log("THIS RAY HIT NOTHING");
-                    //penalty += meleeVar.penaltyTime;
                 }
             }
         }
@@ -128,7 +123,6 @@ public class MeleeController : MonoBehaviour
             StartCoroutine(GetComponent<Screenshake>().Shake(4f, 0.2f));
             am.PlaySound(am.playerMelee);
 
-            //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
             if (hitObj.GetComponentInParent<EnemyBehavior>() != null)
             {
                 HitObject obj = new HitObject(transform.position, lateHit.point, damage, 0.0f, type: HitType.Melee); //set high melee damage
@@ -149,7 +143,7 @@ public class MeleeController : MonoBehaviour
 
     private void MeleeInitiator()
     {
-        if (Input.GetKeyDown(meleeKey) && !inHit /*&& penalty <= 0.0f*/)
+        if (Input.GetKeyDown(meleeKey) && !inHit)
         {
             inHit = true;
 

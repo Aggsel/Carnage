@@ -42,7 +42,7 @@ public class NextLevelTrigger : MonoBehaviour
         if(levelManager == null)
             levelManager = FindObjectOfType<LevelManager>();
 
-        Debug.Log("NEW LEVEL");
+        FindObjectOfType<BloodController>().ClearDecalPool();
         levelManager.GoToNextLevel();
     }
 }
