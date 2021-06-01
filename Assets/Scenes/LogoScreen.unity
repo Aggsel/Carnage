@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -608,7 +608,7 @@ MonoBehaviour:
       enableBigTilePrepass: 0
       isFptlEnabled: 0
   clearColorMode: 1
-  backgroundColorHDR: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 0}
+  backgroundColorHDR: {r: 0.09433961, g: 0.022249911, b: 0.022249911, a: 0}
   clearDepth: 1
   volumeLayerMask:
     serializedVersion: 2
@@ -751,12 +751,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splashScreenPrefab: {fileID: 7800893054934672423, guid: 4110d96c335e1aa408261008fa5a08e2,
     type: 3}
+  fadeImage: {fileID: 2139415203}
+  fadeDuration: 2
   splashScreens:
   - sprite: {fileID: 21300000, guid: da4bd08a088d7754191bb7b253e40f07, type: 3}
-    duration: 3
-    fadeDuration: 1
-    scaleSpeed: 1
-  - sprite: {fileID: 21300000, guid: c9cc861b4f9cb0e44bbce73e2e99d1e7, type: 3}
     duration: 3
     fadeDuration: 1
     scaleSpeed: 1
@@ -857,7 +855,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2139415202
 RectTransform:
   m_ObjectHideFlags: 0
@@ -867,7 +865,7 @@ RectTransform:
   m_GameObject: {fileID: 2139415201}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1}
   m_Children: []
   m_Father: {fileID: 684186510}
   m_RootOrder: 0
@@ -890,13 +888,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.9137255}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a2318388bea7d684ea5b614ff77165b1, type: 3}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
