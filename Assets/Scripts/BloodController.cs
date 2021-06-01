@@ -94,6 +94,7 @@ public class BloodController : MonoBehaviour
                         {
                             DecalProjector selectedDecal = decalPool.Dequeue();
 
+                            selectedDecal.transform.rotation = Quaternion.identity;
                             Quaternion decalRot = Quaternion.FromToRotation(selectedDecal.transform.forward, hit.normal);
                             selectedDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                             selectedDecal.transform.position = hit.point + (selectedDecal.transform.right * Random.Range(-bloodSpread, bloodSpread));
