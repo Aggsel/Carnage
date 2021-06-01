@@ -21,10 +21,10 @@ public class BloodParticle : MonoBehaviour
         {
             //kinda hardcoded per what type of particle
             case BloodType.NORMAL:
-                bc.SpawnBloodOptimized(0.05f, 0.5f, 0.0f, gameObject);
+                bc.SpawnBloodOptimized(1f, 1.0f, 1.5f, gameObject);
                 break;
             case BloodType.DEATH:
-                bc.SpawnBloodOptimized(0.25f, 0.5f, 0.5f, gameObject);
+                bc.SpawnBloodOptimized(1f, 1.0f, 1.5f, gameObject);
                 break;
             default:
                 break;

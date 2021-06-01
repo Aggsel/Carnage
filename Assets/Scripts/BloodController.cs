@@ -8,9 +8,7 @@ public class BloodController : MonoBehaviour
     [Header("Blood options: ")]
     [SerializeField] private bool poolBlood = false;
     [SerializeField] private int poolSize = 0;
-
-    //[SerializeField] private int rayAmount = 0;
-    //[SerializeField] private int raySpread = 0;
+    [SerializeField] private float bloodRange = 3f;
 
     [Header("Assignables: ")]
     [SerializeField] private Texture[] bloodTextures = null;
@@ -34,11 +32,6 @@ public class BloodController : MonoBehaviour
         }
     }
 
-    /*public int GetBloodSpawnProcentage ()
-    {
-        return bloodSpawnProcentage;
-    }*/
-
     #region bloodSpawning
     //when an enemy dies
     public void InstantiateDeathBlood (Vector3 hit)
@@ -60,25 +53,24 @@ public class BloodController : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
         {
-            //Vector3 dir = (-enemyOrigin.transform.up + enemyOrigin.transform.rotation * new Vector3(j * (raySpread * 0.1f), 0, i * (raySpread * 0.1f))).normalized;
             Vector3 dir = Vector3.zero;
 
             switch (i)
             {
                 case 0:
-                    dir = -enemyOrigin.transform.up;
+                    dir = -Vector3.up;
                     break;
                 case 1:
-                    dir = enemyOrigin.transform.forward;
+                    dir = Vector3.forward;
                     break;
                 case 2:
-                    dir = -enemyOrigin.transform.forward;
+                    dir = -Vector3.forward;
                     break;
                 case 4:
-                    dir = enemyOrigin.transform.right;
+                    dir = Vector3.right;
                     break;
                 case 5:
-                    dir = -enemyOrigin.transform.right;
+                    dir = -Vector3.right;
                     break;
                 default:
                     break;
@@ -87,9 +79,9 @@ public class BloodController : MonoBehaviour
             RaycastHit hit;
             Ray ray = new Ray(enemyOrigin.transform.position, dir);
 
-            if (Physics.Raycast(ray, out hit, 3f, lm))
+            if (Physics.Raycast(ray, out hit, bloodRange, lm))
             {
-                if (Random.value > bloodChance)
+                if (Random.value <= bloodChance)
                 {
                     if (poolBlood)
                     {
@@ -97,10 +89,9 @@ public class BloodController : MonoBehaviour
                         {
                             DecalProjector selectedDecal = decalPool.Dequeue();
 
-                            //Quaternion decalRot = Quaternion.LookRotation(hit.normal);
                             Quaternion decalRot = Quaternion.FromToRotation(selectedDecal.transform.forward, hit.normal);
                             selectedDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
-                            selectedDecal.transform.position = hit.point;
+                            selectedDecal.transform.position = hit.point + (selectedDecal.transform.right * Random.Range(-bloodSpread, bloodSpread));
                             selectedDecal.transform.rotation = decalRot;
                             selectedDecal.transform.SetParent(hit.transform, true);
 
@@ -112,10 +103,9 @@ public class BloodController : MonoBehaviour
                             decalPool.Enqueue(newDecal);
                             decalDefaultScale = newDecal.size;
 
-                            //Quaternion decalRot = Quaternion.LookRotation(-hit.normal);
                             Quaternion decalRot = Quaternion.FromToRotation(newDecal.transform.forward, hit.normal);
                             newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
-                            newDecal.transform.position = hit.point;
+                            newDecal.transform.position = hit.point + (newDecal.transform.right * Random.Range(-bloodSpread, bloodSpread));
                             newDecal.transform.rotation = decalRot;
 
                             newDecal.transform.SetParent(hit.transform, true);
@@ -126,7 +116,7 @@ public class BloodController : MonoBehaviour
                             newDecal.size = scale;
 
                             float ranRot = Random.Range(-180, 180);
-                            newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
+                            newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
                         }
                     }
                     else
@@ -135,10 +125,9 @@ public class BloodController : MonoBehaviour
                         decalPool.Enqueue(newDecal);
                         decalDefaultScale = newDecal.size;
 
-                        //Quaternion decalRot = Quaternion.LookRotation(-hit.normal);
                         Quaternion decalRot = Quaternion.FromToRotation(newDecal.transform.forward, hit.normal);
                         newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
-                        newDecal.transform.position = hit.point;
+                        newDecal.transform.position = hit.point + (newDecal.transform.right * Random.Range(-bloodSpread, bloodSpread));
                         newDecal.transform.rotation = decalRot;
 
                         newDecal.transform.SetParent(hit.transform, true);
@@ -149,7 +138,7 @@ public class BloodController : MonoBehaviour
                         newDecal.size = scale;
 
                         float ranRot = Random.Range(-180, 180);
-                        newDecal.transform.RotateAround(newDecal.transform.position, Vector3.up, ranRot);
+                        newDecal.transform.RotateAround(newDecal.transform.position, newDecal.transform.forward, ranRot);
                     }
                 }
             }
