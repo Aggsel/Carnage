@@ -98,7 +98,7 @@ public class BloodController : MonoBehaviour
                             DecalProjector selectedDecal = decalPool.Dequeue();
 
                             //Quaternion decalRot = Quaternion.LookRotation(hit.normal);
-                            Quaternion decalRot = Quaternion.FromToRotation(enemyOrigin.transform.up, hit.normal);
+                            Quaternion decalRot = Quaternion.FromToRotation(selectedDecal.transform.forward, hit.normal);
                             selectedDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                             selectedDecal.transform.position = hit.point;
                             selectedDecal.transform.rotation = decalRot;
@@ -113,7 +113,7 @@ public class BloodController : MonoBehaviour
                             decalDefaultScale = newDecal.size;
 
                             //Quaternion decalRot = Quaternion.LookRotation(-hit.normal);
-                            Quaternion decalRot = Quaternion.FromToRotation(enemyOrigin.transform.up, hit.normal);
+                            Quaternion decalRot = Quaternion.FromToRotation(newDecal.transform.forward, hit.normal);
                             newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                             newDecal.transform.position = hit.point;
                             newDecal.transform.rotation = decalRot;
@@ -136,7 +136,7 @@ public class BloodController : MonoBehaviour
                         decalDefaultScale = newDecal.size;
 
                         //Quaternion decalRot = Quaternion.LookRotation(-hit.normal);
-                        Quaternion decalRot = Quaternion.FromToRotation(enemyOrigin.transform.up, hit.normal);
+                        Quaternion decalRot = Quaternion.FromToRotation(newDecal.transform.forward, hit.normal);
                         newDecal.material.mainTexture = bloodTextures[Random.Range(0, bloodTextures.Length)];
                         newDecal.transform.position = hit.point;
                         newDecal.transform.rotation = decalRot;
