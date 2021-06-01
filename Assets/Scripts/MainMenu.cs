@@ -102,14 +102,16 @@ public class MainMenu : MonoBehaviour
     #endregion
 
     private IEnumerator FadeFromBlack(){
-        Color fadeColor = new Color(0,0,0,1.0f);
-        fadeImage.color = fadeColor;
-        float duration = fadeDuration;
-        while(duration >= 0.0f){
-            fadeColor.a = duration/fadeDuration;
+        if(fadeImage != null){
+            Color fadeColor = new Color(0,0,0,1.0f);
             fadeImage.color = fadeColor;
-            yield return null;
-            duration -= Time.deltaTime;
+            float duration = fadeDuration;
+            while(duration >= 0.0f){
+                fadeColor.a = duration/fadeDuration;
+                fadeImage.color = fadeColor;
+                yield return null;
+                duration -= Time.deltaTime;
+            }
         }
     }
 }
