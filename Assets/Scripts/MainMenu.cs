@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -13,8 +14,13 @@ public class MainMenu : MonoBehaviour
     private string version = null;
     private SerializeController sc = null;
 
+    [SerializeField] private Image fadeImage = null;
+    [SerializeField] private float fadeDuration = 1.0f;
+
     private void Start ()
     {
+        StartCoroutine(FadeFromBlack());
+
         sc = FindObjectOfType<SerializeController>();
 
         Time.timeScale = 1.0f;
@@ -94,4 +100,18 @@ public class MainMenu : MonoBehaviour
         objects[0].SetActive(true);
     }
     #endregion
+
+    private IEnumerator FadeFromBlack(){
+        if(fadeImage != null){
+            Color fadeColor = new Color(0,0,0,1.0f);
+            fadeImage.color = fadeColor;
+            float duration = fadeDuration;
+            while(duration >= 0.0f){
+                fadeColor.a = duration/fadeDuration;
+                fadeImage.color = fadeColor;
+                yield return null;
+                duration -= Time.deltaTime;
+            }
+        }
+    }
 }
