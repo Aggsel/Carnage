@@ -22,7 +22,7 @@ public class EnemySpawnPointAsset : ScriptableObject
         for (int i = 0; i < availableEnemies.Count; i++){
             if(normalizedDepthThreshold[i] - 0.00001f > normalizedDepth)
                 continue;
-            if(difficultyThreshold[i] < difficulty && difficultyThreshold[i] > 0.0f)
+            if(difficultyThreshold[i] > difficulty && difficultyThreshold[i] > 0.0f)
                 continue;
             potentialEnemies.Add(i);
         }
