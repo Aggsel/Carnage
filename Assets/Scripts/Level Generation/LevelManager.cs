@@ -269,14 +269,29 @@ public class MazeGenerator{
     private int roomCount = 0;
     private int randomDoorIterations = 0;
 
+    private int[] SwastikaLayout1 = {0b0001, 0b0011, 0b1000,
+                                    0b0110, 0b1111, 0b1001,
+                                    0b0010, 0b1100, 0b0100};
+
+    private int[] SwastikaLayout2 = {0b0010, 0b1001, 0b0001, 
+                                    0b0011, 0b1111, 0b1100,
+                                    0b0100, 0b0110, 0b1000};
+
     public MazeGenerator(Vector2Int desiredGridSize, int seed, int maxDepth, Vector2Int initPosition, int randomDoorIterations){
-        this.grid = new MazeCell[desiredGridSize.x, desiredGridSize.y];
-        this.desiredGridSize = desiredGridSize;
-        this.seed = seed;
-        this.maxDepth = maxDepth;
-        this.initPosition = initPosition;
-        this.randomDoorIterations = randomDoorIterations;
-        GenerateMaze();
+        do{
+            this.grid = new MazeCell[desiredGridSize.x, desiredGridSize.y];
+            this.desiredGridSize = desiredGridSize;
+            this.seed = seed;
+            this.maxDepth = maxDepth;
+            this.initPosition = initPosition;
+            this.randomDoorIterations = randomDoorIterations;
+            
+            this.maxDepthReached = 0;
+            this.actualGridSize = default(Vector2Int);
+            this.roomCount = 0;
+        
+            GenerateMaze();
+        }while(SwastikaCheck());
     }
 
     public void GenerateMaze(){
@@ -442,5 +457,22 @@ public class MazeGenerator{
             }
         }
         return unvisited;
+    }
+
+    //Returns true if map is swastika pattern lmao
+    private bool SwastikaCheck(){
+        if(desiredGridSize.x != 3 || desiredGridSize.y != 3)
+            return false;
+        for (int y = 0; y < this.grid.GetLength(1); y++){
+            for (int x = 0; x < this.grid.GetLength(0); x++){
+                if(grid[x,y].doorMask != SwastikaLayout1[x + 3*y]){
+                    return false;
+                }
+                if(grid[x,y].doorMask != SwastikaLayout2[x + 3*y]){
+                    return false;
+                }
+            }
+        }
+        return false;
     }
 }
