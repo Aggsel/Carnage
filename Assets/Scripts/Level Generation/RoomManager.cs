@@ -145,7 +145,7 @@ public class RoomManager : MonoBehaviour
         this.onCombatCompleteGameEvent = onCombatComplete;
         this.onCombatStartGameEvent = onCombatStart;
         this.mapReference = mapReference;
-        MergeMeshes();
+        //MergeMeshes();
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
