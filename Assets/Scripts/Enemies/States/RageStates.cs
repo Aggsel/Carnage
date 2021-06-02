@@ -238,12 +238,7 @@ namespace EnemyStates.Rage
         private float previousSpeed = 0.0f;
         Vector3 targetPosition = new Vector3(0,0,0);
         private float stoppingDistanceSqrd = 0.0f;
-
         private float previousAngularSpeed = 0.0f;
-
-        private float timeBeingSlow = 0.0f;
-        private float standingStillTimeout = 0.7f;
-        private float velocityThreshold = 0.2f;
 
         public RageChargeAttack() : base(){
             stoppingDistanceSqrd = stoppingDistance * stoppingDistance;
