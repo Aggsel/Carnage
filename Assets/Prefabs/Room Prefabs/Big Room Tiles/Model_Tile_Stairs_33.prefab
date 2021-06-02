@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1976877777940722865}
+  - component: {fileID: 7981453292532095699}
+  - component: {fileID: 6722004941238077028}
   m_Layer: 10
   m_Name: End_collider
   m_TagString: Untagged
@@ -31,6 +33,32 @@ Transform:
   m_Father: {fileID: 4903735142842810967}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7981453292532095699
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3426154240512687433}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.0088706, y: 0.72888565, z: 0.87125206}
+  m_Center: {x: -0.00005555153, y: 4.9244423, z: 8.400772}
+--- !u!65 &6722004941238077028
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3426154240512687433}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.033139, y: 2.0491652, z: 1.5566626}
+  m_Center: {x: 0.012660861, y: 1.0040848, z: 3.9201665}
 --- !u!1 &4102412492016488076
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,6 +71,7 @@ GameObject:
   - component: {fileID: 9167993157359698102}
   - component: {fileID: 1806546418701361882}
   - component: {fileID: 5901131333304589204}
+  - component: {fileID: 5067670352562263545}
   m_Layer: 10
   m_Name: Plane
   m_TagString: Untagged
@@ -57,13 +86,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4102412492016488076}
-  m_LocalRotation: {x: -0.28401542, y: 0, z: 0, w: 0.95881975}
+  m_LocalRotation: {x: -0.2890317, y: 0, z: 0, w: 0.95731956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0, z: 0.2}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 1976877777940722865}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -33, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -33.6, y: 0, z: 0}
 --- !u!33 &9167993157359698102
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -122,8 +151,21 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 0, z: 10.000001}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 10, y: 5.285628, z: 48.721447}
+  m_Center: {x: 0, y: -2.645698, z: 23.50786}
+--- !u!65 &5067670352562263545
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102412492016488076}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.101799, y: 3.6130202, z: 4.6224546}
+  m_Center: {x: -0.025997758, y: -7.0255833, z: 13.047293}
 --- !u!1 &5712325251330644205
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +177,6 @@ GameObject:
   - component: {fileID: 4903735142842810967}
   - component: {fileID: 8332304401229270514}
   - component: {fileID: 6072750042712717624}
-  - component: {fileID: -6675948800041815956}
   m_Layer: 10
   m_Name: Model_Tile_Stairs_33
   m_TagString: Untagged
@@ -205,17 +246,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &-6675948800041815956
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5712325251330644205}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4104380202958562290, guid: 49e891843d210fa46b362d0cfe77b673, type: 3}
