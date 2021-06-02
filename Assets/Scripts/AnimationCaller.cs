@@ -19,6 +19,12 @@ public class AnimationCaller : MonoBehaviour
         am.PlaySound(am.patientFootsteps, transform.gameObject);
     }
 
+    public void RageFootsteps()
+    {
+        //am.SetParameterByName(ref am.patientFootsteps, "surface", 1.0f);
+        am.PlaySound(am.rageFootsteps, transform.gameObject);
+    }
+
     //melee fiend
     public void FiendMeleeAttack()
     {

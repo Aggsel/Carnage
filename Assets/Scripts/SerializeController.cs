@@ -56,14 +56,14 @@ public class SerializeController : MonoBehaviour
         }
 
         //First time playing
-        if (PlayerPrefs.GetInt("firstTime", 0) == 0)
+        if (PlayerPrefs.GetInt("firstTime1", 0) == 0)
         {
-            PlayerPrefs.SetInt("firstTime", 1);
-            firstTime = PlayerPrefs.GetInt("firstTime");
+            PlayerPrefs.SetInt("firstTime1", 1);
+            firstTime = PlayerPrefs.GetInt("firstTime1");
         }
         else
         {
-            firstTime = PlayerPrefs.GetInt("firstTime");
+            firstTime = PlayerPrefs.GetInt("firstTime1");
         }
 
         //On gamestart load in or create preferences
@@ -103,7 +103,7 @@ public class SerializeController : MonoBehaviour
     public void SetFirstTime (int i)
     {
         firstTime = i;
-        PlayerPrefs.SetInt("firstTime", firstTime);
+        PlayerPrefs.SetInt("firstTime1", firstTime);
     }
 
     public int GetFirstTime ()
