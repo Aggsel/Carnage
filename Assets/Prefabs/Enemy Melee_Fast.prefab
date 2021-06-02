@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 4259389687750565921}
   - component: {fileID: 1222754874283207705}
   m_Layer: 13
-  m_Name: Enemy Melee
+  m_Name: Enemy Melee_Fast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -227,7 +227,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.33
-  m_Speed: 13
+  m_Speed: 10
   m_Acceleration: 200
   avoidancePriority: 50
   m_AngularSpeed: 500
@@ -259,9 +259,10 @@ MonoBehaviour:
   am: {fileID: 0}
   anim: {fileID: 0}
   chaseState:
-    rotationSpeed: 15
-    chaseSpeed: 6
+    rotationSpeed: 25
+    chaseSpeed: 11
     stoppingDistance: 1.5
+    navPathRecalculationFrequency: 0.2
   patrolState:
     rotationSpeed: 15
     enemyVisionDistance: 30
@@ -269,7 +270,7 @@ MonoBehaviour:
   attackState:
     rotationSpeed: 13
     attackRange: 2
-    damage: 15
+    damage: 10
 --- !u!1001 &3403306408612049747
 PrefabInstance:
   m_ObjectHideFlags: 0

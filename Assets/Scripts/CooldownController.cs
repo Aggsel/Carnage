@@ -12,6 +12,9 @@ public class CooldownController : MonoBehaviour
     [Header("Other stuff?")]
     public Active active;
     [SerializeField] private GameObject player = null;
+    private UIController uic = null;
+    private GameObject flashImageGO = null;
+    private RawImage flashImage = null;
     private float cooldownDuration;
     private float readyTime;
     private float cooldownTimeLeft;
@@ -19,6 +22,7 @@ public class CooldownController : MonoBehaviour
     private float activeActuationTimeLeft;
     private bool activeActuated;
     private KeyCode activate;
+    private MeleeController mc = null;
 
     private void ReadKeybinds(KeyBindAsignments keys)
     {
@@ -37,6 +41,10 @@ public class CooldownController : MonoBehaviour
 
     void Start()
     {
+        uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
+        mc = FindObjectOfType<MeleeController>();
+        flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
+        flashImage = flashImageGO.GetComponent<RawImage>();
         Initialize(active, player);
     }
 
@@ -72,7 +80,7 @@ public class CooldownController : MonoBehaviour
             if (cdFinished)
             {
                 ActiveReady();
-                if (Input.GetKeyDown(activate) && active != null)
+                if (Input.GetKeyDown(activate) && active != null && !mc.GetHit())
                 {
                     Triggered();
                 }
@@ -91,6 +99,9 @@ public class CooldownController : MonoBehaviour
 
     private void Triggered()
     {
+        AudioManager.Instance.PlaySound(ref AudioManager.Instance.itemsActivate);
+        flashImage.color = new Color(flashImage.color.r, flashImage.color.g, flashImage.color.b, 0.0f);
+        uic.StartCoroutine(uic.FadeImage(flashImage, 0.85f, true));
         activeActuated = true;
         activeActuationTimeLeft = activeActuationTime;
         cooldownTimeLeft = cooldownDuration;

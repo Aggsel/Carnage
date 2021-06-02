@@ -5635,7 +5635,7 @@ MonoBehaviour:
   m_ShadowVariant: 0
   m_ShadowPrecision: 0
   useOldInspector: 0
-  useVolumetric: 1
+  useVolumetric: 0
   featuresFoldout: 1
   showAdditionalSettings: 0
   m_AreaLightEmissiveMeshShadowCastingMode: 0
@@ -6443,8 +6443,8 @@ MonoBehaviour:
     fireRate: 5
     heatGeneration: 6
     heatMaximum: 100
-    coolingIntialize: 0.5
-    coolingRate: 40
+    coolingIntialize: 0.4
+    coolingRate: 35
     accuracy: 0.05
     health: 100
   weaponAttributesResultant:
@@ -6555,7 +6555,6 @@ MonoBehaviour:
     range: 2.5
     rayAmount: 3
     raySpread: 4.34
-  inHit: 0
 --- !u!114 &3027235087010105677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6612,6 +6611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 10
   deathDisableScripts: []
+  weaponObj: {fileID: 3386787695065029104}
   bloodImageGO: {fileID: 0}
 --- !u!54 &3545908116954248292
 Rigidbody:
@@ -7417,7 +7417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeImage: {fileID: 0}
-  active: {fileID: 11400000, guid: 8a02470d32f8c8a45b8ae2351e78bc24, type: 2}
+  active: {fileID: 11400000, guid: f244942de1287f647899e31bea2e8b1a, type: 2}
   player: {fileID: 3027235087010105666}
 --- !u!1 &5600333829868624959
 GameObject:

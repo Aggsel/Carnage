@@ -18,15 +18,33 @@ namespace EnemyStates.ConstraintRanged
         public virtual void SetState(ConstraintRangedBaseState newState){
             behavior.SetState(newState);
         }
+
+        public override void OnShot(HitObject hit)
+        {
+            base.OnShot(hit);
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientHurt, this.behavior.transform.position);
+        }
+
+        public override void OnDeath()
+        {
+            base.OnDeath();
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientDeath, this.behavior.transform.position);
+        }
     }
 
     [System.Serializable]
     public class ConstraintRangedAttack : ConstraintRangedBaseState
     {
-        private float timeOutOfSight = 0.0f;
+        [Tooltip("How long after the player is out of sight the enemy should wait before starting to chase the player.")]
+        [SerializeField] private float patienceTimer = 2.0f;
         [SerializeField] private GameObject projectilePrefab = null;
         [SerializeField] private Transform projectileSpawnPosition = null;
         [SerializeField] private VisualEffect chargeEffect = null;
+        [Tooltip("How far to the sides of the enemy must be unobstructed in order to attack the player.")]
+        [SerializeField] private float sightThreshold = 0.4f;
+        private bool isAttacking = true;
+        [SerializeField] private float lineOfSightCheckFrequency = 0.5f;
+        private float lineOfSightTimer = 0.0f;
 
         public ConstraintRangedAttack() : base(){}
 
@@ -39,6 +57,8 @@ namespace EnemyStates.ConstraintRanged
             chargeEffect.Play();
 
             anim.SetTrigger("attack");
+            isAttacking = true;
+            lineOfSightTimer = lineOfSightCheckFrequency;
         }
 
         public override void OnStateExit(){
@@ -51,15 +71,30 @@ namespace EnemyStates.ConstraintRanged
             base.Update();
 
             RotateTowardsTarget(behavior.GetTargetPosition());
-            bool lineOfSight = EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition());
-            timeOutOfSight = !lineOfSight ? timeOutOfSight + Time.deltaTime : 0.0f; //Update timeOutOfSight if player is not in sight, otherwise reset.
 
-            if(timeOutOfSight >= 2.0f){
-                SetState(behavior.chaseState);
+            lineOfSightTimer += Time.deltaTime;
+            if(!isAttacking && lineOfSightTimer >= lineOfSightCheckFrequency){
+                lineOfSightTimer = 0.0f;
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    SetState(behavior.chaseState);
+                    return;
+                }
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    SetState(behavior.chaseState);
+                    return;
+                }
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position - agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    SetState(behavior.chaseState);
+                    return;
+                }
             }
         }
 
         public void Attack(){
+            lineOfSightTimer = lineOfSightCheckFrequency;
             FireProjectile(projectilePrefab, projectileSpawnPosition);
         }
 
@@ -76,6 +111,7 @@ namespace EnemyStates.ConstraintRanged
         public void StopAttack(){
             anim.ResetTrigger("attack");
             chargeEffect.Stop();
+            isAttacking = false;
             SetState(behavior.chaseState);
         }
     }
@@ -86,13 +122,16 @@ namespace EnemyStates.ConstraintRanged
         [Tooltip("Enemy movement speed while chasing the player.")]
         [SerializeField] private float chaseSpeed = 12.0f;
         [Tooltip("What distance from the player that this enemy should stop.")]
-        [SerializeField] public float stoppingDistance = 1.0f;
+        [SerializeField] public float stoppingDistance = 20.0f;
         [Tooltip("How often the enemy should check if the player is in sight (per second). Lower value increases enemy responsiveness at a slight performance cost.")]
         [SerializeField] private float lineOfSightCheckFrequency = 0.5f;
         private float lineOfSightTimer = 0.0f;
+        [SerializeField] private float navPathRecalculationFrequency = 0.5f;
+        private float navPathTimer = 0.0f;
 
         private float previousStoppingDistance = 0.0f;
         private float previousSpeed = 0.0f;
+        private float timeinSight = 0.0f;
 
         public ConstraintRangedChase() : base(){}
 
@@ -102,27 +141,40 @@ namespace EnemyStates.ConstraintRanged
             previousSpeed = base.agent.speed;
             base.agent.speed = chaseSpeed;
 
-            previousStoppingDistance = base.agent.stoppingDistance;
-            base.agent.stoppingDistance = stoppingDistance;
+            lineOfSightTimer = lineOfSightCheckFrequency;
+            navPathTimer = navPathRecalculationFrequency;
         }
 
         public override void OnStateExit(){
             base.OnStateExit();
             agent.speed = previousSpeed;
-            agent.stoppingDistance = previousStoppingDistance;
         }
 
         public override void Update(){
             base.Update();
-            agent.SetDestination(behavior.GetTargetPosition());
+            navPathTimer += Time.deltaTime;
+            if(navPathTimer > navPathRecalculationFrequency){
+                agent.SetDestination(behavior.GetTargetPosition());
+                navPathTimer = 0.0f;
+            }
 
             lineOfSightTimer += Time.deltaTime;
             if(lineOfSightTimer > lineOfSightCheckFrequency){
                 lineOfSightTimer = 0.0f;
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    return;
+                }
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    return;
+                }
+
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position - agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                    return;
+                }
+
                 if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= stoppingDistance){
-                    RotateTowardsTarget(behavior.GetTargetPosition());
-                    if(EnemyBehavior.CheckLineOfSight(agent.transform.position, behavior.GetTargetPosition()))
-                        SetState(behavior.attackState);
+                    SetState(behavior.attackState);
                 }
             }
         }

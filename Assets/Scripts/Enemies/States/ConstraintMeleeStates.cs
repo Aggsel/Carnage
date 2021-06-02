@@ -17,6 +17,19 @@ namespace EnemyStates.ConstraintMelee
         public virtual void SetState(ConstraintMeleeBaseState newState){
             behavior.SetState(newState);
         }
+
+        public override void OnShot(HitObject hit)
+        {
+            base.OnShot(hit);
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientHurt, this.behavior.transform.position);
+        }
+
+        public override void OnDeath()
+        {
+            base.OnDeath();
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.patientDeath, this.behavior.transform.position);
+        }
+
     }
 
     [System.Serializable]
@@ -50,6 +63,7 @@ namespace EnemyStates.ConstraintMelee
         public void Attack(){
             RaycastHit hit;
             if (Physics.Raycast(agent.transform.position, (behavior.GetTargetPosition() - agent.transform.position).normalized, out hit, attackRange)){
+                Debug.DrawLine(agent.transform.position, hit.point, Color.red, 0.8f);
                 Vector3 dir = agent.transform.position - hit.point;
                 hit.collider.GetComponent<HealthController>()?.OnShot(new HitObject(dir, hit.point, damage: damage));
                 behavior.am.PlaySound(ref behavior.am.patientMelee, behavior.transform.position);
@@ -71,6 +85,8 @@ namespace EnemyStates.ConstraintMelee
         [SerializeField] public float stoppingDistance = 1.0f;
         private float previousStoppingDistance = 0.0f;
         private float previousSpeed = 0.0f;
+        [SerializeField] private float navPathRecalculationFrequency = 0.2f;
+        private float navPathTimer = 0.0f;
         
         public ConstraintMeleeChase() : base(){}
 
@@ -92,6 +108,12 @@ namespace EnemyStates.ConstraintMelee
 
         public override void Update(){
             base.Update();
+
+            navPathTimer += Time.deltaTime;
+            if(navPathTimer > navPathRecalculationFrequency){
+                agent.SetDestination(behavior.GetTargetPosition());
+                navPathTimer = 0.0f;
+            }
 
             agent.SetDestination(behavior.GetTargetPosition());
 
@@ -132,10 +154,6 @@ namespace EnemyStates.ConstraintMelee
 
             if(Vector3.Distance(behavior.transform.position, behavior.GetTargetPosition()) <= enemyVisionDistance)
                 SetState(behavior.chaseState);
-        }
-
-        public override void OnShot(HitObject hit){
-            behavior.SetState(behavior.chaseState);
         }
     }
 }

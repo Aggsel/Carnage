@@ -27,10 +27,12 @@ public class RoomManager : MonoBehaviour
     
     private GameEvent onRoomEnterFirstGameEvent;
     private GameEvent onCombatCompleteGameEvent;
+    private GameEvent onCombatStartGameEvent;
 
     private UIController uic;
     private AudioManager am;
     private MapDrawer mapReference;
+    private TutorialController tc = null;
 
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -40,16 +42,14 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private Transform itemSpawnPoint = null;
     [SerializeField] private GameObject trailPrefab = null;
 
-    [Header("Mesh Merging")]
-    [Tooltip(@"When merging the meshes the final combined mesh will just have one material. 
-    The merging process will therefore only combine meshes from objects with this material on them.")]
-    [SerializeField] private Material validMaterial = null;
-
     void OnEnable(){
         onCombatComplete.AddListener(OnCombatComplete);
         am = AudioManager.Instance;
         if(uic == null) 
             uic = FindObjectOfType<UIController>();
+
+        if (tc == null)
+            tc = FindObjectOfType<TutorialController>();
     }
 
     void OnDisable(){
@@ -59,13 +59,24 @@ public class RoomManager : MonoBehaviour
     public void OnEnterRoom(){
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
-        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+        else{
+            this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+        }
         mapReference?.SetRoomAsVisited(this.gridPosition);
         mapReference?.SetCurrentRoom(this.gridPosition);
     }
 
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
+        //disable tutorial if enabled
+        if(tc == null)
+            tc = FindObjectOfType<TutorialController>();
+
+        if(tc.GetTutorial())
+        {
+            tc.TriggerNoTutorial();
+        }
+
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
         difficulty = difficulty * difficultyMultiplier;
         //playerReference should NEVER be null here, but just to be sure.
@@ -79,6 +90,8 @@ public class RoomManager : MonoBehaviour
             OpenDoors(false);
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
+            onCombatStartGameEvent?.Invoke();
+            this.parentLevelManager.SetOnlyRoomActive(this.gridPosition);
         }else{  //No enemies were spawned, consider the room completed.
             parentLevelManager?.IncrementCompletedRooms();
         }
@@ -92,10 +105,11 @@ public class RoomManager : MonoBehaviour
         am.SetParameterByName(ref am.ambManager, "Battle", 0.0f);
         am.SetParameterByName(ref am.ambManager, "State", 0.0f);
         parentLevelManager?.IncrementCompletedRooms();
-        // parentLevelManager?.ProgressionUISetActive(true);
         uic?.UIAlertText("Combat complete!", 1.5f);
         SpawnItem();
         onCombatCompleteGameEvent?.Invoke();
+
+        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
     }
 
     private void SpawnItem(){
@@ -105,6 +119,7 @@ public class RoomManager : MonoBehaviour
             if(spawnPrefab != null) {
                 GameObject newItem = Instantiate(spawnPrefab) as GameObject;
                 newItem.transform.SetPositionAndRotation(itemSpawnPoint.position, Quaternion.identity);
+                newItem.transform.SetParent(transform, true);
 
                 //trail stuff
                 newItem.SetActive(false);
@@ -123,7 +138,7 @@ public class RoomManager : MonoBehaviour
 
     public void NewRoom(Vector2Int gridPos, int roomID = -1, int depth = -1, float normalizedDepth = 0.0f, 
     LevelManager newManager = null, GameObject playerReference = null, float difficultyMultiplier = 1.0f,
-    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, MapDrawer mapReference = null){
+    GameEvent onRoomEnterFirstTime = null, GameEvent onCombatComplete = null, GameEvent onCombatStart = null, MapDrawer mapReference = null){
         this.gridPosition = gridPos;
         this.roomID = roomID;
         this.depth = depth;
@@ -133,8 +148,9 @@ public class RoomManager : MonoBehaviour
         this.difficultyMultiplier = difficultyMultiplier;
         this.onRoomEnterFirstGameEvent = onRoomEnterFirstTime;
         this.onCombatCompleteGameEvent = onCombatComplete;
+        this.onCombatStartGameEvent = onCombatStart;
         this.mapReference = mapReference;
-        MergeMeshes();
+        //MergeMeshes();
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
@@ -194,54 +210,96 @@ public class RoomManager : MonoBehaviour
     }
 
     public void MergeMeshes(){
-        Quaternion oldRot = transform.rotation;
-        Vector3 oldPos = transform.position;
+        MeshRenderer[] renderers = this.gameObject.GetComponentsInChildren<MeshRenderer>();
+        HashSet<Material> materialsMerge = new HashSet<Material>();
 
-        transform.rotation = Quaternion.identity;
-        transform.position = Vector3.zero;
-
-        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
-        Mesh finalMesh = new Mesh();
-
-        CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
-        int meshCount = 0;
-
-        for (int i = 0; i < meshFilters.Length; i++){
-            if(meshFilters[i].transform == transform)
-                continue;
-
-            MeshRenderer currentMeshRenderer = meshFilters[i].GetComponent<MeshRenderer>();
-
-            if(currentMeshRenderer.sharedMaterial != validMaterial)
-                continue;
-
-            combiners[i].subMeshIndex = 0;
-            combiners[i].mesh = meshFilters[i].sharedMesh;
-            combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            combiners[i].lightmapScaleOffset = currentMeshRenderer.lightmapScaleOffset;
-            meshCount++;
-
-            Destroy(meshFilters[i]);
-            Destroy(currentMeshRenderer);
+        for (int i = 0; i < renderers.Length; i++){
+            materialsMerge.Add(renderers[i].sharedMaterial);
         }
-        CombineInstance[] newCombiners = new CombineInstance[meshCount];
-        meshCount = 0;
-        for (int i = 0; i < combiners.Length; i++){
-            if(combiners[i].mesh != null){
-                newCombiners[meshCount] = combiners[i];
+
+        Material[] validMaterials = new Material[materialsMerge.Count];
+        materialsMerge.CopyTo(validMaterials);
+        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+
+        for (int j = 0; j < validMaterials.Length; j++){
+            GameObject roomMesh = new GameObject(string.Format("RoomMesh {0}", j), typeof(MeshFilter), typeof(MeshRenderer));
+            roomMesh.transform.SetParent(this.transform);
+            roomMesh.isStatic = true;
+
+            Quaternion oldRot = transform.rotation;
+            Vector3 oldPos = transform.position;
+
+            transform.rotation = Quaternion.identity;
+            transform.position = Vector3.zero;
+
+            Mesh finalMesh = new Mesh();
+
+            CombineInstance[] combiners = new CombineInstance[meshFilters.Length];
+            int meshCount = 0;
+
+            for (int i = 0; i < meshFilters.Length; i++){
+                MeshRenderer currentMeshRenderer = meshFilters[i].GetComponent<MeshRenderer>();
+                bool destroyObject = false;
+
+                if(currentMeshRenderer.sharedMaterial != validMaterials[j])
+                    continue;
+                if(meshFilters[i].sharedMesh == null)
+                    continue;
+
+                if(currentMeshRenderer.gameObject.GetComponents<Component>().Length <= 3){
+                    Component[] components = currentMeshRenderer.gameObject.GetComponents<Component>();
+                    //We ONLY want to merge and destroy game objects that ONLY have MeshFilters, MeshRenderers and Transforms.
+                    //These are the objects that we're merging and creating new ones for.
+                    //Objects with more specialized are difficult to merge because the component data must be transferred to the new mesh object.
+                    for (int k = 0; k < components.Length; k++){
+                        if(!Types.Equals(components[k], typeof(MeshRenderer)) || !Types.Equals(components[k], typeof(MeshFilter)) || !Types.Equals(components[k], typeof(Transform))){
+                            destroyObject = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(destroyObject){
+                    //Before removing, make sure we transfer all the objects children up one step.
+                    //We might not want to remove them. And if we do, we will in another loop iteration.
+                    foreach(Transform child in currentMeshRenderer.transform){
+                        child.SetParent(currentMeshRenderer.transform.parent);
+                    }
+                    Destroy(currentMeshRenderer.gameObject);
+                }
+                else{
+                        continue;
+                }
+
+                combiners[i].subMeshIndex = 0;
+                combiners[i].mesh = meshFilters[i].sharedMesh;
+                combiners[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                combiners[i].lightmapScaleOffset = currentMeshRenderer.lightmapScaleOffset;
                 meshCount++;
             }
+            CombineInstance[] newCombiners = new CombineInstance[meshCount];
+            meshCount = 0;
+            for (int i = 0; i < combiners.Length; i++){
+                if(combiners[i].mesh != null){
+                    newCombiners[meshCount] = combiners[i];
+                    meshCount++;
+                }
+            }
+
+            finalMesh.CombineMeshes(newCombiners, true, true, true);
+
+            MeshFilter meshFilter = roomMesh.GetComponent<MeshFilter>();
+            MeshRenderer meshRenderer = roomMesh.GetComponent<MeshRenderer>();
+            
+            meshFilter.sharedMesh = finalMesh;
+            meshRenderer.material = validMaterials[j];
+            meshRenderer.lightmapIndex = 0;
+
+            transform.position = oldPos;
+            transform.rotation = oldRot;
+            roomMesh.transform.position = oldPos;
+            roomMesh.transform.rotation = oldRot;
         }
-
-        finalMesh.CombineMeshes(newCombiners, true, true, true);
-        MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
-        meshFilter.sharedMesh = finalMesh;
-        MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = validMaterial;
-        meshRenderer.lightmapIndex = 0;
-
-        transform.position = oldPos;
-        transform.rotation = oldRot;
     }
 
     //Will draw a sphere at the spawn/initial room.

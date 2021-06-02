@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameEvent onRoomEnterFirst = null;
     [Tooltip("What event should be invoked when the player clears a room and the combat is complete.")]
     [SerializeField] private GameEvent onCombatComplete = null;
+    [Tooltip("What event should be invoked whenever the player enters a room and enemies spawn.")]
+    [SerializeField] private GameEvent onCombatStart = null;
 
     [Header("UI References")]
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
@@ -73,6 +76,10 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public int GetCurrentLevel(){
+        return currentLevel;
+    }
+
     //Called by other object whenever level should progress.
     public void GoToNextLevel(){
         roomCounter = 0;
@@ -80,6 +87,15 @@ public class LevelManager : MonoBehaviour
 
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
+
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
+            {
+                PlayerPrefs.SetInt("Act", currentLevel);
+                Debug.Log("Act has been set to " + (currentLevel + 1));
+            }
+        }
 
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
@@ -89,11 +105,10 @@ public class LevelManager : MonoBehaviour
         this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
         GenerateLevel();
         this.gameObject.transform.position = playerReference.transform.position; //Teleport level to player instead of player to level lol.
-        uic.UIAlertText("Going to next level!", 1.0f);
     }
 
     private void EndOfFinalLevel(){
-        uic.UIAlertText("End of final level!", 2.0f);
+        SceneManager.LoadScene("Actual_Hub");
     }
 
     [ContextMenu("Generate Level")]
@@ -113,6 +128,9 @@ public class LevelManager : MonoBehaviour
         ActivateNeighbors(spawnRoomLocation);
         UpdateProgressionUI();
         mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
+
+        FindObjectOfType<MovementController>().SetSpawnPoint(playerReference.transform.position/*spawnRoomLocation * roomSize*/);
+
         OnFinishedGeneration.Invoke();
     }
 
@@ -139,38 +157,41 @@ public class LevelManager : MonoBehaviour
     }
 
     public void ActivateNeighbors(Vector2Int pos){
-        //We can only do this fancy depth check if no doors have been placed randomly.
-        if(levels[currentLevel].GetRandomDoorIterations() == 0){
-            for (int y = -2; y <= 2; y++){
-                for (int x = -2; x <= 2; x++){
-                    int posX = pos.x + x;
-                    int posY = pos.y + y;
-                    if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
-                        continue;
-                    if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
-                        this.grid[posX,posY]?.gameObject.SetActive(false);
-                    else
-                        this.grid[posX,posY]?.gameObject.SetActive(true);
+        for (int y = -2; y <= 2; y++){
+            for (int x = -2; x <= 2; x++){
+                int posX = pos.x + x;
+                int posY = pos.y + y;
+                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                    continue;
+
+                if(this.grid[posX,posY] == null)
+                    continue;
+
+                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1){
+                    if(this.grid[posX,posY].gameObject.activeInHierarchy)
+                        this.grid[posX,posY].gameObject.SetActive(false);
                 }
+                else
+                    this.grid[posX,posY].gameObject.SetActive(true);
             }
         }
-        else{   //TODO 
-            for (int y = 0; y < this.grid.GetLength(1); y++){
-                for (int x = 0; x < this.grid.GetLength(0); x++){
-                    if(x >= pos.x - 1 && x <= pos.x + 1 && y <= pos.y + 1 && y >= pos.y - 1)
-                        continue;
-                    this.grid[x,y]?.gameObject.SetActive(false);
-                }
-            }
+    }
 
-            for (int y = -1; y < 2; y++){
-                for (int x = -1; x < 2; x++){
-                    Vector2Int newCoord = new Vector2Int(x + pos.x, y + pos.y);
-                    if(newCoord.x >= 0 && newCoord.x < this.grid.GetLength(0) && newCoord.y >= 0 && newCoord.y < this.grid.GetLength(1)){
-                        if(this.grid[newCoord.x,newCoord.y] != null && !this.grid[newCoord.x,newCoord.y].gameObject.activeInHierarchy)
-                            this.grid[newCoord.x,newCoord.y]?.gameObject.SetActive(true);
-                    }
-                }
+    public void SetOnlyRoomActive(Vector2Int pos){
+        for (int y = -2; y <= 2; y++){
+            for (int x = -2; x <= 2; x++){
+                int posX = pos.x + x;
+                int posY = pos.y + y;
+                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                    continue;
+
+                if(this.grid[posX,posY] == null)
+                    continue;
+
+                if(posX == pos.x && posY == pos.y)
+                    this.grid[posX,posY].gameObject.SetActive(true);
+                else if(this.grid[posX,posY].gameObject.activeInHierarchy)
+                    this.grid[posX,posY].gameObject.SetActive(false);
             }
         }
     }
@@ -207,7 +228,7 @@ public class LevelManager : MonoBehaviour
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
 
         newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, 
-        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, mapReference);
+        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, onCombatStart, mapReference);
 
         instantiatedRooms.Add(newRoom);
         
@@ -218,10 +239,6 @@ public class LevelManager : MonoBehaviour
         completedRooms++;
         UpdateProgressionUI();
     }
-
-    // public void ProgressionUISetActive(bool enabled){
-    //     progressionUIReference?.gameObject.SetActive(enabled);
-    // }
 
     private void UpdateProgressionUI(){
         if(progressionUIReference != null)
@@ -267,9 +284,8 @@ public class MazeGenerator{
 
         MazeCrawl(this.initPosition, new Vector2Int(0,0), 0);
         PlaceSpecialRooms();
-        PlaceRandomDoors();
-        //Maze generation is done
-        // Debug.Log(string.Format("Maze generation done!\nNumber of rooms: {0}, Maximum Depth Reached: {1}, Actual Size: {2}", this.roomCount, this.maxDepthReached, this.actualGridSize));
+        if(randomDoorIterations > 0)
+            PlaceRandomDoors();
     }
 
     private void MazeCrawl(Vector2Int pos, Vector2Int dir, int depth){
@@ -315,6 +331,52 @@ public class MazeGenerator{
                     AddDoorToMask(newCoord, randDir * -1);
                 }
             }
+        }
+        RecalculateDepth(initPosition);
+    }
+
+    private void RecalculateDepth(Vector2Int pos){
+        for (int y = 0; y < grid.GetLength(1); y++){
+            for (int x = 0; x < grid.GetLength(0); x++){
+                this.grid[x,y].visited = false;
+            }
+        }
+
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        queue.Enqueue(pos);
+        grid[pos.x, pos.y].visited = true;
+        int depth = 0;
+        this.maxDepthReached = 0;
+
+        while(queue.Count > 0){
+            int depthLength = queue.Count;
+
+            while(depthLength > 0){
+                Vector2Int newPos = queue.Dequeue();
+                roomCount++;
+
+                grid[newPos.x, newPos.y].visited = true;
+                grid[newPos.x, newPos.y].depth = depth;
+                this.maxDepthReached = depth > this.maxDepthReached ? depth : this.maxDepthReached;
+
+                int mask = this.grid[newPos.x, newPos.y].doorMask;
+                List<Vector2Int> neighbors = new List<Vector2Int>();
+                if((mask & 0b0001) == 0b0001)
+                    neighbors.Add(new Vector2Int(0,1) + newPos);
+                if((mask & 0b0010) == 0b0010)
+                    neighbors.Add(new Vector2Int(1,0) + newPos);
+                if((mask & 0b0100) == 0b0100)
+                    neighbors.Add(new Vector2Int(0,-1) + newPos);
+                if((mask & 0b1000) == 0b1000)
+                    neighbors.Add(new Vector2Int(-1,0) + newPos);
+                for (int i = 0; i < neighbors.Count; i++){
+                    if(!grid[neighbors[i].x, neighbors[i].y].visited){
+                        queue.Enqueue(neighbors[i]);
+                    }
+                }
+                depthLength--;
+            }
+            depth++;
         }
     }
 

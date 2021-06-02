@@ -16,7 +16,13 @@ public class AnimationCaller : MonoBehaviour
     public void FiendFootSteps ()
     {
         //am.SetParameterByName(ref am.patientFootsteps, "surface", 1.0f);
-        am.PlaySound(ref am.patientFootsteps, transform.gameObject);
+        am.PlaySound(am.patientFootsteps, transform.gameObject);
+    }
+
+    public void RageFootsteps()
+    {
+        //am.SetParameterByName(ref am.patientFootsteps, "surface", 1.0f);
+        am.PlaySound(am.rageFootsteps, transform.gameObject);
     }
 
     //melee fiend
@@ -43,6 +49,27 @@ public class AnimationCaller : MonoBehaviour
     {
         ConstraintRangedBehavior eb = GetComponentInParent<ConstraintRangedBehavior>();
         eb.AnimHookStopAttack();
+    }
+
+    //Rage fiend
+    public void FiendRageChargeStart(){
+        RageBehavior rb = GetComponentInParent<RageBehavior>();
+        rb.AnimHookChargeStart();
+    }
+
+    public void FiendRageChargeStop(){
+        RageBehavior rb = GetComponentInParent<RageBehavior>();
+        rb.AnimHookChargeStop();
+    }
+
+    public void FiendRageAttack(){
+        RageBehavior rb = GetComponentInParent<RageBehavior>();
+        rb.AnimHookAttack();
+    }
+
+    public void FiendRageStopAttack(){
+        RageBehavior rb = GetComponentInParent<RageBehavior>();
+        rb.AnimHookStopAttack();
     }
     #endregion
 

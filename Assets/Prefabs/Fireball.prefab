@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8508201100845738787}
   - component: {fileID: 3474017518596917219}
   - component: {fileID: 294481084092932398}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4823,7 +4823,7 @@ GameObject:
   - component: {fileID: 6522652994690697992}
   - component: {fileID: 5769113440826279783}
   - component: {fileID: 5720698778255550165}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5028,7 +5028,7 @@ GameObject:
   - component: {fileID: 8334275681240323333}
   - component: {fileID: 957215733255669476}
   - component: {fileID: 8309891075262587701}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5076,7 +5076,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6016550d8c16ac84fac1a06c28f8f71a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileSpeed: 40
+  speedMin: 25
+  speedMax: 70
+  accelerationSpeed: 15
   damage: 7
   hitDecal: {fileID: 5381826771473679965, guid: f18e7d5a9007c6a42b160ff6e93f318d,
     type: 3}
@@ -5087,6 +5089,7 @@ MonoBehaviour:
     m_Bits: 3127
   rb: {fileID: 8309891075262587701}
   sourceEnemy: {fileID: 0}
+  selectsound: event:/Carnage/SFX/Enemies/Patient/Combat/Ranged/Projectile
 --- !u!54 &8309891075262587701
 Rigidbody:
   m_ObjectHideFlags: 0

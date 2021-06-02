@@ -16,7 +16,6 @@ public class FiringController : MonoBehaviour
 
     [SerializeField] private LayerMask shotLayerMask = 0;
     [SerializeField] private LayerMask hitEffectLayerMask = 0;
-    //private ProjectileShotController psc;
     private Screenshake ss = null;
     private AttributeController attributeInstance = null;
     private AudioManager am = null;
@@ -42,6 +41,10 @@ public class FiringController : MonoBehaviour
             muzzleFlash.Play();
             timeToFire = Time.time + 1f / attributeInstance.weaponAttributesResultant.fireRate;
             FireWeapon();
+        }
+        else if (Input.GetButton("Fire1") && overheated == true)
+        {
+            am.PlaySound(am.playerShooting);
         }
     }
 
@@ -94,11 +97,13 @@ public class FiringController : MonoBehaviour
     public void Overheated()
     {
         overheated = true;
+        am.SetParameterByName(ref am.playerShooting, "Gun Upgrades", 1.0f);
     }
 
     public void Cooled()
     {
         overheated = false;
+        am.SetParameterByName(ref am.playerShooting, "Gun Upgrades", 0.0f);
     }
 
     public void InitializeProjectile()
