@@ -85,4 +85,10 @@ public class AnimationCaller : MonoBehaviour
         MeleeController mc = GetComponentInParent<MeleeController>();
         mc.ResetMelee();
     }
+
+    //interaction
+    public void BedInterationEnd ()
+    {
+        FindObjectOfType<InteractionController>().StartCoroutine(FindObjectOfType<InteractionController>().InteractionDelay());
+    }
 }

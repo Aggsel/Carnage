@@ -35,8 +35,6 @@ namespace EnemyStates.ConstraintRanged
     [System.Serializable]
     public class ConstraintRangedAttack : ConstraintRangedBaseState
     {
-        [Tooltip("How long after the player is out of sight the enemy should wait before starting to chase the player.")]
-        [SerializeField] private float patienceTimer = 2.0f;
         [SerializeField] private GameObject projectilePrefab = null;
         [SerializeField] private Transform projectileSpawnPosition = null;
         [SerializeField] private VisualEffect chargeEffect = null;
@@ -81,12 +79,12 @@ namespace EnemyStates.ConstraintRanged
                     return;
                 }
 
-                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position + agent.transform.right*sightThreshold + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
                     SetState(behavior.chaseState);
                     return;
                 }
 
-                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position - agent.transform.right*0.5f + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
+                if(!EnemyBehavior.CheckLineOfSight(agent.transform.position - agent.transform.right*sightThreshold + new Vector3(0,agent.height,0), behavior.GetTargetPosition(), Mathf.Infinity, false)){
                     SetState(behavior.chaseState);
                     return;
                 }
@@ -129,9 +127,7 @@ namespace EnemyStates.ConstraintRanged
         [SerializeField] private float navPathRecalculationFrequency = 0.5f;
         private float navPathTimer = 0.0f;
 
-        private float previousStoppingDistance = 0.0f;
         private float previousSpeed = 0.0f;
-        private float timeinSight = 0.0f;
 
         public ConstraintRangedChase() : base(){}
 
