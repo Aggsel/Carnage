@@ -6,10 +6,10 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class PostProcessingController : MonoBehaviour
 {
-    [SerializeField] private GameEvent onCombatEnter;
-    [SerializeField] private GameEvent onCombatComplete;
-    [SerializeField] private Volume combatPostProcessingVolume;
-    [SerializeField] private AnimationCurve transitionCurve;
+    [SerializeField] private GameEvent onCombatEnter = null;
+    [SerializeField] private GameEvent onCombatComplete = null;
+    [SerializeField] private Volume combatPostProcessingVolume = null;
+    [SerializeField] private AnimationCurve transitionCurve = null;
 
     void OnEnable(){
         if(transitionCurve == null){
