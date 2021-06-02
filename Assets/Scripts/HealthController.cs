@@ -119,6 +119,7 @@ public class HealthController : MonoBehaviour
 
         Time.timeScale = 0.5f;
         weaponObj.SetActive(false);
+        GetComponentInChildren<CooldownController>().enabled = false;
         dead = true;
         uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
@@ -132,6 +133,9 @@ public class HealthController : MonoBehaviour
 
         yield return new WaitForSeconds(3f);
         Time.timeScale = 1.0f;
-        SceneManager.LoadScene(1);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        SceneManager.LoadScene("Actual_Hub");
     }
 }

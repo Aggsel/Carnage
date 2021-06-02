@@ -42,7 +42,7 @@ public class SerializeController : MonoBehaviour
         {
             if(PlayerPrefs.GetInt("hideTutorial") == 1)
             {
-                PlayerPrefs.SetInt("hideTutorial", 2);
+                //PlayerPrefs.SetInt("hideTutorial", 2);
                 hideTutorial = PlayerPrefs.GetInt("hideTutorial");
             }
             else if (PlayerPrefs.GetInt("hideTutorial") == 2)
@@ -56,14 +56,14 @@ public class SerializeController : MonoBehaviour
         }
 
         //First time playing
-        if (PlayerPrefs.GetInt("firstTime", 0) == 0)
+        if (PlayerPrefs.GetInt("firstTime1", 0) == 0)
         {
-            PlayerPrefs.SetInt("firstTime", 1);
-            firstTime = PlayerPrefs.GetInt("firstTime");
+            PlayerPrefs.SetInt("firstTime1", 1);
+            firstTime = PlayerPrefs.GetInt("firstTime1");
         }
         else
         {
-            firstTime = PlayerPrefs.GetInt("firstTime");
+            firstTime = PlayerPrefs.GetInt("firstTime1");
         }
 
         //On gamestart load in or create preferences
@@ -71,8 +71,10 @@ public class SerializeController : MonoBehaviour
         {
             if (!CheckPreferenceFile(dir))
             {
-                Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
+                //Debug.LogWarning("DID NOT FIND PREFERENCE FILE, CREATE ONE");
                 CreateNewPreferences();
+                lines = System.IO.File.ReadAllLines(dir);
+                LoadPreferences(lines);
             }
             else
             {
@@ -86,11 +88,14 @@ public class SerializeController : MonoBehaviour
     public void SetHideTutorial (int i)
     {
         hideTutorial = i;
+        //Debug.Log("SET: " + i);
         PlayerPrefs.SetInt("hideTutorial", hideTutorial);
     }
 
     public int GetHideTutorial ()
     {
+        //Debug.Log("GET: " + hideTutorial);
+        hideTutorial = PlayerPrefs.GetInt("hideTutorial");
         return hideTutorial;
     }
 
@@ -98,7 +103,7 @@ public class SerializeController : MonoBehaviour
     public void SetFirstTime (int i)
     {
         firstTime = i;
-        PlayerPrefs.SetInt("firstTime", firstTime);
+        PlayerPrefs.SetInt("firstTime1", firstTime);
     }
 
     public int GetFirstTime ()

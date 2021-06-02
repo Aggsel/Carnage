@@ -7,25 +7,33 @@ public class NextLevelTrigger : MonoBehaviour
 {
     LevelManager levelManager = null;
     UIController uc = null;
+    [SerializeField ] Collider triggerCollider = null;
 
     private void Start ()
     {
         uc = FindObjectOfType<UIController>();
     }
 
-    private IEnumerator LevelLoadDelay ()
+    private IEnumerator LevelLoadDelay()
     {
-        uc.StartCoroutine(uc.WhiteFade(false, 0.1f));
-        //string endText = "Cast from shackles which bound them, this bell shall ring out hope for the mentally ill and victory over mental illness";
-        //uc.UIAlertText(endText, 4.0f);
-
-        yield return new WaitForSeconds(0.5f);
-        GoToNextLevel();
+        AudioManager.Instance.PlaySound(ref AudioManager.Instance.endOfLevelBell);
+        float time = uc.DisplayPoemText();
+        if(time > 0.0f){
+            yield return new WaitForSeconds(time/2.0f);
+            GoToNextLevel();
+            yield return new WaitForSeconds(time/2.0f);
+            AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
+        }
+        else{
+            GoToNextLevel();
+        }
     }
 
     void OnTriggerEnter(Collider other){
         if(other.gameObject.layer == 12)
         {
+            if(triggerCollider != null)
+                triggerCollider.enabled = false;
             StartCoroutine(LevelLoadDelay());
         }
     }
@@ -33,7 +41,8 @@ public class NextLevelTrigger : MonoBehaviour
     private void GoToNextLevel(){
         if(levelManager == null)
             levelManager = FindObjectOfType<LevelManager>();
-        
+
+        FindObjectOfType<BloodController>().ClearDecalPool();
         levelManager.GoToNextLevel();
     }
 }

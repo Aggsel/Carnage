@@ -9,6 +9,7 @@ public struct EventContainer{
     [FMODUnity.EventRef] public string reference;
     public EventInstance instance;
     private bool initialized;
+
     public void Initialize(){
         if(this.reference == null){
             return;
@@ -16,30 +17,49 @@ public struct EventContainer{
         instance = RuntimeManager.CreateInstance(this.reference);
         initialized = true;
     }
+
     internal void Play(){
         if(!initialized)
             Initialize();
         instance.start();
     }
+
     internal void Play(Vector3 source){
         if(!initialized)
             Initialize();
         instance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(source));
         instance.start();
     }
+
+    internal void Play(EventContainer sound, Transform source, Rigidbody rb)
+    {
+        if (!initialized)
+            Initialize();
+        sound.instance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(source));
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(sound.instance, source, rb);
+        sound.instance.start();
+    }
+
     internal void Play(GameObject source){
         if(!initialized)
             Initialize();
         instance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(source));
         instance.start();
     }
+
     internal void SetParameterByName(string parameter, float value){
         if(!initialized)
             Initialize();
         instance.setParameterByName(parameter, value);
     }
+
     internal void Stop(){
         instance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    }
+
+    internal void Stop(ref EventInstance sound)
+    {
+        sound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
 }
 
@@ -80,6 +100,8 @@ public class AudioManager : MonoBehaviour
 
     [Header("Music")]
     [SerializeField] public EventContainer ambManager;
+    [SerializeField] public EventContainer hubMusic;
+    [SerializeField] public EventContainer mainMenuMusic;
 
     [Header("Misc")]
     [SerializeField] public EventContainer endOfLevelBell;
@@ -96,11 +118,27 @@ public class AudioManager : MonoBehaviour
         eventContainer.Play(sourcePosition);
     }
 
+    public EventInstance PlaySound(ref EventContainer eventContainer, Transform sourcePosition, Rigidbody rb)
+    {
+        eventContainer.Play(eventContainer, sourcePosition, rb);
+        return eventContainer.instance;
+    }
+
     public void PlaySound(ref EventContainer eventContainer, GameObject sourceObject){
         eventContainer.Play(sourceObject);
     }
 
+    public void PlaySound(EventContainer eventContainer, GameObject sourceObject)
+    {
+        eventContainer.Play(sourceObject);
+    }
+
     public void StopSound(ref EventContainer eventContainer){
+        eventContainer.Stop();
+    }
+
+    public void StopSound(EventContainer eventContainer)
+    {
         eventContainer.Stop();
     }
 

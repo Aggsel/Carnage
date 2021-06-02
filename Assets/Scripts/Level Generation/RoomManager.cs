@@ -32,6 +32,7 @@ public class RoomManager : MonoBehaviour
     private UIController uic;
     private AudioManager am;
     private MapDrawer mapReference;
+    private TutorialController tc = null;
 
     [Header("Enemy Spawning")]
     [SerializeField] List<EnemySpawnPoint> spawnPoints = new List<EnemySpawnPoint>();
@@ -46,6 +47,9 @@ public class RoomManager : MonoBehaviour
         am = AudioManager.Instance;
         if(uic == null) 
             uic = FindObjectOfType<UIController>();
+
+        if (tc == null)
+            tc = FindObjectOfType<TutorialController>();
     }
 
     void OnDisable(){
@@ -55,13 +59,24 @@ public class RoomManager : MonoBehaviour
     public void OnEnterRoom(){
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
-        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+        else{
+            this.parentLevelManager.ActivateNeighbors(this.gridPosition);
+        }
         mapReference?.SetRoomAsVisited(this.gridPosition);
         mapReference?.SetCurrentRoom(this.gridPosition);
     }
 
     //Is called whenever a room is entered for the first time.
     public void OnEnterRoomFirstTime(){
+        //disable tutorial if enabled
+        if(tc == null)
+            tc = FindObjectOfType<TutorialController>();
+
+        if(tc.GetTutorial())
+        {
+            tc.TriggerNoTutorial();
+        }
+
         float difficulty = WaveHandler.CalculateDifficulty(normalizedDepth, roomAsset.GetDifficultyRange(), roomAsset.GetRandomness());
         difficulty = difficulty * difficultyMultiplier;
         //playerReference should NEVER be null here, but just to be sure.
@@ -76,6 +91,7 @@ public class RoomManager : MonoBehaviour
             am.SetParameterByName(ref am.ambManager, "Battle", 1.0f);
             am.SetParameterByName(ref am.ambManager, "State", 1.0f);
             onCombatStartGameEvent?.Invoke();
+            this.parentLevelManager.SetOnlyRoomActive(this.gridPosition);
         }else{  //No enemies were spawned, consider the room completed.
             parentLevelManager?.IncrementCompletedRooms();
         }
@@ -92,6 +108,8 @@ public class RoomManager : MonoBehaviour
         uic?.UIAlertText("Combat complete!", 1.5f);
         SpawnItem();
         onCombatCompleteGameEvent?.Invoke();
+
+        this.parentLevelManager.ActivateNeighbors(this.gridPosition);
     }
 
     private void SpawnItem(){
@@ -132,7 +150,7 @@ public class RoomManager : MonoBehaviour
         this.onCombatCompleteGameEvent = onCombatComplete;
         this.onCombatStartGameEvent = onCombatStart;
         this.mapReference = mapReference;
-        MergeMeshes();
+        //MergeMeshes();
     }
 
     public void SetRoomAsset(RoomAsset roomAsset){
