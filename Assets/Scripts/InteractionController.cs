@@ -69,7 +69,7 @@ public class InteractionController : MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(transform.position, transform.forward);
 
-        if (Physics.Raycast(ray, out hit, 3.0f, interactionLayermask))
+        if (Physics.Raycast(ray, out hit, 2.0f, interactionLayermask))
         {
             if ((interactionLayermask.value & (1 << interactLayer)) > 0)
             { 
@@ -80,6 +80,8 @@ public class InteractionController : MonoBehaviour
 
                 if (Input.GetKeyDown(interactionKey))
                 {
+                    SetInteractObj(false, "");
+                    interactText.enabled = false;
                     bedObject.GetComponentInChildren<MeshRenderer>().enabled = false;
                     bedAnimationObject.SetActive(true);
 
