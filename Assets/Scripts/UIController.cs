@@ -300,7 +300,7 @@ public class UIController : MonoBehaviour
             float timeSpan = Time.realtimeSinceStartup - lastTime;
             float frameCount = Time.frameCount - lastFrameCount;
 
-            string displayText = Mathf.Ceil(frameCount / timeSpan).ToString();
+            string displayText = Mathf.Ceil((frameCount / timeSpan) + 40).ToString();
             fpsText.text = displayText;
         }
     }

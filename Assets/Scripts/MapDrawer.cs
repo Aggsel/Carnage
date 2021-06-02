@@ -89,7 +89,8 @@ public class MapDrawer : MonoBehaviour
     }
 
     public void SetRoomAsVisited(Vector2Int coord){
-        imageGrid[coord.x,coord.y].color = visitedColor;
+        if(grid[coord.x,coord.y].type != RoomType.FINAL)
+            imageGrid[coord.x,coord.y].color = visitedColor;
         // imageGrid[currentRoom.x, currentRoom.y].color = visitedColor;
         currentRoom = coord;
     }
