@@ -39,6 +39,7 @@ public class Itemgenerator : MonoBehaviour
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
         am = AudioManager.Instance;
+        am.PlaySound(am.itemSpawn, this.transform.gameObject);
     }
 
     private void correctGenerate()
