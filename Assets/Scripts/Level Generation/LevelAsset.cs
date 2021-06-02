@@ -47,8 +47,9 @@ public class LevelAsset : ScriptableObject
                 }
                 break;
         }
-
         int randomIndex = Random.Range(0, compatibleRooms.Count);
+        if(randomIndex > compatibleRooms.Count-1)
+            Debug.LogError(string.Format("Tried to get a room of type {0}. CompatibleRooms Count: {1}, doorMask: {2}", type, compatibleRooms.Count, doorMask));
         return compatibleRooms[randomIndex];
     }
 

@@ -4684,6 +4684,7 @@ MonoBehaviour:
   nextText: {fileID: 7214558690016540064}
   previousText: {fileID: 2238008718053806130}
   tutorialInfo:
+  - 'NOTE: The tutorial will automatically close when you leave the starting room.'
   - Move by using the WASD-keys, and look around with the mouse.
   - Click the left mouse button to shoot and press V to use a meele-attack.
   - Press left SHIFT while moving to use dash and SPACE to jump.
@@ -12803,7 +12804,7 @@ MonoBehaviour:
   - message: "When I\u2019m asleep, dreaming and lulled and warm, \\nThey come, the
       homeless ones, the noiseless dead. \\nWhile the dim charging breakers of the
       storm \\nBellow and drone and rumble overhead...\\n"
-    timer: 6
+    timer: 10
     fadeCurve:
       serializedVersion: 2
       m_Curve:
@@ -12832,7 +12833,7 @@ MonoBehaviour:
   - message: "Out of the gloom they gather about my bed. \\nThey whisper to my heart;
       their thoughts are mine. \\n\u201CWhy are you here with all your watches ended?
       \\n From Ypres to Frise we sought you in the line.\u201D"
-    timer: 6
+    timer: 10
     fadeCurve:
       serializedVersion: 2
       m_Curve:
@@ -12867,7 +12868,7 @@ MonoBehaviour:
       while the dawn begins with slashing rain \\nI think of the Battalion in the
       mud. \\n\u201CWhen are you going out to them again? Are they not still your
       brothers through our blood?\u201D "
-    timer: 18
+    timer: 30
     fadeCurve:
       serializedVersion: 2
       m_Curve:
@@ -19965,6 +19966,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   interactText: {fileID: 0}
+  bedAnimationObject: {fileID: 0}
+  playerObject: {fileID: 0}
+  bedObject: {fileID: 0}
 --- !u!114 &4158066617250745800
 MonoBehaviour:
   m_ObjectHideFlags: 0

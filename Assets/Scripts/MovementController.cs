@@ -209,7 +209,7 @@ public class MovementController : MonoBehaviour
     {
         RaycastHit hit;
         Vector3 newDir = new Vector3(dir.x, 0, dir.z).normalized;
-        Ray ray = new Ray(Camera.main.transform.position, newDir);
+        Ray ray = new Ray(transform.position, newDir);
 
         //read hdrp profile if null add it
         if (!profile.TryGet<MotionBlur>(out var motion))
