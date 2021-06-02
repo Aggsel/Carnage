@@ -41,8 +41,8 @@ public class MainMenu : MonoBehaviour
         else if (SceneManager.GetActiveScene().name == "Actual_Hub")
         {
             AudioManager.Instance.PlaySound(ref AudioManager.Instance.hubMusic);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
