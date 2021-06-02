@@ -473,6 +473,6 @@ public class MazeGenerator{
                 }
             }
         }
-        return false;
+        return true;
     }
 }
