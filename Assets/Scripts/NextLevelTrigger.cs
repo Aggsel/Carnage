@@ -7,7 +7,7 @@ public class NextLevelTrigger : MonoBehaviour
 {
     LevelManager levelManager = null;
     UIController uc = null;
-    [SerializeField ] Collider triggerCollider = null;
+    [SerializeField] Collider triggerCollider = null;
 
     private void Start ()
     {
@@ -19,9 +19,15 @@ public class NextLevelTrigger : MonoBehaviour
         AudioManager.Instance.PlaySound(ref AudioManager.Instance.endOfLevelBell);
         float time = uc.DisplayPoemText();
         if(time > 0.0f){
-            yield return new WaitForSeconds(time/2.0f);
+            GameObject player = GameObject.Find("Player");
+            player.GetComponent<MovementController>().enabled = false;
+            player.GetComponent<FiringController>().enabled = false;
+            player.GetComponent<CharacterController>().enabled = false;
+            yield return new WaitForSeconds(time - time/8.0f);
             GoToNextLevel();
-            yield return new WaitForSeconds(time/2.0f);
+            player.GetComponent<CharacterController>().enabled = true;
+            player.GetComponent<FiringController>().enabled = true;
+            player.GetComponent<MovementController>().enabled = true;
             AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
         }
         else{
