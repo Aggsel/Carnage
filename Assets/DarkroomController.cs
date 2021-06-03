@@ -18,6 +18,8 @@ public class DarkroomController : MonoBehaviour
         am.PlaySound(ref am.ambManager);
         uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         StartCoroutine("DarkroomStart");
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private IEnumerator DarkroomStart()
