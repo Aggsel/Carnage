@@ -9,13 +9,35 @@ public class ConstraintRangedBehavior : EnemyBehavior
     [SerializeField] public ConstraintRangedPatrol patrolState = new ConstraintRangedPatrol();
     [SerializeField] public ConstraintRangedAttack attackState = new ConstraintRangedAttack();
 
+    [FMODUnity.EventRef]
+    public string selectsound;
+    FMOD.Studio.EventInstance sound;
+
+    private Rigidbody rb = null;
+
     protected override void Start(){
         base.Start();
         chaseState.SetBehaviour(this);
         patrolState.SetBehaviour(this);
         attackState.SetBehaviour(this);
-        am.PlaySound(am.patientSpawn, this.gameObject);
+
+        sound = FMODUnity.RuntimeManager.CreateInstance(selectsound);
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(sound, this.transform, rb);
+        PlaySound();
+
         SetState(chaseState);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        
+    }
+
+    void PlaySound()
+    {
+        sound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.gameObject));
+        sound.start();
     }
 
     public void AnimHookAttack(){

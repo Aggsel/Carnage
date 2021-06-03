@@ -25,6 +25,12 @@ public class RageBehavior : EnemyBehavior
     [Tooltip("Attributes when the enemy has hit something and is attacking.")]
     [SerializeField] public RagePostChargeAttack postChargeAttack = new RagePostChargeAttack();
 
+    [FMODUnity.EventRef]
+    public string selectsound;
+    FMOD.Studio.EventInstance sound;
+
+    private Rigidbody rb = null;
+
 
     protected override void Start(){
         base.Start();
@@ -37,13 +43,23 @@ public class RageBehavior : EnemyBehavior
         chargeAttackState.SetBehaviour(this);
         postChargeAttack.SetBehaviour(this);
 
-        am.PlaySound(am.rageSpawn, this.gameObject);
+        sound = FMODUnity.RuntimeManager.CreateInstance(selectsound);
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(sound, this.transform, rb);
+        PlaySound();
 
         SetState(chaseState);
     }
 
-    protected override void Update() {
+    protected override void Update()
+    {
         base.Update();
+        
+    }
+
+    void PlaySound()
+    {
+        sound.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(this.gameObject));
+        sound.start();
     }
 
     public void AnimHookChargeStart(){
