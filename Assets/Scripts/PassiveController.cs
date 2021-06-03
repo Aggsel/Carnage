@@ -11,15 +11,17 @@ public class PassiveController : MonoBehaviour
     [SerializeField] private Transform passiveParent = null;
     [SerializeField] private List<GameObject> passivePrefabList = new List<GameObject>();
     [SerializeField] private List<Passive> passiveList = new List<Passive>();
+    [SerializeField] private List<Passive> passiveListOfDupes = new List<Passive>();
 
     public void Initialize(Passive addedPassive, GameObject player)
     {
         //passive ui
         if (passiveList.Contains(addedPassive))
         {
-            int currentAmount = int.Parse(passivePrefabList[passiveList.IndexOf(addedPassive)].GetComponentInChildren<TextMeshProUGUI>().text);
+            Debug.Log(passiveList.IndexOf(addedPassive));
+            int currentAmount = int.Parse(passivePrefabList[passiveListOfDupes.IndexOf(addedPassive)].GetComponentInChildren<TextMeshProUGUI>().text);
             currentAmount++;
-            passivePrefabList[passiveList.IndexOf(addedPassive)].GetComponentInChildren<TextMeshProUGUI>().text = currentAmount.ToString();
+            passivePrefabList[passiveListOfDupes.IndexOf(addedPassive)].GetComponentInChildren<TextMeshProUGUI>().text = currentAmount.ToString();
         }
         else
         {
@@ -28,6 +30,7 @@ public class PassiveController : MonoBehaviour
             passivePrefabList.Add(newPassive);
             newPassive.GetComponentInChildren<TextMeshProUGUI>().text = "1";
             newPassive.GetComponent<Image>().sprite = addedPassive.sprite;
+            passiveListOfDupes.Add(addedPassive);
         }
 
         passiveList.Add(addedPassive);

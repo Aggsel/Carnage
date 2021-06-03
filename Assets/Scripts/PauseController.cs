@@ -546,6 +546,7 @@ public class PauseController : MonoBehaviour
     //main pause
     public void ButtonYes () //exit confirm
     {
+        FMODUnity.RuntimeManager.GetBus("bus:/").stopAllEvents(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         SceneManager.LoadScene("MainMenu");
     }
 

@@ -41,17 +41,18 @@ public class MainMenu : MonoBehaviour
         else if (SceneManager.GetActiveScene().name == "Actual_Hub")
         {
             AudioManager.Instance.PlaySound(ref AudioManager.Instance.hubMusic);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
     private void Update ()
     {
         //DEBUG, RESET FIRST TIME
-        if(Input.GetKeyDown(KeyCode.Comma))
+        if(Input.GetKey(KeyCode.Comma) && Input.GetKey(KeyCode.Delete))
         {
             sc.SetFirstTime(1);
+            PlayerPrefs.DeleteKey("Act");
         }
     }
 

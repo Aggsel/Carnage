@@ -76,6 +76,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer playerFootsteps;
     [SerializeField] public EventContainer playerJump;
     [SerializeField] public EventContainer playerLand;
+    [SerializeField] public EventContainer playerBulletCasing;
 
     [Header("Enemies - Constraint")]
     [SerializeField] public EventContainer patientDeath;
@@ -97,6 +98,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] public EventContainer itemsActivate;
     [SerializeField] public EventContainer itemsHealing;
     [SerializeField] public EventContainer itemsPickup;
+    [SerializeField] public EventContainer itemTrail;
+    [SerializeField] public EventContainer itemSpawn;
 
     [Header("Music")]
     [SerializeField] public EventContainer ambManager;
