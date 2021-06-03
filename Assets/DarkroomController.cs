@@ -29,6 +29,7 @@ public class DarkroomController : MonoBehaviour
         {
             item.EnemyLookAt(false);
             item.ActivateEnemy();
+            yield return new WaitForSeconds(Random.Range(0f, 0.30f));
         }
     }
 }
