@@ -85,13 +85,10 @@ public class InteractionController : MonoBehaviour
                     bedObject.GetComponentInChildren<MeshRenderer>().enabled = false;
                     bedAnimationObject.SetActive(true);
 
-                    foreach (GameObject child in playerObject.transform)
+                    foreach (Transform child in playerObject.transform)
                     {
-                        child.SetActive(false);
+                        child.gameObject.SetActive(false);
                     }
-
-                    //playerObject.SetActive(false);
-                    //StartCoroutine(InteractionDelay());
                 }
             }
         }
