@@ -92,7 +92,7 @@ public class LevelManager : MonoBehaviour
         {
             if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
             {
-                PlayerPrefs.SetInt("Act", currentLevel);
+                PlayerPrefs.SetInt("Act", (currentLevel + 1));
                 Debug.Log("Act has been set to " + (currentLevel + 1));
             }
         }
