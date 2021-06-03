@@ -16,6 +16,11 @@ public class ItemTrail : MonoBehaviour
     private NavMeshAgent agent = null;
     private NavMeshPath path = null;
     private float destroyTimer = 0.0f;
+    private Rigidbody rb = null;
+
+    [FMODUnity.EventRef]
+    public string selectsound;
+    FMOD.Studio.EventInstance sound;
 
     public void SetStuff (GameObject item)
     {
@@ -37,6 +42,9 @@ public class ItemTrail : MonoBehaviour
         startPos = par.transform.localPosition;
         agent.speed = speed;
         destroyTimer = 0.0f;
+        rb = GetComponent<Rigidbody>();
+        sound = FMODUnity.RuntimeManager.CreateInstance(selectsound);
+
     }
 
     private void Update()
@@ -51,6 +59,19 @@ public class ItemTrail : MonoBehaviour
 
         Bobbing();
         MoveToItem();
+
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(sound, this.transform, rb);
+        PlaySound();
+    }
+
+    private void PlaySound()
+    {
+        FMOD.Studio.PLAYBACK_STATE fmodPbState;
+        sound.getPlaybackState(out fmodPbState);
+        if (fmodPbState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+        {
+            sound.start();
+        }
     }
 
     private void MoveToItem()
@@ -84,6 +105,9 @@ public class ItemTrail : MonoBehaviour
         GameObject spawn = Instantiate(spawnParticle) as GameObject;
         spawn.transform.SetPositionAndRotation(itemObj.transform.position, Quaternion.identity);
         itemObj.SetActive(true);
+
+        sound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        sound.release();
 
         Destroy(spawn, 1.0f);
         Destroy(gameObject);
