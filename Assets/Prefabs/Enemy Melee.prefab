@@ -259,9 +259,10 @@ MonoBehaviour:
   am: {fileID: 0}
   anim: {fileID: 0}
   chaseState:
-    rotationSpeed: 15
+    rotationSpeed: 25
     chaseSpeed: 9.5
     stoppingDistance: 1.5
+    navPathRecalculationFrequency: 0.2
   patrolState:
     rotationSpeed: 15
     enemyVisionDistance: 30
@@ -269,7 +270,7 @@ MonoBehaviour:
   attackState:
     rotationSpeed: 13
     attackRange: 2
-    damage: 15
+    damage: 10
 --- !u!1001 &3403306408612049747
 PrefabInstance:
   m_ObjectHideFlags: 0

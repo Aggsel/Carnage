@@ -17,6 +17,8 @@ public class MeleeController : MonoBehaviour
         public int rayAmount;
         [Tooltip("The spread of the 'rayAmount' raycasts. High number means more distance between each ray, these two go hand in hand")] [Range(0.5f, 5.0f)]
         public float raySpread;
+        //[Tooltip("If you melee & it misses, this penaltyTime is added to the melee recharge")]
+        //public float penaltyTime;
     }
     #endregion
 
@@ -26,13 +28,12 @@ public class MeleeController : MonoBehaviour
     [Tooltip("For programmers, scripts that are disabled while using melee")]
     [SerializeField] private MonoBehaviour[] scripts = null;
     [SerializeField] private MeleeVariables meleeVar = new MeleeVariables();
+    [SerializeField] private float damage = 100.0f;
 
     private KeyCode meleeKey = KeyCode.F;
     private Vector3 origin = Vector3.zero;
     private AudioManager am = null;
-
-    //[HideInInspector]
-    public bool inHit = false;
+    private bool inHit = false;
 
     private void Start ()
     {
@@ -55,14 +56,16 @@ public class MeleeController : MonoBehaviour
         PauseController.updateKeysFunction -= ReadKeybinds;
     }
 
-    //main
+    public bool GetHit ()
+    {
+        return inHit;
+    }
+
     private void Update ()
     {
         origin = Camera.main.transform.position;
-
         MeleeInitiator();
 
-        //DEBUG VISUALS
         if(meleeVar.showDebug)
         {
             for (int i = -meleeVar.rayAmount; i < meleeVar.rayAmount; i++)
@@ -78,7 +81,6 @@ public class MeleeController : MonoBehaviour
 
     public void StartMelee ()
     {
-        //raycast here
         float temp = 69.0f;
         Transform hitObj = null;
         RaycastHit lateHit = new RaycastHit();
@@ -121,10 +123,9 @@ public class MeleeController : MonoBehaviour
             StartCoroutine(GetComponent<Screenshake>().Shake(4f, 0.2f));
             am.PlaySound(am.playerMelee);
 
-            //Debug.Log("CLOSEST: " + hitObj + ", " + temp);
             if (hitObj.GetComponentInParent<EnemyBehavior>() != null)
             {
-                HitObject obj = new HitObject(transform.position, lateHit.point, 500.0f, 0.0f, type: HitType.Melee); //set high melee damage
+                HitObject obj = new HitObject(transform.position, lateHit.point, damage, 0.0f, type: HitType.Melee); //set high melee damage
                 hitObj.GetComponentInParent<EnemyBehavior>().OnShot(obj);
             }
         }

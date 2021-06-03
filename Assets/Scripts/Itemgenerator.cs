@@ -24,6 +24,7 @@ public class Itemgenerator : MonoBehaviour
     private RawImage flashImage;
     private bool recieved = false;
     private Vector3 startPos = Vector3.zero;
+    private AudioManager am = null;
     
 
     void Start()
@@ -37,6 +38,8 @@ public class Itemgenerator : MonoBehaviour
         uic = GameObject.Find("Game Controller Controller/Canvas").GetComponent<UIController>();
         flashImageGO = GameObject.Find("Game Controller Controller/Canvas/FlashImage");
         recieved = false;
+        am = AudioManager.Instance;
+        am.PlaySound(am.itemSpawn, this.transform.gameObject);
     }
 
     private void correctGenerate()
@@ -129,7 +132,8 @@ public class Itemgenerator : MonoBehaviour
     {
         if(other.gameObject.name == "Player" && recieved == false)
         {
-            if(active != null)
+            am.PlaySound(ref am.itemsPickup);
+            if (active != null)
             {
                 uic.UIAlertText(active.activeDescription, 3.0f);
 

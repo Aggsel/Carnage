@@ -49,9 +49,17 @@ public class HealthController : MonoBehaviour
         }
     }
 
+    public float MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+    }
+
     public void ModifyCurrentHealth(float healthIncrease){
         currentHealth += healthIncrease;
-        currentHealth = Mathf.Clamp(currentHealth, -1.0f, maxHealth);
+        currentHealth = Mathf.Clamp(currentHealth, -0.5f, maxHealth);
         uiController.UpdateHealthbar();
         CheckDeathCriteria();
     }
@@ -109,7 +117,9 @@ public class HealthController : MonoBehaviour
             deathDisableScripts[i].enabled = false;
         }
 
+        Time.timeScale = 0.5f;
         weaponObj.SetActive(false);
+        GetComponentInChildren<CooldownController>().enabled = false;
         dead = true;
         uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
@@ -122,6 +132,10 @@ public class HealthController : MonoBehaviour
         //uic.StartCoroutine(uic.FadeImage(flashImage, 1.2f, true));
 
         yield return new WaitForSeconds(3f);
-        SceneManager.LoadScene(1);
+        Time.timeScale = 1.0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        SceneManager.LoadScene("Actual_Hub");
     }
 }

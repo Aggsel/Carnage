@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameEvent onRoomEnterFirst = null;
     [Tooltip("What event should be invoked when the player clears a room and the combat is complete.")]
     [SerializeField] private GameEvent onCombatComplete = null;
+    [Tooltip("What event should be invoked whenever the player enters a room and enemies spawn.")]
+    [SerializeField] private GameEvent onCombatStart = null;
 
     [Header("UI References")]
     [Tooltip("Reference to the UI element that is showing how many rooms have been cleared on the floor so far.")]
@@ -73,6 +76,10 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public int GetCurrentLevel(){
+        return currentLevel;
+    }
+
     //Called by other object whenever level should progress.
     public void GoToNextLevel(){
         roomCounter = 0;
@@ -80,6 +87,15 @@ public class LevelManager : MonoBehaviour
 
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
+
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
+            {
+                PlayerPrefs.SetInt("Act", currentLevel);
+                Debug.Log("Act has been set to " + (currentLevel + 1));
+            }
+        }
 
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
@@ -89,11 +105,10 @@ public class LevelManager : MonoBehaviour
         this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
         GenerateLevel();
         this.gameObject.transform.position = playerReference.transform.position; //Teleport level to player instead of player to level lol.
-        uic.UIAlertText("Going to next level!", 1.0f);
     }
 
     private void EndOfFinalLevel(){
-        uic.UIAlertText("End of final level!", 2.0f);
+        SceneManager.LoadScene("Actual_Hub");
     }
 
     [ContextMenu("Generate Level")]
@@ -113,6 +128,9 @@ public class LevelManager : MonoBehaviour
         ActivateNeighbors(spawnRoomLocation);
         UpdateProgressionUI();
         mapReference?.SetGrid(this.maze.grid, this.spawnRoomLocation);
+
+        FindObjectOfType<MovementController>().SetSpawnPoint(playerReference.transform.position/*spawnRoomLocation * roomSize*/);
+
         OnFinishedGeneration.Invoke();
     }
 
@@ -145,10 +163,35 @@ public class LevelManager : MonoBehaviour
                 int posY = pos.y + y;
                 if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
                     continue;
-                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1)
-                    this.grid[posX,posY]?.gameObject.SetActive(false);
+
+                if(this.grid[posX,posY] == null)
+                    continue;
+
+                if(Mathf.Abs(this.maze.grid[posX,posY].depth - this.maze.grid[pos.x, pos.y].depth) > 1){
+                    if(this.grid[posX,posY].gameObject.activeInHierarchy)
+                        this.grid[posX,posY].gameObject.SetActive(false);
+                }
                 else
-                    this.grid[posX,posY]?.gameObject.SetActive(true);
+                    this.grid[posX,posY].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void SetOnlyRoomActive(Vector2Int pos){
+        for (int y = -2; y <= 2; y++){
+            for (int x = -2; x <= 2; x++){
+                int posX = pos.x + x;
+                int posY = pos.y + y;
+                if(posX < 0 || posX > this.maze.actualGridSize.x-1 || posY < 0 || posY > this.maze.actualGridSize.y -1)
+                    continue;
+
+                if(this.grid[posX,posY] == null)
+                    continue;
+
+                if(posX == pos.x && posY == pos.y)
+                    this.grid[posX,posY].gameObject.SetActive(true);
+                else if(this.grid[posX,posY].gameObject.activeInHierarchy)
+                    this.grid[posX,posY].gameObject.SetActive(false);
             }
         }
     }
@@ -185,7 +228,7 @@ public class LevelManager : MonoBehaviour
             playerReference = GameObject.FindObjectOfType<MovementController>().gameObject;
 
         newRoom.NewRoom(new Vector2Int(pos.x, pos.y), roomCounter, depth, normalizedDepth, this, playerReference, 
-        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, mapReference);
+        currentLevelDifficultyMultiplier, onRoomEnterFirst, onCombatComplete, onCombatStart, mapReference);
 
         instantiatedRooms.Add(newRoom);
         
@@ -196,10 +239,6 @@ public class LevelManager : MonoBehaviour
         completedRooms++;
         UpdateProgressionUI();
     }
-
-    // public void ProgressionUISetActive(bool enabled){
-    //     progressionUIReference?.gameObject.SetActive(enabled);
-    // }
 
     private void UpdateProgressionUI(){
         if(progressionUIReference != null)
@@ -230,14 +269,29 @@ public class MazeGenerator{
     private int roomCount = 0;
     private int randomDoorIterations = 0;
 
+    private int[] SwastikaLayout1 = {0b0001, 0b0011, 0b1000,
+                                    0b0110, 0b1111, 0b1001,
+                                    0b0010, 0b1100, 0b0100};
+
+    private int[] SwastikaLayout2 = {0b0010, 0b1001, 0b0001, 
+                                    0b0011, 0b1111, 0b1100,
+                                    0b0100, 0b0110, 0b1000};
+
     public MazeGenerator(Vector2Int desiredGridSize, int seed, int maxDepth, Vector2Int initPosition, int randomDoorIterations){
-        this.grid = new MazeCell[desiredGridSize.x, desiredGridSize.y];
-        this.desiredGridSize = desiredGridSize;
-        this.seed = seed;
-        this.maxDepth = maxDepth;
-        this.initPosition = initPosition;
-        this.randomDoorIterations = randomDoorIterations;
-        GenerateMaze();
+        do{
+            this.grid = new MazeCell[desiredGridSize.x, desiredGridSize.y];
+            this.desiredGridSize = desiredGridSize;
+            this.seed = seed;
+            this.maxDepth = maxDepth;
+            this.initPosition = initPosition;
+            this.randomDoorIterations = randomDoorIterations;
+            
+            this.maxDepthReached = 0;
+            this.actualGridSize = default(Vector2Int);
+            this.roomCount = 0;
+        
+            GenerateMaze();
+        }while(SwastikaCheck());
     }
 
     public void GenerateMaze(){
@@ -296,39 +350,48 @@ public class MazeGenerator{
         RecalculateDepth(initPosition);
     }
 
-    private void RecalculateDepth(Vector2Int pos, int depth = 0){
-        if(depth == 0){
-            this.maxDepthReached = 0;
-            for (int y = 0; y < grid.GetLength(1); y++){
-                for (int x = 0; x < grid.GetLength(0); x++){
-                    this.grid[x,y].visited = false;
-                }
+    private void RecalculateDepth(Vector2Int pos){
+        for (int y = 0; y < grid.GetLength(1); y++){
+            for (int x = 0; x < grid.GetLength(0); x++){
+                this.grid[x,y].visited = false;
             }
         }
 
-        if(this.grid[pos.x, pos.y].visited)
-            return;
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        queue.Enqueue(pos);
+        grid[pos.x, pos.y].visited = true;
+        int depth = 0;
+        this.maxDepthReached = 0;
 
-        this.maxDepthReached = this.maxDepthReached < depth ? depth : this.maxDepthReached;
-        this.grid[pos.x, pos.y].depth = Mathf.Min(grid[pos.x, pos.y].depth, depth);
-        this.grid[pos.x,pos.y].visited = true;
+        while(queue.Count > 0){
+            int depthLength = queue.Count;
 
-        int mask = this.grid[pos.x, pos.y].doorMask;
+            while(depthLength > 0){
+                Vector2Int newPos = queue.Dequeue();
+                roomCount++;
 
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-        if((mask & 0b0001) == 0b0001)
-            neighbors.Add(new Vector2Int(0,1));
-        if((mask & 0b0010) == 0b0010)
-            neighbors.Add(new Vector2Int(1,0));
-        if((mask & 0b0100) == 0b0100)
-            neighbors.Add(new Vector2Int(0,-1));
-        if((mask & 0b1000) == 0b1000)
-            neighbors.Add(new Vector2Int(-1,0));
+                grid[newPos.x, newPos.y].visited = true;
+                grid[newPos.x, newPos.y].depth = depth;
+                this.maxDepthReached = depth > this.maxDepthReached ? depth : this.maxDepthReached;
 
-        while(neighbors.Count > 0){
-            Vector2Int newPos = new Vector2Int(pos.x + neighbors[0].x, pos.y + neighbors[0].y);
-            neighbors.RemoveAt(0);
-            RecalculateDepth(newPos, depth + 1);
+                int mask = this.grid[newPos.x, newPos.y].doorMask;
+                List<Vector2Int> neighbors = new List<Vector2Int>();
+                if((mask & 0b0001) == 0b0001)
+                    neighbors.Add(new Vector2Int(0,1) + newPos);
+                if((mask & 0b0010) == 0b0010)
+                    neighbors.Add(new Vector2Int(1,0) + newPos);
+                if((mask & 0b0100) == 0b0100)
+                    neighbors.Add(new Vector2Int(0,-1) + newPos);
+                if((mask & 0b1000) == 0b1000)
+                    neighbors.Add(new Vector2Int(-1,0) + newPos);
+                for (int i = 0; i < neighbors.Count; i++){
+                    if(!grid[neighbors[i].x, neighbors[i].y].visited){
+                        queue.Enqueue(neighbors[i]);
+                    }
+                }
+                depthLength--;
+            }
+            depth++;
         }
     }
 
@@ -394,5 +457,22 @@ public class MazeGenerator{
             }
         }
         return unvisited;
+    }
+
+    //Returns true if map is swastika pattern lmao
+    private bool SwastikaCheck(){
+        if(desiredGridSize.x != 3 || desiredGridSize.y != 3)
+            return false;
+        for (int y = 0; y < this.grid.GetLength(1); y++){
+            for (int x = 0; x < this.grid.GetLength(0); x++){
+                if(grid[x,y].doorMask != SwastikaLayout1[x + 3*y]){
+                    return false;
+                }
+                if(grid[x,y].doorMask != SwastikaLayout2[x + 3*y]){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
