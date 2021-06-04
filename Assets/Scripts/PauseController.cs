@@ -593,7 +593,7 @@ public class PauseController : MonoBehaviour
     public void ChangeSound(Slider slider)
     {
         //Do sound change here
-        FMOD.Studio.VCA Master = FMODUnity.RuntimeManager.GetVCA("vca:/Master");
+        FMOD.Studio.VCA Master = FMODUnity.RuntimeManager.GetVCA("vca:/SFX");
         Master.setVolume(slider.value * 0.01f);
         optionAssignments.soundValue.text = slider.value.ToString("F1") + "%";
     }
