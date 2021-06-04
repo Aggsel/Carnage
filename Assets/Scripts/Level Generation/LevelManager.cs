@@ -88,18 +88,20 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
-        if (PlayerPrefs.HasKey("Act"))
-        {
-            if(PlayerPrefs.GetInt("Act") < (currentLevel + 1))
-            {
-                PlayerPrefs.SetInt("Act", (currentLevel + 1));
-                Debug.Log("Act has been set to " + (currentLevel + 1));
-            }
-        }
+        
 
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
+        }
+
+        if (PlayerPrefs.HasKey("Act"))
+        {
+            if (PlayerPrefs.GetInt("Act") < (currentLevel + 1))
+            {
+                PlayerPrefs.SetInt("Act", (currentLevel + 1));
+                Debug.Log("Act has been set to " + (currentLevel + 1));
+            }
         }
 
         this.am.SetParameterByName(ref am.ambManager, "Music Random", Mathf.Round(Random.Range(0.0f, 1.0f)));
@@ -108,7 +110,7 @@ public class LevelManager : MonoBehaviour
     }
 
     private void EndOfFinalLevel(){
-        SceneManager.LoadScene("Actual_Hub");
+        SceneManager.LoadScene("MainMenu");
     }
 
     [ContextMenu("Generate Level")]

@@ -123,7 +123,7 @@ public class HealthController : MonoBehaviour
         dead = true;
         uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
-        //am.PlaySound(am.playerDeath); //detta ljudet är balle
+        am.PlaySound(am.playerDeath);
         StartCoroutine("DeathEffects");
         am.StopSound(ref am.ambManager);
     }

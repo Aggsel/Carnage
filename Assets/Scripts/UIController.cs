@@ -43,6 +43,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Renderer targetRenderer = null;
     [SerializeField] private Image fadeImage = null;
 
+    [SerializeField] private GameObject slidersAndActives = null;
+    [SerializeField] private GameObject crosshair = null;
+
     [Header("Poem")]
     [SerializeField] private GameObject poemText = null;
     [SerializeField] private GameObject poemTextAuthor = null;
@@ -274,6 +277,17 @@ public class UIController : MonoBehaviour
         targetRenderer.GetPropertyBlock(_propBlock, 0);
         _propBlock.SetColor("_EmissiveColor", baseEmissiveColor * Mathf.Lerp(0.0f, MaxIntensity, oc.HeatPercentage));
         targetRenderer.SetPropertyBlock(_propBlock, 0);
+
+        if(Input.GetKeyDown(KeyCode.F3)){
+            if(fpsText != null)
+                fpsText.gameObject.SetActive(!fpsText.gameObject.activeInHierarchy);
+        }
+        if(Input.GetKeyDown(KeyCode.F2)){
+            if(slidersAndActives != null)
+                slidersAndActives.SetActive(!slidersAndActives.activeInHierarchy);
+            if(crosshair != null)
+                crosshair.SetActive(!crosshair.activeInHierarchy);
+        }
     }
 
     public IEnumerator FadeImage(RawImage image, float fadeTime, bool fadeAway)
