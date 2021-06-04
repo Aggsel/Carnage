@@ -119,6 +119,7 @@ public class MovementController : MonoBehaviour
             motion = profile.Add<MotionBlur>(false);
         }
 
+        am.SetParameterByName(ref am.playerLand, "Surface", 1.0f);
         motion.active = false;
     }
 
