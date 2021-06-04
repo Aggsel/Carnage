@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -13,8 +14,13 @@ public class MainMenu : MonoBehaviour
     private string version = null;
     private SerializeController sc = null;
 
+    [SerializeField] private Image fadeImage = null;
+    [SerializeField] private float fadeDuration = 1.0f;
+
     private void Start ()
     {
+        StartCoroutine(FadeFromBlack());
+
         sc = FindObjectOfType<SerializeController>();
 
         Time.timeScale = 1.0f;
@@ -27,29 +33,36 @@ public class MainMenu : MonoBehaviour
 
         if (mainMenu)
         {
-            AudioManager.Instance.PlaySound(ref AudioManager.Instance.ambManager);
-            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "Battle", 0.0f);
-            AudioManager.Instance.SetParameterByName(ref AudioManager.Instance.ambManager, "State", 0.0f);
-
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.mainMenuMusic);
+            
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+        else if (SceneManager.GetActiveScene().name == "Actual_Hub")
+        {
+            AudioManager.Instance.PlaySound(ref AudioManager.Instance.hubMusic);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
     private void Update ()
     {
         //DEBUG, RESET FIRST TIME
-        if(Input.GetKeyDown(KeyCode.Comma))
+        if(Input.GetKey(KeyCode.Comma) && Input.GetKey(KeyCode.Delete))
         {
             sc.SetFirstTime(1);
+            PlayerPrefs.DeleteKey("Act");
         }
     }
 
     #region mainMenu crap
     public void StartButton ()
     {
-        if(sc.GetFirstTime() == 1)
+        AudioManager.Instance.StopSound(ref AudioManager.Instance.mainMenuMusic);
+        if (sc.GetFirstTime() == 1)
         {
+            
             sc.SetFirstTime(2);
             SceneManager.LoadScene("Alexander");
         }
@@ -88,4 +101,18 @@ public class MainMenu : MonoBehaviour
         objects[0].SetActive(true);
     }
     #endregion
+
+    private IEnumerator FadeFromBlack(){
+        if(fadeImage != null){
+            Color fadeColor = new Color(0,0,0,1.0f);
+            fadeImage.color = fadeColor;
+            float duration = fadeDuration;
+            while(duration >= 0.0f){
+                fadeColor.a = duration/fadeDuration;
+                fadeImage.color = fadeColor;
+                yield return null;
+                duration -= Time.deltaTime;
+            }
+        }
+    }
 }

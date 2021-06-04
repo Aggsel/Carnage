@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.VFX;
+using FMOD.Studio;
+using FMODUnity;
 
 public class FiringController : MonoBehaviour
 {
@@ -77,7 +79,10 @@ public class FiringController : MonoBehaviour
         ss.RecoilCall();
 
         //play sound
-        am.PlaySound(ref am.playerShooting);
+        string fmodEvent = "event:/Carnage/SFX/Player/Combat/Weapon/Shooting";
+        EventInstance shooting = RuntimeManager.CreateInstance(fmodEvent);
+        shooting.start();
+        // am.PlaySound(am.playerShooting);
 
         if (Physics.Raycast(bulletCam.transform.position, direction, out bulletHit, Mathf.Infinity, shotLayerMask))
         {

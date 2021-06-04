@@ -7,25 +7,39 @@ public class NextLevelTrigger : MonoBehaviour
 {
     LevelManager levelManager = null;
     UIController uc = null;
+    [SerializeField] Collider triggerCollider = null;
 
     private void Start ()
     {
         uc = FindObjectOfType<UIController>();
     }
 
-    private IEnumerator LevelLoadDelay ()
+    private IEnumerator LevelLoadDelay()
     {
         AudioManager.Instance.PlaySound(ref AudioManager.Instance.endOfLevelBell);
-        uc.StartCoroutine(uc.WhiteFade(true, 0.5f));
-
-        yield return new WaitForSeconds(4f);
-        AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
-        GoToNextLevel();
+        float time = uc.DisplayPoemText();
+        if(time > 0.0f){
+            GameObject player = GameObject.Find("Player");
+            player.GetComponent<MovementController>().enabled = false;
+            player.GetComponent<FiringController>().enabled = false;
+            player.GetComponent<CharacterController>().enabled = false;
+            yield return new WaitForSeconds(time - time/8.0f);
+            GoToNextLevel();
+            player.GetComponent<CharacterController>().enabled = true;
+            player.GetComponent<FiringController>().enabled = true;
+            player.GetComponent<MovementController>().enabled = true;
+            AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
+        }
+        else{
+            GoToNextLevel();
+        }
     }
 
     void OnTriggerEnter(Collider other){
         if(other.gameObject.layer == 12)
         {
+            if(triggerCollider != null)
+                triggerCollider.enabled = false;
             StartCoroutine(LevelLoadDelay());
         }
     }
@@ -34,7 +48,7 @@ public class NextLevelTrigger : MonoBehaviour
         if(levelManager == null)
             levelManager = FindObjectOfType<LevelManager>();
 
-        Debug.Log("NEW LEVEL");
+        FindObjectOfType<BloodController>().ClearDecalPool();
         levelManager.GoToNextLevel();
     }
 }

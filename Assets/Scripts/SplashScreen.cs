@@ -17,6 +17,8 @@ public class SplashClass
 public class SplashScreen : MonoBehaviour
 {
     [SerializeField] private GameObject splashScreenPrefab = null;
+    [SerializeField] private Image fadeImage = null;
+    [SerializeField] private float fadeDuration = 1.0f;
     [SerializeField] private SplashClass[] splashScreens = null;
 
     private List<GameObject> newSplashScreens = new List<GameObject>();
@@ -71,7 +73,20 @@ public class SplashScreen : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("MainMenu");
+            StartCoroutine(FadeToBlack());
         }
+    }
+
+    private IEnumerator FadeToBlack(){
+        Color fadeColor = new Color(0,0,0,0);
+        fadeImage.color = fadeColor;
+        float duration = 0.0f;
+        while(duration <= fadeDuration){
+            fadeColor.a = duration/fadeDuration;
+            fadeImage.color = fadeColor;
+            yield return null;
+            duration += Time.deltaTime;
+        }
+        SceneManager.LoadScene("MainMenu");
     }
 }
