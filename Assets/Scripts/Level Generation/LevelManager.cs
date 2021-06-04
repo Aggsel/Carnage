@@ -110,7 +110,7 @@ public class LevelManager : MonoBehaviour
     }
 
     private void EndOfFinalLevel(){
-        SceneManager.LoadScene("Actual_Hub");
+        SceneManager.LoadScene("MainMenu");
     }
 
     [ContextMenu("Generate Level")]
