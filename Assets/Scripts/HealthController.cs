@@ -32,13 +32,13 @@ public class HealthController : MonoBehaviour
     public void IncreaseMaxHealth()
     {
         maxHealth = attributeInstance.weaponAttributesResultant.health;
-        uiController.SetMaxHealth(maxHealth);
-        uiController.UpdateHealthbar();
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
             CheckDeathCriteria();
         }
+        uiController.SetMaxHealth(maxHealth);
+        uiController.UpdateHealthbar();
     }
 
     public float Health
@@ -123,7 +123,7 @@ public class HealthController : MonoBehaviour
         dead = true;
         uiController.StartCoroutine(uiController.WhiteFade(true, 0.5f));
 
-        //am.PlaySound(am.playerDeath); //detta ljudet är balle
+        am.PlaySound(am.playerDeath);
         StartCoroutine("DeathEffects");
         am.StopSound(ref am.ambManager);
     }

@@ -264,19 +264,20 @@ MonoBehaviour:
     chaseSpeed: 8
     stoppingDistance: 40
     lineOfSightCheckFrequency: 0.5
+    navPathRecalculationFrequency: 0.5
   patrolState:
     rotationSpeed: 15
     enemyVisionDistance: 0
     patrolSpeed: 0
   attackState:
     rotationSpeed: 8
-    patienceTimer: 2
     projectilePrefab: {fileID: 8373236212160343335, guid: 1b9fc5be1eb6bb245acc228d8e78d258,
       type: 3}
     projectileSpawnPosition: {fileID: 7553763207820968906}
     chargeEffect: {fileID: 4114122393422247331}
     sightThreshold: 0.6
     lineOfSightCheckFrequency: 0.5
+  selectsound: event:/Carnage/SFX/Enemies/Patient/Movement/Spawn
 --- !u!1 &7592627020993964236
 GameObject:
   m_ObjectHideFlags: 0
