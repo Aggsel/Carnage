@@ -31,6 +31,7 @@ public class NextLevelTrigger : MonoBehaviour
 
     private IEnumerator LevelLoadDelay()
     {
+        FindObjectOfType<ChallangeController>().StopCurrentChallange();
         AudioManager.Instance.PlaySound(ref AudioManager.Instance.endOfLevelBell);
         float time = uc.DisplayPoemText();
         GameObject player = GameObject.Find("Player");

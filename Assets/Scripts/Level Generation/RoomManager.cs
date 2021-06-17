@@ -57,6 +57,13 @@ public class RoomManager : MonoBehaviour
     }
 
     public void OnEnterRoom(){
+        ChallangeController cc = FindObjectOfType<ChallangeController>();
+
+        if(cc.GetCountBool() == false)
+        {
+            cc.StartChallange(cc.GetChallange());
+        }
+
         if(!hasBeenVisited)
             OnEnterRoomFirstTime();
         else{

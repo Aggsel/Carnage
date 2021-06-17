@@ -53,9 +53,6 @@ public class UIController : MonoBehaviour
     [SerializeField] private AlertMessage[] poems = new AlertMessage[3];
     private LevelManager levelManager = null;
 
-    [Header("Other")]
-    [SerializeField] private TextMeshProUGUI timerText = null;
-
     [Header("Assign scripts")]
     [SerializeField] private HealthController hc = null;
     [SerializeField] private MovementController mc = null;
@@ -76,7 +73,6 @@ public class UIController : MonoBehaviour
 
     private Queue<AlertMessage> alertQueue = new Queue<AlertMessage>();
     private bool alertActive = false;
-    private float timer = 0.0f;
 
     private void OnEnable()
     {
@@ -300,11 +296,6 @@ public class UIController : MonoBehaviour
 
     void Update()
     {
-        //timer
-        timer += Time.deltaTime;
-        timerText.text = timer.ToString("F2");
-
-        //other
         dashCharges.value = Mathf.Floor(mc.Charge);
         overheatbar.value = oc.HeatValue;
         targetRenderer.GetPropertyBlock(_propBlock, 0);

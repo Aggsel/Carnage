@@ -88,8 +88,6 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
         currentLevelDifficultyMultiplier += difficultyMultiplier;
 
-        
-
         if(currentLevel >= levels.Length){
             EndOfFinalLevel();
             return;
