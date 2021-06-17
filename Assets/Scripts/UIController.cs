@@ -49,6 +49,7 @@ public class UIController : MonoBehaviour
     [Header("Poem")]
     [SerializeField] private GameObject poemText = null;
     [SerializeField] private GameObject poemTextAuthor = null;
+    [SerializeField] private GameObject poemTextSkip = null;
     [SerializeField] private AlertMessage[] poems = new AlertMessage[3];
     private LevelManager levelManager = null;
 
@@ -115,6 +116,25 @@ public class UIController : MonoBehaviour
         overheatbar.maxValue = maxHeat;
     }
 
+    public void DisablePoem()
+    {
+        StopCoroutine(DisplayPoem());
+
+        TextMeshProUGUI textRef = poemText.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI authorTextRef = poemTextAuthor.GetComponent<TextMeshProUGUI>();
+
+        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, 0);
+        textRef.text = "";
+        authorTextRef.text = "";
+
+        textRef.color = new Color(textRef.color.r, textRef.color.g, textRef.color.b, 0);
+        authorTextRef.color = new Color(authorTextRef.color.r, authorTextRef.color.g, authorTextRef.color.b, 0);
+        fadeImage.gameObject.SetActive(false);
+        poemTextAuthor.SetActive(false);
+        poemText.SetActive(false);
+        poemTextSkip.SetActive(false);
+    }
+
     public float DisplayPoemText(){
         if(levelManager == null)
             levelManager = FindObjectOfType<LevelManager>();
@@ -129,7 +149,7 @@ public class UIController : MonoBehaviour
         return poems[currentLevel].GetTimer() + combinedTransitionDuration;
     }
 
-    private IEnumerator DisplayPoem(){
+    public IEnumerator DisplayPoem(){
         TextMeshProUGUI textRef = poemText.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI authorTextRef = poemTextAuthor.GetComponent<TextMeshProUGUI>();
         Color oldColor = fadeImage.color;
@@ -144,7 +164,7 @@ public class UIController : MonoBehaviour
         AnimationCurve curve = currentAlert.GetCurve();
 
         fadeImage.gameObject.SetActive(true);
-
+    
         float fadeDuration = curve.keys[curve.length - 1].time;
 
         //Fade in background.
@@ -164,6 +184,10 @@ public class UIController : MonoBehaviour
         authorTextRef.color = fadeColor;
         poemTextAuthor.SetActive(true);
         poemText.SetActive(true);
+
+        //now enable skipping of the poem
+        poemTextSkip.SetActive(true);
+        FindObjectOfType<NextLevelTrigger>().inPoem = true; //weird coupling
 
         time = 0.0f;
         fade = curve.Evaluate(time);
@@ -214,6 +238,7 @@ public class UIController : MonoBehaviour
         poemText.SetActive(false);
         poemTextAuthor.SetActive(false);
         fadeImage.gameObject.SetActive(false);
+        poemTextSkip.SetActive(false);
     }
 
     public void UIAlertText(string text, float duration = -1.0f, AnimationCurve curve = null, Color? color = null) {

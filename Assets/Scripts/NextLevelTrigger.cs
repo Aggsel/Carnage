@@ -9,30 +9,53 @@ public class NextLevelTrigger : MonoBehaviour
     UIController uc = null;
     [SerializeField] Collider triggerCollider = null;
 
+    [HideInInspector]
+    public bool inPoem = false; //very gay bool
+
     private void Start ()
     {
         uc = FindObjectOfType<UIController>();
+    }
+
+    private void Update ()
+    {
+        //skip poem
+        if (Input.GetKeyDown(KeyCode.Q) && inPoem)
+        {
+            GameObject player = GameObject.Find("Player");
+            StopCoroutine(LevelLoadDelay());
+            uc.DisablePoem();
+            NextLevelSkip(player);
+        }
     }
 
     private IEnumerator LevelLoadDelay()
     {
         AudioManager.Instance.PlaySound(ref AudioManager.Instance.endOfLevelBell);
         float time = uc.DisplayPoemText();
-        if(time > 0.0f){
-            GameObject player = GameObject.Find("Player");
+        GameObject player = GameObject.Find("Player");
+
+        if (time > 0.0f){
             player.GetComponent<MovementController>().enabled = false;
             player.GetComponent<FiringController>().enabled = false;
             player.GetComponent<CharacterController>().enabled = false;
             yield return new WaitForSeconds(time - time/8.0f);
-            GoToNextLevel();
-            player.GetComponent<CharacterController>().enabled = true;
-            player.GetComponent<FiringController>().enabled = true;
-            player.GetComponent<MovementController>().enabled = true;
-            AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
+            NextLevelSkip(player);
         }
-        else{
-            GoToNextLevel();
+        else
+        {
+            NextLevelSkip(player);
         }
+    }
+
+    private void NextLevelSkip (GameObject player)
+    {
+        player.GetComponent<CharacterController>().enabled = true;
+        player.GetComponent<FiringController>().enabled = true;
+        player.GetComponent<MovementController>().enabled = true;
+        AudioManager.Instance.StopSound(ref AudioManager.Instance.endOfLevelBell);
+        inPoem = false;
+        GoToNextLevel();
     }
 
     void OnTriggerEnter(Collider other){
