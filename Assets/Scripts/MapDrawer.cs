@@ -68,6 +68,7 @@ public class MapDrawer : MonoBehaviour
                         //imageGrid[x, y].color = finalColor;
                         lastMarker.rectTransform.SetParent(imageGrid[x, y].transform);
                         lastMarker.rectTransform.localPosition = new Vector3(0, 0, 0);
+                        lastMarker.enabled = true;
                     }
                 }
                 else
