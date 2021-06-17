@@ -13,6 +13,7 @@ public class MapDrawer : MonoBehaviour
     [SerializeField] private Color finalColor = Color.yellow;
     [SerializeField] private GameObject player = null;
     [SerializeField] private Image marker = null;
+    [SerializeField] private Image lastMarker = null;
 
     private MazeCell[,] grid = new MazeCell[0,0];
     private Image[,] imageGrid = new Image[0,0];
@@ -52,17 +53,25 @@ public class MapDrawer : MonoBehaviour
         layout.constraintCount = this.grid.GetLength(1);
 
 
-        for (int y = this.grid.GetLength(1)-1; y >= 0; y--){
-            for (int x = 0; x < this.grid.GetLength(0); x++){
-                if(grid[x,y].visited){
+        for (int y = this.grid.GetLength(1)-1; y >= 0; y--)
+        {
+            for (int x = 0; x < this.grid.GetLength(0); x++)
+            {
+                if(grid[x,y].visited)
+                {
                     imageGrid[x,y] = CreateNewRoom(x,y);
                     imageGrid[x,y].sprite = this.sprites[grid[x,y].doorMask];
                     imageGrid[x,y].color = unvisitedColor;
 
                     if(grid[x,y].type == RoomType.FINAL)
-                        imageGrid[x,y].color = finalColor;
+                    {
+                        //imageGrid[x, y].color = finalColor;
+                        lastMarker.rectTransform.SetParent(imageGrid[x, y].transform);
+                        lastMarker.rectTransform.localPosition = new Vector3(0, 0, 0);
+                    }
                 }
-                else{
+                else
+                {
                     Image newImage = CreateNewRoom(x,y);
                     newImage.color = new Color(0, 0, 0, 0);
                 }
