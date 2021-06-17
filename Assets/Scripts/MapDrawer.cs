@@ -27,9 +27,13 @@ public class MapDrawer : MonoBehaviour
         InitializeUIElements();
     }
 
+    void LateUpdate(){
+         UpdateRotation();
+    }
+
     public void UpdateRotation(){
         float rotation = player.transform.localRotation.eulerAngles.y;
-        rectTransform.rotation = Quaternion.Euler(0, 0, rotation);
+        marker.rectTransform.rotation = Quaternion.Euler(0, 0, -rotation);
     }
 
     private void InitializeUIElements(){
@@ -66,12 +70,8 @@ public class MapDrawer : MonoBehaviour
         }
 
         SetCurrentRoom(currentRoom);
+        SetRoomAsVisited(currentRoom);
     }
-
-    // void Update(){
-    //     float rotation = player.transform.localRotation.eulerAngles.y;
-    //     rectTransform.rotation = Quaternion.Euler(0, 0, rotation);
-    // }
 
     private Image CreateNewRoom(int x, int y){
         GameObject newObject = new GameObject(string.Format("Room Sprite {0}x{1}",x,y));
@@ -84,8 +84,6 @@ public class MapDrawer : MonoBehaviour
     public void SetCurrentRoom(Vector2Int coord){
         marker.rectTransform.SetParent(imageGrid[currentRoom.x, currentRoom.y].transform);
         marker.rectTransform.localPosition = new Vector3(0,0,0);        
-
-        
     }
 
     public void SetRoomAsVisited(Vector2Int coord){
