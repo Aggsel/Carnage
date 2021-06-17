@@ -49,9 +49,10 @@ public class MainMenu : MonoBehaviour
     private void Update ()
     {
         //DEBUG, RESET FIRST TIME
-        if(Input.GetKeyDown(KeyCode.Comma))
+        if(Input.GetKey(KeyCode.Comma) && Input.GetKey(KeyCode.Delete))
         {
             sc.SetFirstTime(1);
+            PlayerPrefs.DeleteKey("Act");
         }
     }
 
