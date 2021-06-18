@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public enum ChallangeType { TIME }
+public enum ChallangeType { NONE, TIME }
 
 public class ChallangeController : MonoBehaviour
 {
@@ -14,6 +14,7 @@ public class ChallangeController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText = null;
     [SerializeField] private TextMeshProUGUI bestTimeText = null;
     [SerializeField] private GameObject timerPanel = null;
+    [SerializeField] private TextMeshProUGUI challangeTypeText = null;
 
     private float timer = 0.0f;
     private float bestTime = 0.0f;
@@ -38,9 +39,21 @@ public class ChallangeController : MonoBehaviour
     {
         switch (type)
         {
+            case ChallangeType.NONE:
+                timerPanel.SetActive(false);
+                break;
             case ChallangeType.TIME:
+                challangeTypeText.text = "Time Challange";
                 bestTime = PlayerPrefs.GetFloat(type.ToString());
-                bestTimeText.text = bestTime.ToString("F2");
+
+                if (bestTime >= 999999) //magic number
+                {
+                    bestTimeText.text = "None";
+                }
+                else
+                {
+                    bestTimeText.text = bestTime.ToString("F2");
+                }
                 break;
             default:
                 Debug.LogWarning("This should not happen");
@@ -54,6 +67,8 @@ public class ChallangeController : MonoBehaviour
     {
         switch (type)
         {
+            case ChallangeType.NONE:
+                break;
             case ChallangeType.TIME:
                 float bestTime = PlayerPrefs.GetFloat(type.ToString());
 
@@ -82,6 +97,8 @@ public class ChallangeController : MonoBehaviour
     {
         switch (challangeType)
         {
+            case ChallangeType.NONE:
+                break;
             case ChallangeType.TIME:
                 //highscore
                 SaveChallange(challangeType);
@@ -101,6 +118,9 @@ public class ChallangeController : MonoBehaviour
 
         switch (challangeType)
         {
+            case ChallangeType.NONE:
+                timerPanel.SetActive(false);
+                break;
             case ChallangeType.TIME:
                 //highscore
                 LoadChallange(challangeType);
