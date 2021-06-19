@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI versionText = null;
+    [SerializeField] private GameObject creditsText = null;
     [SerializeField] private GameObject[] objects = null;
 
     private bool mainMenu = false;
@@ -57,12 +58,18 @@ public class MainMenu : MonoBehaviour
     }
 
     #region mainMenu crap
-    public void StartButton ()
+    
+    public void TimeChallangeButton ()
+    {
+        AudioManager.Instance.StopSound(ref AudioManager.Instance.mainMenuMusic);
+        SceneManager.LoadScene("Challange_Time");
+    }
+
+    public void StoryModeButton ()
     {
         AudioManager.Instance.StopSound(ref AudioManager.Instance.mainMenuMusic);
         if (sc.GetFirstTime() == 1)
         {
-            
             sc.SetFirstTime(2);
             SceneManager.LoadScene("Alexander");
         }
@@ -74,6 +81,16 @@ public class MainMenu : MonoBehaviour
         {
             Debug.LogWarning("This should not happen!");
         }
+    }
+
+    public void StartButton ()
+    {
+        for (int i = 0; i < objects.Length; i++)
+        {
+            objects[i].SetActive(false);
+        }
+
+        objects[2].SetActive(true);
     }
 
     public void ExitButton ()
