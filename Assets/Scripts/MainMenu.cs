@@ -4,9 +4,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private VolumeProfile profile = null;
     [SerializeField] private TextMeshProUGUI versionText = null;
     [SerializeField] private GameObject creditsText = null;
     [SerializeField] private TextMeshProUGUI descriptionText = null;
@@ -24,6 +27,16 @@ public class MainMenu : MonoBehaviour
 
     private void Start ()
     {
+        //think this fixed motionblur bug
+        if (!profile.TryGet<MotionBlur>(out var motion))
+        {
+            Debug.LogWarning("THIS SHOULD NOT HAPPEN");
+            motion = profile.Add<MotionBlur>(false);
+            motion.active = false;
+        }
+
+        motion.active = false;
+
         startPos = creditsText.GetComponent<RectTransform>().position;
         creditsText.GetComponent<RectTransform>().position = startPos;
         StartCoroutine(FadeFromBlack());

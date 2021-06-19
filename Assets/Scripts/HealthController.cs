@@ -136,6 +136,9 @@ public class HealthController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.LoadScene("Actual_Hub");
+        if(SceneManager.GetActiveScene().name == "Level1")
+            SceneManager.LoadScene("Actual_Hub");
+        else if(SceneManager.GetActiveScene().name == "Challange_Time")
+            SceneManager.LoadScene("MainMenu");
     }
 }
