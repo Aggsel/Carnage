@@ -9,17 +9,23 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI versionText = null;
     [SerializeField] private GameObject creditsText = null;
+    [SerializeField] private TextMeshProUGUI descriptionText = null;
     [SerializeField] private GameObject[] objects = null;
 
     private bool mainMenu = false;
     private string version = null;
     private SerializeController sc = null;
+    private bool scrollCredits = false;
+    private Vector2 newPos = Vector2.zero;
+    private Vector2 startPos = Vector2.zero;
 
     [SerializeField] private Image fadeImage = null;
     [SerializeField] private float fadeDuration = 1.0f;
 
     private void Start ()
     {
+        startPos = creditsText.GetComponent<RectTransform>().position;
+        creditsText.GetComponent<RectTransform>().position = startPos;
         StartCoroutine(FadeFromBlack());
 
         sc = FindObjectOfType<SerializeController>();
@@ -45,6 +51,12 @@ public class MainMenu : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+        else if (SceneManager.GetActiveScene().name == "Challange_Time")
+        {
+            //AudioManager.Instance.PlaySound(ref AudioManager.Instance.hubMusic);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void Update ()
@@ -55,10 +67,41 @@ public class MainMenu : MonoBehaviour
             sc.SetFirstTime(1);
             PlayerPrefs.DeleteKey("Act");
         }
+
+        if(scrollCredits)
+        {
+            newPos.y += 120f * Time.deltaTime;
+            creditsText.GetComponent<RectTransform>().position = startPos + newPos;
+        
+            if(creditsText.GetComponent<RectTransform>().localPosition.y > 1500f)
+            {
+                Debug.Log(creditsText.GetComponent<RectTransform>().localPosition.y);
+                newPos = Vector2.zero;
+                creditsText.GetComponent<RectTransform>().position = startPos;
+            }
+        }
     }
 
     #region mainMenu crap
     
+    public void TimeChallangeHover ()
+    {
+        descriptionText.text = "A set difficulty and levelsize where your run is being timed. The goal is simple, finish " +
+            "the level as fast as possible and try to beat your own best time!";
+    }
+
+    public void StoryModeHover()
+    {
+        descriptionText.text = "The default story mode with three levels of different difficulties and sizes. Try to wrap your" +
+            " head around the main characters story and debunk the insanities.";
+    }
+
+    public void LeaveHover ()
+    {
+        //reset description
+        descriptionText.text = "";
+    }
+
     public void TimeChallangeButton ()
     {
         AudioManager.Instance.StopSound(ref AudioManager.Instance.mainMenuMusic);
@@ -106,6 +149,7 @@ public class MainMenu : MonoBehaviour
         }
 
         objects[1].SetActive(true);
+        scrollCredits = true;
     }
 
     public void BackButton ()
@@ -116,6 +160,11 @@ public class MainMenu : MonoBehaviour
         }
 
         objects[0].SetActive(true);
+
+        //reset credtis
+        scrollCredits = false;
+        newPos = Vector2.zero;
+        creditsText.GetComponent<RectTransform>().position = startPos;
     }
     #endregion
 
