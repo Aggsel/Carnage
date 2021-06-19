@@ -73,7 +73,7 @@ public class MainMenu : MonoBehaviour
             newPos.y += 120f * Time.deltaTime;
             creditsText.GetComponent<RectTransform>().position = startPos + newPos;
         
-            if(creditsText.GetComponent<RectTransform>().localPosition.y > 1500f)
+            if(creditsText.GetComponent<RectTransform>().localPosition.y > 1800f)
             {
                 Debug.Log(creditsText.GetComponent<RectTransform>().localPosition.y);
                 newPos = Vector2.zero;
