@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class NextLevelTrigger : MonoBehaviour
 {
     LevelManager levelManager = null;
     UIController uc = null;
+    ChallangeController cc = null;
     [SerializeField] Collider triggerCollider = null;
 
     [HideInInspector]
@@ -14,6 +16,7 @@ public class NextLevelTrigger : MonoBehaviour
 
     private void Start ()
     {
+        cc = FindObjectOfType<ChallangeController>();
         uc = FindObjectOfType<UIController>();
     }
 
@@ -28,7 +31,6 @@ public class NextLevelTrigger : MonoBehaviour
             NextLevelSkip(player);
         }
     }
-
     private IEnumerator LevelLoadDelay()
     {
         FindObjectOfType<ChallangeController>().StopCurrentChallange();
@@ -64,8 +66,25 @@ public class NextLevelTrigger : MonoBehaviour
         {
             if(triggerCollider != null)
                 triggerCollider.enabled = false;
-            StartCoroutine(LevelLoadDelay());
+
+            if (SceneManager.GetActiveScene().name == "Challange_Time")
+                StartCoroutine(ChallangeResults());
+            else
+                StartCoroutine(LevelLoadDelay());
         }
+    }
+
+    private IEnumerator ChallangeResults ()
+    {
+        GameObject player = FindObjectOfType<MovementController>().gameObject;
+        player.GetComponent<MovementController>().enabled = false;
+        player.GetComponent<FiringController>().enabled = false;
+        player.GetComponent<CharacterController>().enabled = false;
+
+        cc.challangeResultsObj.SetActive(true);
+        cc.StopCurrentChallange();
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("MainMenu");
     }
 
     private void GoToNextLevel(){

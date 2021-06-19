@@ -16,6 +16,11 @@ public class ChallangeController : MonoBehaviour
     [SerializeField] private GameObject timerPanel = null;
     [SerializeField] private TextMeshProUGUI challangeTypeText = null;
 
+    [Header("Challange Results")]
+    public GameObject challangeResultsObj = null;
+    [SerializeField] private TextMeshProUGUI resultsBestTimeText = null;
+    [SerializeField] private TextMeshProUGUI resultsTimerText = null;
+
     private float timer = 0.0f;
     private float bestTime = 0.0f;
     private bool countTimer = false;
@@ -49,10 +54,12 @@ public class ChallangeController : MonoBehaviour
                 if (bestTime >= 999999) //magic number
                 {
                     bestTimeText.text = "None";
+                    resultsBestTimeText.text = "None";
                 }
                 else
                 {
                     bestTimeText.text = bestTime.ToString("F2");
+                    resultsBestTimeText.text = bestTime.ToString("F2");
                 }
                 break;
             default:
@@ -78,7 +85,10 @@ public class ChallangeController : MonoBehaviour
                 if (timer < bestTime)
                 {
                     bestTimeText.text = timer.ToString("F2");
+                    resultsBestTimeText.text = timer.ToString("F2");
+
                     timerText.text = timer.ToString("F2");
+                    resultsTimerText.text = timer.ToString("F2");
 
                     PlayerPrefs.SetFloat(type.ToString(), timer);
                     bestTime = timer;
@@ -149,6 +159,7 @@ public class ChallangeController : MonoBehaviour
         {
             timer += Time.deltaTime;
             timerText.text = timer.ToString("F2");
+            resultsTimerText.text = timer.ToString("F2");
         }
     }
 }

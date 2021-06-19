@@ -15,7 +15,6 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText = null;
     [SerializeField] private GameObject[] objects = null;
 
-    private bool mainMenu = false;
     private string version = null;
     private SerializeController sc = null;
     private bool scrollCredits = false;
@@ -36,23 +35,20 @@ public class MainMenu : MonoBehaviour
         }
 
         motion.active = false;
-
-        startPos = creditsText.GetComponent<RectTransform>().position;
-        creditsText.GetComponent<RectTransform>().position = startPos;
         StartCoroutine(FadeFromBlack());
 
         sc = FindObjectOfType<SerializeController>();
-
         Time.timeScale = 1.0f;
 
         version = Application.version;
         versionText.text = "v " + version.ToString();
 
-        //useful later
-        mainMenu = SceneManager.GetActiveScene().name == "MainMenu" ? true : false;
-
-        if (mainMenu)
+        if (SceneManager.GetActiveScene().name == "MainMenu")
         {
+            //reset & set credits pos
+            startPos = creditsText.GetComponent<RectTransform>().position;
+            creditsText.GetComponent<RectTransform>().position = startPos;
+
             AudioManager.Instance.PlaySound(ref AudioManager.Instance.mainMenuMusic);
             
             Cursor.lockState = CursorLockMode.None;
@@ -64,9 +60,8 @@ public class MainMenu : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-        else if (SceneManager.GetActiveScene().name == "Challange_Time")
+        else
         {
-            //AudioManager.Instance.PlaySound(ref AudioManager.Instance.hubMusic);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
